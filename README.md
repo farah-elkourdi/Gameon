@@ -35,7 +35,7 @@ Run the application using the following command:
 
 2- Direct merge to the main branch is disabled.
  
-3- Pull request requires one code review. 
+3- Pull request requires one code review before merging. 
 
 4- First merge feature branch to the Dev branch. Dev branch can be merged to the main branch after integration testing. 
 
