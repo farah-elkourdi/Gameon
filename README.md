@@ -27,20 +27,23 @@ Run the application using the following command:
 | `/views`       | This directory contains the handlebar files
 | `/middlewares` | This directory contains all the middleware logic for the website                                       |      
 | `/public` | This directory contains CSS files, JS files and images                                      |      
+| `/task` | This directory contains the validation file                                  |      
 
 
 ## 🤝 Contribution: 
 
-1- Create a branch for each feature.
+1- Add comments in code, simply describe in a short sentence what the function is actually doing.
 
-2- Direct merge to the main branch is disabled.
+2- Create a branch for each feature.
+
+3- Direct merge to the main branch is disabled.
  
-3- Pull request requires one code review before merging. 
+4- Pull request requires one code review before merging. 
 
-4- First merge feature branch to the Dev branch. Dev branch can be merged to the main branch after integration testing. 
+5- First merge feature branch to the Dev branch. Dev branch can be merged to the main branch after integration testing. 
 
 ***Feature branch --> Dev branch --> Main branch***
 
-5- All merge conflicts (if any) must be resolved before merging a pull request.
+6- All merge conflicts (if any) must be resolved before merging a pull request.
 
-6- Review and merge the pending pull request (if any) before creating a new one. 
+7- Review and merge the pending pull request (if any) before creating a new one.

@@ -1,0 +1,24 @@
+{
+  "name": "gameon",
+  "version": "1.0.0",
+  "description": "CS 546 project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felkourdi/Gameon.git"
+  },
+  "author": "Group 2",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/felkourdi/Gameon/issues"
+  },
+  "homepage": "https://github.com/felkourdi/Gameon#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mongodb": "^4.4.1"
+  }
+}
