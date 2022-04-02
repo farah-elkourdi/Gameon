@@ -5,7 +5,7 @@ const data = require('../data');
 // Router configuration
 
 router.get('/' ,async (req,res) => {
-    res.render('posts/landingPage', {title: "Hey! Welcome"});
+    res.render('index/landingPage', {title: "Hey! Welcome"});
 });
 
 module.exports = router;
