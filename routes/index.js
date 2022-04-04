@@ -1,7 +1,7 @@
+const landingPageApi = require('./landingPageApi');
+
 const constructorMethod = (app) => {
-  app.use('*', (req, res) => {
-    res.status(404).json({error: 'Not found'});
-  });
+  app.use('/', landingPageApi);
 };
 
 module.exports = constructorMethod;

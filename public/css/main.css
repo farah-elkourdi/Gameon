@@ -1,0 +1,19 @@
+* {
+	box-sizing: border-box;
+}
+
+.pg-color {
+    background-color:beige;
+}
+
+.max-height {
+    height: 100vh;
+}
+
+.welcome {
+    text-align: center;
+}
+
+.welcome .welcome-logo {
+    padding-top: 40px;
+}
