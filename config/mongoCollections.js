@@ -13,4 +13,7 @@ const getCollectionFn = (collection) => {
 
 module.exports = {
     user: getCollectionFn('user'),
+    gameEvent: getCollectionFn('gameEvent'),
+    comment: getCollectionFn('comment'),
+    rate: getCollectionFn('rate')  
 }
