@@ -5,7 +5,8 @@ const check = require('../task/validation');
 
 router.get('/', async (req, res) => {
     let now = new Date();
-    res.render('createGameEvent', {error_flag: false, today: now});
+    let end = now.setHours(now.getHours() + 1);
+    res.render('createGameEvent', {error_flag: false, today: now, limit: end });
 });
 
 router.post('/', async(req,res) => {
@@ -20,7 +21,7 @@ router.post('/', async(req,res) => {
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');
         /* Need to check if valid address */
-        /* Need to check if longitude and latitude are correct*/
+        /* Need to check if longitude and latitude are correct */
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minimumParticipants, 'minimumParticipants');
