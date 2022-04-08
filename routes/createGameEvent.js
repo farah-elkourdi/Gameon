@@ -13,7 +13,7 @@ router.post('/', async(req,res) => {
     const createGameEventData = req.body;
     try{
         createGameEventData.title = check.checkString(createGameEventData.title , 'title');
-        /* How would we get coordinator userId?*/
+        /* How would we get coordinator userId? From the session. */
         // userId = check.checkId(userId);
         createGameEventData.status = check.checkString(createGameEventData.status, 'status');
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');

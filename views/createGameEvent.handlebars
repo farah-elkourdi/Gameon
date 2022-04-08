@@ -36,18 +36,13 @@
         <label for = "address"> Address </label>
         <input name = 'address' type = 'text' id ='address' placeholder = 'Address'>
 
-        <!-- How do we handle inputs for lonitude and latitude -->
-        <label for = "latitude"> Latitude </label>
-        <input name = 'latitude' type = 'text' id ='latitude' placeholder = 'Latitude'>
-        <label for = "longitude"> Longitude </label>
-        <input name = 'longitude' type = 'text' id ='longitude' placeholder = 'Longitude'>
 
         <!-- How do I handle inputs for date/time -->
-        <label for = "startTime"> Start Date </label>
-        <input name = 'startTime' type = 'date' id ='startTime'>
+        <label for = "startTime"> Choose Start Date and Time </label>
+        <input name = 'startTime' type = 'datetime-local' id ='startTime' min = {{today}}>
 
-        <label for = "endTime"> End Date </label>
-        <input name = 'endTime' type = 'date' id ='endTime' >
+        <label for = "endTime"> Choose End Date and Time </label>
+        <input name = 'endTime' type = 'datetime-local' id ='endTime' min = {{today}}>
 
         <label for = "minParticipants"> Minimum number of Participants </label>
         <input name = 'minParticipants' type = 'number' id ='minParticipants' placeholder = 'Minimum'>
