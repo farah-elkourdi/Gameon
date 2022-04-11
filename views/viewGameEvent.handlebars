@@ -1,0 +1,55 @@
+<div>
+    <section class = "eventInformation">
+        <h1>{{title}}</h1>
+        <div id="organizer">
+            <a href = '/userEvents/{{event.userId}}'>{{event.organizerName}}</a>
+        </div>
+        <div id="status">
+            {{event.status}}
+        </div>
+        <div id="sportCategory">
+            {{event.sportCategory}}
+        </div>
+        <article id="description">
+            <h1>About:</h1>
+            <p>{{event.description}}</p>
+        </article>
+        <div class="address">
+            {{event.address}} <br>
+            {{event.latitude}} <br>
+            {{event.longitude}}
+        </div>
+        <div class="startTime">
+            {{event.startTime}}
+        </div>
+        <div class="endTime">
+            {{event.endTime}}
+        </div>
+        <div class="minimumParticipants">
+            {{event.minimumParticipants}}
+        </div>
+        <div class="maximumParticipants">
+            {{event.maximumParticipants}}
+        </div>
+        <div class="currentNumberOfParticipants">
+            {{event.currentNumberOfParticipants}}
+        </div>
+        <section id="participants">
+        <ul>
+            {{#each event.participants}}
+            <li><a href="/userEvents/{{this.id}}">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+        </section>
+
+    </section>
+    <section class = "commentSection">
+        <!-- Form for adding a comment -->
+        {{#each comments}}
+            <div class="comment">
+                <h1>{{this.firstName}} {{this.lastName}}:</h1>
+                <p><a href="/userEvents/{{this.userId}}">{{this.comment}}</a></p>
+            </div>
+        {{/each}}
+    </section>
+</div>
