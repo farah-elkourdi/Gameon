@@ -7,13 +7,23 @@
 }
 
 .max-height {
-    height: 100vh;
-}
-
-.welcome {
-    text-align: center;
+    height: fit-content;
 }
 
 .welcome .welcome-logo {
     padding-top: 40px;
+    text-align: center;
+}
+
+.section-divider {
+    margin-top: 60px;
+}
+
+#map {
+    height: 300px !important;
+    width: 500px !important;
+  }
+
+.event-maps {
+    padding: 15px;
 }
