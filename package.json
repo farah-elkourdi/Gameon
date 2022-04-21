@@ -21,6 +21,7 @@
     "axios": "^0.26.1",
     "express": "^4.17.3",
     "express-handlebars": "^6.0.3",
-    "mongodb": "^4.4.1"
+    "mongodb": "^4.4.1",
+    "node-open-geocoder": "^4.0.1"
   }
 }

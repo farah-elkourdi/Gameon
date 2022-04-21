@@ -79,9 +79,12 @@ module.exports = {
     if(!num){
       throw `Error: you must supply a ${varName}`;
     }
+    num = +num;
     if(typeof num !== 'number' || isNaN(num)){
       throw `Error: ${varName} is not a number`;
     }
+
+    return num;
   },
 
   checkMinParticipantLimit (sport, numParticipants, varName){
