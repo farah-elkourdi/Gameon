@@ -1,8 +1,10 @@
 const mongoCollections = require('../config/mongoCollections');
 const gameEvents = mongoCollections.gameEvent;
+const users = mongoCollections.user;
 const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 const gameEventData = require('./gameEvent');
+const userData = require('./users');
 
 
 /* Given a userId, return all game events associated with that user */
@@ -32,9 +34,12 @@ async function getAllGameEvents (userId){
 async function remove(userId, gameEventId){
     userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
-
+    const userFound = await userData.getUser(userId);
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
+    if(userId === gameEvent.userId){
+        throw 'Error: event coordinator cannot leave gameEvent.';
+    }
     let num_participants = gameEvent.currentNumberOfParticipants;
 
     const updated_info = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
@@ -43,7 +48,29 @@ async function remove(userId, gameEventId){
         throw "Error: failed to remove user from gameEvent."
     }
     return {userRemoved: true};                    
-} 
+}
+/* registers a user for a gameEvent */
+async function insert(userId, gameEventId){
+    userId = check.checkId(userId);
+    gameEventId = check.checkId(gameEventId);
+    const userFound = await userData.getUser(userId);
+    const gameEventCollection = await gameEvents();
+    const gameEvent = await gameEventData.getGameEvent(gameEventId);
+
+    let status = gameEvent.status;
+    let num_participants = gameEvent.currentNumberOfParticipants;
+    let max_participants = gameEvent.maximumParticipants;
+    if(gameEvent.participants.includes(userId)) throw 'Error: you are already registered for this event.'
+    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
+    if(num_participants === max_participants) throw 'Error: gameEvent is already full.';
+
+    const updated_info = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
+                        {$set: {currentNumberOfParticipants: num_participants + 1}}, {$push: {participants: ObjectId(userId)}});
+    if(updated_info.modifiedCount === 0){
+        throw "Error: failed to register user for gameEvent."
+    }
+    return {userInserted: true};  
+}
 
 /* update a gameEvent */
 async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, 
@@ -103,5 +130,6 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
 module.exports = {
     getAllGameEvents, 
     remove, 
+    insert,
     update
 }

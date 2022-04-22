@@ -1,12 +1,22 @@
 const express = require('express');
+const session = require('express-session');
 const router = express.Router();
 const data = require('../data');
 const gameEvent = data.gameEvent;
 const comments = data.comments;
 const users = data.users;
+const userEvents = data.userEvents;
 const check = require('../task/validation');
-
+/* view the page for an event */
 router.get('/:id', async (req, res) => {
+    
+    //check if the user is signed in...
+    if(!req.session.user){
+        return res.redirect('/');
+    }
+    
+    //get current user id
+    let currentUserId = req.session.user.userId;
     //check id
     let ID;
     try{
@@ -14,6 +24,7 @@ router.get('/:id', async (req, res) => {
     }catch(e){
         return res.status(400).render('errors/error', {error: e.toString()});
     }
+    
     //get event from id
     let event;
     try{
@@ -21,6 +32,13 @@ router.get('/:id', async (req, res) => {
     }catch(e){
         return res.status(404).render('errors/error', {error: e.toString()});
     }
+    
+    //check if current user is already registered for the event
+    let joined = false;
+    if(event.participants.includes(userId)){
+        joined = true;
+    }
+
     //gets the organizer object from the userId in event & stores their name.
     const organizer = await users.getUser(event.userId);
     event.organizerName = organizer.firstName + ' ' + organizer.lastName;
@@ -35,18 +53,68 @@ router.get('/:id', async (req, res) => {
         event.participants[i] = pObject;
     }
     //queries comment collection for all comments associated with this event id
-    //queries the user collection using the poster id from the comment - adds the poster's name to the comment object.
     let commentsArray;
     try{
         commentsArray = await comments.getCommentsForEvent(ID);
     }catch(e){
-        return res.status('errors/error', {error: e.toString()});
+        return res.status(404).render('errors/error', {error: e.toString()});
     }
-    for(let i =0; i<commentsArray.length; i++){
-        const poster = await users.getUser(commentsArray[i].userId);
-        commentsArray[i].firstName = poster.firstName;
-        commentsArray[i].lastName = poster.lastName;
+    return res.render('viewGameEvent', {title: event.title, event: event, comments: commentsArray, currentUserId: currentUserId, joined: joined});
+});
+
+//register the current user for an event
+router.post('/:id', async (req,res) => {
+    //check if the user is signed in...
+    if(!req.session.user){
+        return res.redirect(303, '/'); //using code 303 to specify a get request
     }
     
-    res.render('viewGameEvent', {title: event.title, event: event, comments: commentsArray});
+    //get current user id
+    let currentUserId = req.session.user.userId;
+    //check id
+    let ID;
+    try{
+        ID = check.checkId(req.params.id);
+    }catch(e){
+        return res.status(400).render('errors/error', {error: e.toString()});
+    }
+    let inserted;
+    try{
+        inserted = await userEvents.insert(currentUserId, ID);
+    }
+    catch(e){
+        return res.status('errors/error', {error: e.toString()});
+    }
+    if(!inserted.userInserted) return res.status(400).render('errors/error', {error: "An unknown error occured during registration. Please try again."});
+
+    return res.redirect(303, '/viewGameEvent/'+ID);
 });
+//deregister the user for the event
+router.delete('/:id', async (req,res) => {
+    //check if the user is signed in...
+    if(!req.session.user){
+        return res.redirect(303, '/'); //using code 303 to specify a get request
+    }
+    
+    //get current user id
+    let currentUserId = req.session.user.userId;
+    //check id
+    let ID;
+    try{
+        ID = check.checkId(req.params.id);
+    }catch(e){
+        return res.status(400).render('errors/error', {error: e.toString()});
+    }
+    let removed;
+    try{
+        removed = await userEvents.remove(currentUserId, ID);
+    }
+    catch(e){
+        return res.status('errors/error', {error: e.toString()});
+    }
+    if(!removed.userRemoved) return res.status(400).render('errors/error', {error: "An unknown error occured during deregistration. Please try again."});
+
+    return res.redirect(303, '/viewGameEvent/'+ID);
+});
+
+module.exports = router;

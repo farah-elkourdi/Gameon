@@ -15,6 +15,11 @@ async function getCommentsForEvent(eventId){
         eventComments[i].userId = eventComments[i].userId.toString();
         eventComments[i].gameEventId = eventComments[i].gameEventId.toString();
     }
+    //queries the user collection using the poster id from the comment - adds the poster's name to the comment object.
+    for(let i =0; i<eventComments.length; i++){
+        const poster = await users.getUser(eventComments[i].userId);
+        eventComments[i].name = poster.firstName + ' ' + poster.lastName;
+    }
     return eventComments;
 }
 

@@ -34,21 +34,32 @@
         <div class="currentNumberOfParticipants">
             {{event.currentNumberOfParticipants}}
         </div>
-        <section id="participants">
+        <div id="participants">
         <ul>
             {{#each event.participants}}
             <li><a href="/userEvents/{{this.id}}">{{this.name}}</a></li>
             {{/each}}
         </ul>
-        </section>
-
+        </div>
+        <div id="joinOrLeave">
+            {{#if joined}}
+                <form action="/viewGameEvent/{{event._id}}" method="DELETE">
+                <button type="submit">Leave Event</button>
+                </form>
+            {{#else}}
+                <form action="/viewGameEvent/{{event._id}}" method="POST">
+                <button type="submit">Join Event</button>
+                </form>
+            {{/if}}
+        </div>
     </section>
     <section class = "commentSection">
         <!-- Form for adding a comment -->
         {{#each comments}}
             <div class="comment">
-                <h1>{{this.firstName}} {{this.lastName}}:</h1>
-                <p><a href="/userEvents/{{this.userId}}">{{this.comment}}</a></p>
+                <h1><a href="/userEvents/{{this.userId}}">{{this.name}}</a>:</h1>
+                <h2>{{{dateFormat "LLL" this.timestamp}}}</h2>
+                <p>{{this.comment}}</p>
             </div>
         {{/each}}
     </section>
