@@ -29,7 +29,7 @@ async function getGameEvent(id){
 
 /*create a gameEvent and insert it into the database*/
 async function create (userId, title, status, sportCategory, description, address, 
-            latitude, longitude, startTime, endTime, minimumParticipants, 
+            startTime, endTime, minimumParticipants, 
             maximumParticipants){
 
         userId = check.checkId(userId);
@@ -56,22 +56,20 @@ async function create (userId, title, status, sportCategory, description, addres
             sportCategory: sportCategory,
             description: description,
             address: address,
-            latitude: latitude,
-            longitude: longitude,
             startTime: startTime, 
             endTime: endTime, 
             minimumParticipants: minimumParticipants,
             maximumParticipants: maximumParticipants,
             currentNumberOfParticipants: 1,
-            participants: [ObjectId(userId)]
+            participants: [userId]
         };
 
         const insert = await gameEventCollection.insertOne(newGameEvent);
         if(!insert.acknowledged || !insert.insertedId){
             throw "Error: could not add gameEvent";
         }
-
-        return {gameEventCreated: true};
+        newGameEvent._id = insert.insertedId;
+        return newGameEvent;
 }
 
 module.exports = {

@@ -52,7 +52,7 @@ router.post('/Checksignup', async(req, res) => {
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (!validation.validString(area)) errors.push('Invalid area.');
-  if (!validation.chackEmail(email)) errors.push('Invalid email.');
+  if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
   if(errors.length == 0 )
   {
@@ -62,6 +62,7 @@ router.post('/Checksignup', async(req, res) => {
   }
   catch(e)
   {
+    console.log(e.toString());
     errors.push('Error this email exists.');
   return res.json({success: true, message: errors});
 }
@@ -87,21 +88,22 @@ router.post('/Checksignin', async(req, res) => {
 
   var errors = [];
   if (!validation.validString(password)) errors.push('Invalid password.');
-  if (!validation.chackEmail(email)) errors.push('Invalid email.');
+  if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if(errors.length == 0 )
   {
   try
   {
     let users = await usersData.checkUser(email, password);
+    let user = users.user;
     if (users.authenticated == true) {
-      let user = {}
-      user.userID = users.userID;
-      user.userFirstName = users.firstName;
-      user.userLastName = users.lastName;
-      user.email = users.email;
-      user.userArea = users.area;
-      user.userStreet = users.street;
-      req.session.user = user;
+      req.session.user = {
+      userID : user._id,
+      userFirstName : user.firstName,
+      userLastName : user.lastName,
+      email : user.email,
+      userArea : user.area,
+      userStreet : user.street
+      };
     } 
   }
   catch(e)

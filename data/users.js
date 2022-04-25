@@ -2,9 +2,6 @@ const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.user;
 const { ObjectId } = require('mongodb');
 const validation = require('../task/validation');
-
-
- const validation = require("../task/validation");
 const bcrypt = require('bcrypt');
 const saltRounds = 16;
 
@@ -13,7 +10,7 @@ module.exports = {
 
   async getUser(id){
     if(arguments.length != 1){ throw "getUser : pass one argument."};
-    if(!eventId) throw "getUser: must pass userId";
+    if(!id) throw "getUser: must pass userId";
     let ID = validation.checkId(id);
     const userCollection = await users();
     const userFound = await userCollection.findOne({_id: ObjectId(ID)});
@@ -35,7 +32,7 @@ module.exports = {
     if (!validation.validString(lastName, "lastName")) throw 'Invalid last name.';
     if (!validation.validString(password)) throw 'Invalid password.';
     if (!validation.validString(area)) throw 'Invalid area.';
-    if (!validation.chackEmail(email)) throw 'Invalid email.';
+    if (!validation.checkEmail(email)) throw 'Invalid email.';
     if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
 
     const userCollection = await users();
@@ -66,10 +63,11 @@ async checkUser(email, password)
 {
   email = email.trim().toLowerCase();
   if (!validation.validString(password)) throw 'Invalid password.';
-  if (!validation.chackEmail(email)) throw 'Invalid email.';
+  if (!validation.checkEmail(email)) throw 'Invalid email.';
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });
+  user._id = user._id.toString();
   if (user == null)
   {throw "Either the username or password is invalid"}
   else

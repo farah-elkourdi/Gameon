@@ -15,9 +15,7 @@
             <p>{{event.description}}</p>
         </article>
         <div class="address">
-            {{event.address}} <br>
-            {{event.latitude}} <br>
-            {{event.longitude}}
+            {{event.address}}
         </div>
         <div class="startTime">
             {{event.startTime}}
@@ -43,10 +41,10 @@
         </div>
         <div id="joinOrLeave">
             {{#if joined}}
-                <form action="/viewGameEvent/{{event._id}}" method="DELETE">
+                <form action="/viewGameEvent/{{event._id}}/leave" method="POST">
                 <button type="submit">Leave Event</button>
                 </form>
-            {{#else}}
+            {{else}}
                 <form action="/viewGameEvent/{{event._id}}" method="POST">
                 <button type="submit">Join Event</button>
                 </form>

@@ -83,9 +83,12 @@ module.exports = {
     if(!num){
       throw `Error: you must supply a ${varName}`;
     }
+    //num gets passed as string in form data, so we need to set it as a number
+    num = Number(num);
     if(typeof num !== 'number' || isNaN(num)){
       throw `Error: ${varName} is not a number`;
     }
+    return num.toString();
   },
 
   checkMinParticipantLimit (sport, numParticipants, varName){
@@ -199,10 +202,10 @@ if (!str || typeof str !== 'string' || !str.trim()) return false;
     return true;
 } return false;
 },
-chackEmail(email)
+checkEmail(email)
 {
 return validator.validate(email); 
-},
+}
 
 
 };

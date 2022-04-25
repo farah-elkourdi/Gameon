@@ -41,12 +41,17 @@ async function remove(userId, gameEventId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
-
-    const updated_info = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
-                        {$set: {currentNumberOfParticipants: num_participants - 1}}, {$pull: {participants: ObjectId(userId)}});
-    if(updated_info.modifiedCount === 0){
-        throw "Error: failed to remove user from gameEvent."
+    const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
+                        {$set: {currentNumberOfParticipants: num_participants -1}});
+    if(updated_info1.modifiedCount === 0){
+        throw "Error: failed to deregister user for gameEvent."
     }
+    const updated_info2 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
+                        {$pull: {participants: userId}});
+    if(updated_info2.modifiedCount === 0){
+        throw "Error: failed to deregister user for gameEvent."
+    }
+    
     return {userRemoved: true};                    
 }
 /* registers a user for a gameEvent */
@@ -56,17 +61,21 @@ async function insert(userId, gameEventId){
     const userFound = await userData.getUser(userId);
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
-
     let status = gameEvent.status;
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.includes(userId)) throw 'Error: you are already registered for this event.'
     if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
-    if(num_participants === max_participants) throw 'Error: gameEvent is already full.';
+    if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
 
-    const updated_info = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
-                        {$set: {currentNumberOfParticipants: num_participants + 1}}, {$push: {participants: ObjectId(userId)}});
-    if(updated_info.modifiedCount === 0){
+    const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
+                        {$set: {currentNumberOfParticipants: num_participants + 1}});
+    if(updated_info1.modifiedCount === 0){
+        throw "Error: failed to register user for gameEvent."
+    }
+    const updated_info2 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
+                        {$push: {participants: userId}});
+    if(updated_info2.modifiedCount === 0){
         throw "Error: failed to register user for gameEvent."
     }
     return {userInserted: true};  

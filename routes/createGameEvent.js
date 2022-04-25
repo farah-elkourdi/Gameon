@@ -6,17 +6,29 @@ const check = require('../task/validation');
 router.get('/', async (req, res) => {
     let now = new Date();
     let end = now.setHours(now.getHours() + 1);
+        //check if the user is signed in...
+        if(!req.session.user){
+            return res.redirect('/');
+        }
     res.render('createGameEvent', {error_flag: false, today: now, limit: end });
 });
 
 router.post('/', async(req,res) => {
     let now = new Date();
     const createGameEventData = req.body;
+    let userId;
     try{
+        //check if the user is signed in...
+    if(!req.session.user){
+        return res.redirect('/');
+    }
+    
+    //get current user id
+        userId = req.session.user.userID;
+        createGameEventData.userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title , 'title');
-        /* How would we get coordinator userId? From the session. */
-        // userId = check.checkId(userId);
-        createGameEventData.status = check.checkString(createGameEventData.status, 'status');
+        createGameEventData.status = 'upcoming';
+        /* needs an initial status, so we can set it as upcoming */
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');
@@ -24,22 +36,24 @@ router.post('/', async(req,res) => {
         /* Need to check if longitude and latitude are correct */
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
-        createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minimumParticipants, 'minimumParticipants');
-        createGameEventData.minimumParticipants = check.checkMinParticipantLimit(sportCategory, createGameEventData.minimumParticipants, 'minimumParticipants');
-        createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maximumParticipants, 'maximumParticipants');
-        createGameEventData.maximumParticipants = check.checkMaxParticipantLimit(sportCategory, createGameEventData.maximumParticipants, 'maximumParticipants');  
+        check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
+        createGameEventData.minParticipants = check.checkMinParticipantLimit(createGameEventData.sportCategory, createGameEventData.minParticipants, 'minimumParticipants');
+        check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
+        createGameEventData.maxParticipants = check.checkMaxParticipantLimit(createGameEventData.sportCategory, createGameEventData.maxParticipants, 'maximumParticipants');  
     } catch (e){
         return res.status(400).render('createGameEvent', {error_flag: true, error: e, today: now})
     }
 
     try{
-        const {userId, title, status, sportCategory, description, address, latitude, longitude, startTime, endTime,
-                minimumParticipants, maximumParticipants} = createGameEventData;
-        const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, address, latitude, 
-                        longitude, startTime, endTime, minimumParticipants, maximumParticipants);
+        /*
+        const {title, sportCategory, description, address, startTime, endTime, minimumParticipants, maximumParticipants,
+        userId, status} = createGameEventData;
+        */
+    
+        const gameEvent = await data.gameEvent.create(createGameEventData.userId, createGameEventData.title, createGameEventData.status, createGameEventData.sportCategory, createGameEventData.description, createGameEventData.address, createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minParticipants, createGameEventData.maxParticipants);
         /* render the individual game page */
-        if(gameEvent.gameEventCreated){
-            res.status(200).json({status: "success"});
+        if(gameEvent){
+            res.redirect('/viewGameEvent/' + gameEvent._id);
         } else{
             res.status(404).json({status: "failure"});
         }

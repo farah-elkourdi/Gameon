@@ -8,7 +8,8 @@ const users = data.users;
 const userEvents = data.userEvents;
 const check = require('../task/validation');
 /* view the page for an event */
-router.get('/:id', async (req, res) => {
+router.route('/:id')
+.get(async (req, res) => {
     
     //check if the user is signed in...
     if(!req.session.user){
@@ -16,7 +17,7 @@ router.get('/:id', async (req, res) => {
     }
     
     //get current user id
-    let currentUserId = req.session.user.userId;
+    let currentUserId = req.session.user.userID;
     //check id
     let ID;
     try{
@@ -32,10 +33,9 @@ router.get('/:id', async (req, res) => {
     }catch(e){
         return res.status(404).render('errors/error', {error: e.toString()});
     }
-    
     //check if current user is already registered for the event
     let joined = false;
-    if(event.participants.includes(userId)){
+    if(event.participants.includes(currentUserId)){
         joined = true;
     }
 
@@ -60,17 +60,15 @@ router.get('/:id', async (req, res) => {
         return res.status(404).render('errors/error', {error: e.toString()});
     }
     return res.render('viewGameEvent', {title: event.title, event: event, comments: commentsArray, currentUserId: currentUserId, joined: joined});
-});
-
-//register the current user for an event
-router.post('/:id', async (req,res) => {
+})
+.post(async (req,res) => {
     //check if the user is signed in...
     if(!req.session.user){
         return res.redirect(303, '/'); //using code 303 to specify a get request
     }
     
     //get current user id
-    let currentUserId = req.session.user.userId;
+    let currentUserId = req.session.user.userID;
     //check id
     let ID;
     try{
@@ -89,15 +87,16 @@ router.post('/:id', async (req,res) => {
 
     return res.redirect(303, '/viewGameEvent/'+ID);
 });
-//deregister the user for the event
-router.delete('/:id', async (req,res) => {
+
+router.route('/:id/leave')
+.post(async (req,res) => {
     //check if the user is signed in...
     if(!req.session.user){
         return res.redirect(303, '/'); //using code 303 to specify a get request
     }
     
     //get current user id
-    let currentUserId = req.session.user.userId;
+    let currentUserId = req.session.user.userID;
     //check id
     let ID;
     try{
@@ -115,6 +114,5 @@ router.delete('/:id', async (req,res) => {
     if(!removed.userRemoved) return res.status(400).render('errors/error', {error: "An unknown error occured during deregistration. Please try again."});
 
     return res.redirect(303, '/viewGameEvent/'+ID);
-});
-
+})
 module.exports = router;
