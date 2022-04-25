@@ -1,4 +1,8 @@
 const {ObjectId} = require('mongodb');
+const isValidCoordinates = require('is-valid-coordinates')
+const openGeocoder = require('node-open-geocoder')
+var validator = require("email-validator");
+
 /* May need to edit max and min participants */
 const max_soccer = 20;
 const max_football = 20;
@@ -154,5 +158,54 @@ module.exports = {
       throw `${varName} for Soccer must be less than ${max_frisbee}`;
     }
     return numParticipants;
-  }
+  },
+
+  
+  checkCoordinates(x,y)
+  {
+    if(!isNaN(parseFloat(x)) && !isNaN(parseFloat(y)) ) 
+    {
+x= parseFloat(x);
+y= parseFloat(y);
+      return isValidCoordinates(x, y)
+    }
+    else
+    {return false}
+    
+  },
+
+  checkAddress(street,area)
+  {
+    var status; 
+    openGeocoder()
+    .geocode( street +', '+ area)
+    .end((err, res) => {
+      var data = res; 
+      if (!data)
+      status = false;
+      else if (data.length === 0)
+      status = false;
+      else
+     status = true;
+      return status ;
+    })
+  },
+
+ validString(str) 
+ {
+if (!str || typeof str !== 'string' || !str.trim()) return false;
+    return true;
+},
+
+ validfloat(float){
+  if(!isNaN(parseFloat(float))) {
+    return true;
+} return false;
+},
+chackEmail(email)
+{
+return validator.validate(email); 
+},
+
+
 };

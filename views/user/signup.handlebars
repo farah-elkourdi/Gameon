@@ -1,0 +1,40 @@
+<header>
+  <h1>
+    signup page
+  </h1>
+</header>
+
+<form method="POST" id="signup-form">
+
+  <label id="labelfirstname" for="firstName"> Enter your first name: </label>
+  <input id="firstName" type="text" placeholder="Enter first name" name="firstName" value="{{firstName}}" />
+
+  <label id="labellastname" for="lastName"> Enter your last name: </label>
+  <input id="lastName" type="text" placeholder="Enter last name" name="lastName" value="{{lastName}}" />
+
+  <label id="labelemail" for="email"> Enter your email: </label>
+  <input id="email" type="email" placeholder="Enter email" name="email" value="{{email}}" />
+
+  <label id="labelPassword" for="password"> Enter a password: </label>
+  <input id="password" type="password" placeholder="Enter password" name="password" value="{{password}}" />
+  <label id="labelAddress"> Addrress: </label>
+  <label id="labelStreet" for="street"> Enter a street: </label>
+  <input id="street" type="text" placeholder="Enter street" name="street" value="{{street}}" />
+
+  <select name="area" id="area">
+    <option value="hoboken">Hoboken</option>
+    <option value="jersey city">Jersey City</option>
+    <option value="kearny">Kearny</option>
+    <option value="union city">Union City</option>
+  </select>
+
+  {{> (lookup . 'partial') }}
+
+  <button class="btnsignup" id="signupSubmit">Sign up</button>
+</form>
+
+<ul id="error">
+</ul>
+
+<a href="/user/login">Already have an account? Click here to log-in</a>
+<script src="/public/js/signup.js"></script>
