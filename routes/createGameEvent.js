@@ -8,7 +8,7 @@ const geocode = require('../public/js/geocode');
 var createGameEventData;
 
 // Function to validate address and fetch lat and long
-
+/* commented out until we add address Geocode to createGameEvent, for now use address string 
 function validateAddress(addressGeocode) {
     let addressResult = addressGeocode;
     if (addressResult.address.country_code !== 'us') {
@@ -22,7 +22,7 @@ function validateAddress(addressGeocode) {
     createGameEventData.latitude = addressResult.lat;
     createGameEventData.longitude = addressResult.lon;
 }
-
+*/
 router.get('/', async (req, res) => {
     let now = new Date();
     let end = now.setHours(now.getHours() + 1);
@@ -60,8 +60,9 @@ router.post('/', async (req, res) => {
         createGameEventData.minParticipants = check.checkMinParticipantLimit(createGameEventData.sportCategory, createGameEventData.minParticipants, 'minimumParticipants');
         check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
         createGameEventData.maxParticipants = check.checkMaxParticipantLimit(createGameEventData.sportCategory, createGameEventData.maxParticipants, 'maximumParticipants');  
-         //Validating address using callback
+         /* commented out until we have geocode in creategameevent
          await geocode.validate(createGameEventData.address, validateAddress);
+         */
     } catch (e){
         return res.status(400).render('createGameEvent', {error_flag: true, error: e, today: now})
     }

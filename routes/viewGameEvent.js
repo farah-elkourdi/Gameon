@@ -111,7 +111,7 @@ router.route('/:id/leave')
         removed = await userEvents.remove(currentUserId, ID);
     }
     catch(e){
-        return res.status('errors/error', {error: e.toString()});
+        return res.status(400).render('errors/error', {error: e.toString()});
     }
     if(!removed.userRemoved) return res.status(400).render('errors/error', {error: "An unknown error occured during deregistration. Please try again."});
 
