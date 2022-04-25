@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
+const geocode = require('../public/js/geocode');
+
+// Global variable createGameEventData
+var createGameEventData;
+
+// Function to validate address and fetch lat and long
+
+function validateAddress(addressGeocode) {
+    let addressResult = addressGeocode;
+    if (addressResult.address.country_code !== 'us') {
+        return res.status(400).render('createGameEvent', {
+            error_flag: true,
+            error: `Please enter a valid US address`,
+            today: now
+        })
+    }
+    createGameEventData.address = addressResult.display_name;
+    createGameEventData.latitude = addressResult.lat;
+    createGameEventData.longitude = addressResult.lon;
+}
 
 router.get('/', async (req, res) => {
     let now = new Date();
@@ -13,7 +33,7 @@ router.get('/', async (req, res) => {
     res.render('createGameEvent', {error_flag: false, today: now, limit: end });
 });
 
-router.post('/', async(req,res) => {
+router.post('/', async (req, res) => {
     let now = new Date();
     const createGameEventData = req.body;
     let userId;
@@ -40,6 +60,8 @@ router.post('/', async(req,res) => {
         createGameEventData.minParticipants = check.checkMinParticipantLimit(createGameEventData.sportCategory, createGameEventData.minParticipants, 'minimumParticipants');
         check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
         createGameEventData.maxParticipants = check.checkMaxParticipantLimit(createGameEventData.sportCategory, createGameEventData.maxParticipants, 'maximumParticipants');  
+         //Validating address using callback
+         await geocode.validate(createGameEventData.address, validateAddress);
     } catch (e){
         return res.status(400).render('createGameEvent', {error_flag: true, error: e, today: now})
     }
@@ -57,8 +79,12 @@ router.post('/', async(req,res) => {
         } else{
             res.status(404).json({status: "failure"});
         }
-    } catch(e){
-        res.status(500).render('createGameEvent', {error_flag: true, error: e, today: now})
+    } catch (e) {
+        res.status(500).render('createGameEvent', {
+            error_flag: true,
+            error: e,
+            today: now
+        })
     }
 });
 

@@ -15,7 +15,59 @@
     </div>
     <article>
         <div class="welcome-logo">
-            <img src="../../public/img/logo.png">
+            <img src="/public/img/logo.png">
         </div>
     </article>
+    <div class="jumbotron jumbotron-fluid section-divider">
+        <div class="container">
+            <h1>Event List</h1>
+            <p>We have variety of sport events created by various organizers which can be found below</p>
+        </div>
+    </div>
+    <div class="event-maps container">
+        <div class="row">
+            <div class="col-md-5">
+                <ul class="list-group list-group-flush border-bottom scrollarea">
+                    <li class="list-group-item active" aria-current="true">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">Event 1</strong>
+                            <small>April 25, Monday</small>
+                        </div>
+                        <div class="col-10 mb-1 small">
+                            This is event 1
+                        </div>
+                    </li>
+                    <li class="list-group-item" aria-current="true">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">Event 2</strong>
+                            <small>May 04, Wednesday</small>
+                        </div>
+                        <div class="col-10 mb-1 small">
+                            This is event 2
+                        </div>
+                    </li>
+                    <li class="list-group-item" aria-current="true">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">Event 3</strong>
+                            <small>April 21, Thursday</small>
+                        </div>
+                        <div class="col-10 mb-1 small">
+                            This is event 3
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-7">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+            crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
+        <script type="module" src="/public/js/landingPageMaps.js"></script>
+    </div>
 </div>
