@@ -1,5 +1,18 @@
 <div class="welcome">
     <h1>{{title}}</h1>
+    <div class="topnav">
+        <a class="active" href="#home">Home</a>
+        {{#if userDetails}}
+        <a href="/user/logout">logout</a>
+        <a href="#profile">profile</a>
+        <a href="#contact">Contact us</a>
+        {{else}}
+        <a href="/user/login">Login</a>
+        <a href="/user/signup">Signup</a>
+        <a href="#contact">Contact us</a>
+        {{/if}}
+
+    </div>
     <article>
         <div class="welcome-logo">
             <img src="../../public/img/logo.png">
