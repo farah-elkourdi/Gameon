@@ -6,6 +6,7 @@ const gameEvent = data.gameEvent;
 const comments = data.comments;
 const users = data.users;
 const userEvents = data.userEvents;
+const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 /* view the page for an event */
 router.route('/:id')
@@ -35,19 +36,20 @@ router.route('/:id')
     }
     //check if current user is already registered for the event
     let joined = false;
-    if(event.participants.includes(currentUserId)){
+    if(event.participants.map(x =>x.toString()).includes(currentUserId)){
         joined = true;
     }
-
+    console.log(currentUserId);
+    console.log(event.participants.map(x =>x.toString()));
     //gets the organizer object from the userId in event & stores their name.
     const organizer = await users.getUser(event.userId);
     event.organizerName = organizer.firstName + ' ' + organizer.lastName;
     //takes the list of user ids from event.participants and stores their names.
     for(let i =0; i<event.participants.length; i++){
-        const participant = await users.getUser(event.participants[i]);
+        const participant = await users.getUser(event.participants[i].toString());
         let name = participant.firstName + ' ' + participant.lastName;
         let pObject = {
-            id: event.participants[i],
+            id: event.participants[i].toString(),
             name: name,
         };
         event.participants[i] = pObject;

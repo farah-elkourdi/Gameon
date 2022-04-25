@@ -61,7 +61,7 @@ async function create (userId, title, status, sportCategory, description, addres
             minimumParticipants: minimumParticipants,
             maximumParticipants: maximumParticipants,
             currentNumberOfParticipants: 1,
-            participants: [userId]
+            participants: [ObjectId(userId)]
         };
 
         const insert = await gameEventCollection.insertOne(newGameEvent);
