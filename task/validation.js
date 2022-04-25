@@ -91,75 +91,82 @@ module.exports = {
     return num;
   },
 
-  checkMinParticipantLimit (sport, numParticipants, varName){
+  validMinParticipantLimit (sport, numParticipants, varName){
     if(sport === 'Soccer' && numParticipants < min_soccer){
-      throw `${varName} for Soccer must be greater than ${min_soccer}`;
+      false;
     }
     if(sport === 'Football' && numParticipants < min_football){
-      throw `${varName} for Soccer must be greater than ${min_football}`;
+      throw false;
     }
     if(sport === 'Golf' && numParticipants < min_golf){
-      throw `${varName} for Soccer must be greater than ${min_golf}`;
+      throw false;
     }
     if(sport === 'Baseball' && numParticipants < min_baseball){
-      throw `${varName} for Soccer must be greater than ${min_baseball}`;
+      throw false;
     }
     if(sport === 'Basketball' && numParticipants < min_basketball){
-      throw `${varName} for Soccer must be greater than ${min_basketball}`;
+      throw false;
     }
     if(sport === 'Badminton' && numParticipants < min_badminton){
-      throw `${varName} for Soccer must be greater than ${min_badminton}`;
+      throw false;
     }
     if(sport === 'Swimming' && numParticipants < min_swimming){
-      throw `${varName} for Soccer must be greater than ${min_swimming}`;
+      throw false;
     }
     if(sport === 'Archery' && numParticipants < min_archery){
-      throw `${varName} for Soccer must be greater than ${min_archery}`;
+      throw false;
     }
     if(sport === 'Dodgeball' && numParticipants < min_dodgeball){
-      throw `${varName} for Soccer must be greater than ${min_dodgeball}`;
+      throw false;
     }
     if(sport === 'Frisbee' && numParticipants < min_frisbee){
-      throw `${varName} for Soccer must be greater than ${min_frisbee}`;
+      throw false;
     }
     
-    return numParticipants;
+    return true;
   }, 
 
-  checkMaxParticipantLimit(sport, numParticipants, varName){
+  validMaxParticipantLimit(sport, numParticipants, varName){
     if(sport === 'Soccer' && numParticipants > max_soccer){
-      throw `${varName} for Soccer must be less than ${max_soccer}`;
+      false;
     }
     if(sport === 'Football' && numParticipants > max_football){
-      throw `${varName} for Soccer must be less than ${max_football}`;
+      false;
     }
     if(sport === 'Golf' && numParticipants > max_golf){
-      throw `${varName} for Soccer must be less than ${max_golf}`;
+      false;
     }
     if(sport === 'Baseball' && numParticipants > max_baseball){
-      throw `${varName} for Soccer must be less than ${max_baseball}`;
+      false;
     }
     if(sport === 'Basketball' && numParticipants > max_basketball){
-      throw `${varName} for Soccer must be less than ${max_basketball}`;
+      false;
     }
     if(sport === 'Badminton' && numParticipants > max_badminton){
-      throw `${varName} for Soccer must be less than ${max_badminton}`;
+      false;
     }
     if(sport === 'Swimming' && numParticipants > max_swimming){
-      throw `${varName} for Soccer must be less than ${max_swimming}`;
+      false;
     }
     if(sport === 'Archery' && numParticipants > max_archery){
-      throw `${varName} for Soccer must be less than ${max_archery}`;
+      false;
     }
     if(sport === 'Dodgeball' && numParticipants > max_dodgeball){
-      throw `${varName} for Soccer must be less than ${max_dodgeball}`;
+      false;
     }
     if(sport === 'Frisbee' && numParticipants > max_frisbee){
-      throw `${varName} for Soccer must be less than ${max_frisbee}`;
+      false;
     }
-    return numParticipants;
+    return true;
   },
 
+  validNumParticipants (min, max){
+    if(min > max){
+      return false;
+    } else {
+      return true;
+    }
+  },
   
   checkCoordinates(x,y)
   {

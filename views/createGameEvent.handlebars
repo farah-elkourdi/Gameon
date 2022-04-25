@@ -5,7 +5,7 @@
     {{/if}}
     <form action = '/createGameEvent' method = 'POST' id = 'createGameEvent-form'>
         <label for = "title"> Title </label>
-        <input name = 'title' type = 'text' id ='title' placeholder = 'Title'>
+        <input name = 'title' type = 'text' id ='title' placeholder = 'Title' value="{{input.title}}">
         <br>
         <p> Choose a sport <p>
         <br>
@@ -31,24 +31,24 @@
         <input name = 'sportCategory' type = 'radio' id ='frisbee' value = "Frisbee">
         <br>
         <label for = "description"> Description </label>
-        <input name = 'description' type = 'text' id ='description' placeholder = 'Description'>
+        <input name = 'description' type = 'text' id ='description' placeholder = 'Description' value="{{input.description}}">
         <br>
         <label for = "address"> Address </label>
-        <input name = 'address' type = 'text' id ='address' placeholder = 'Address'>
+        <input name = 'address' type = 'text' id ='address' placeholder = 'Address' value="{{input.address}}">
 
 
-        <!-- How do I handle inputs for date/time -->
+        <!-- Need to handle inputs for date/time -->
         <label for = "startTime"> Choose Start Date and Time </label>
-        <input name = 'startTime' type = 'datetime-local' id ='startTime' min = {{today}}>
+        <input name = 'startTime' type = 'datetime-local' id ='startTime' min = {{today}} value="{{input.startTime}}">
 
         <label for = "endTime"> Choose End Date and Time </label>
-        <input name = 'endTime' type = 'datetime-local' id ='endTime' min = {{limit}}>
+        <input name = 'endTime' type = 'datetime-local' id ='endTime' min = {{limit}} value="{{input.endTime}} ">
 
         <label for = "minParticipants"> Minimum number of Participants </label>
-        <input name = 'minParticipants' type = 'number' id ='minParticipants' placeholder = 'Minimum'>
+        <input name = 'minParticipants' type = 'number' id ='minParticipants' placeholder = 'Minimum' value = "{{input.minimumParticipants}}">
 
         <label for = "maxParticipants"> Maximum number of Participants </label>
-        <input name = 'maxParticipants' type = 'number' id ='maxParticipants' placeholder = 'Maximum'>
+        <input name = 'maxParticipants' type = 'number' id ='maxParticipants' placeholder = 'Maximum' value = "{{input.maximumParticipants}}">
 
         <button type = "submit"> Create Event </button>
     </form>

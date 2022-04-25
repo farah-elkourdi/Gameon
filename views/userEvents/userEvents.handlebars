@@ -1,6 +1,40 @@
 <div  class = "outer_container">
     <h1> Your Events </h1>
      <div class = "container">
-            <ul id="events" class = "scrollable_list"></ul>
+            <ul id="events" class = "scrollable_list">
+                {{#each gameEventsList}}
+                <li> 
+                    <div>
+                        <dl>
+                            <dt>Title: </dt>
+                            <dd>{{this.title}}</dd>
+                            <dt>Sport: </dt>
+                            <dd>{{this.sportCategory}}</dd>
+                            <dt>Description: </dt>
+                            <dd>{{this.description}}</dd>
+                            <dt>Address: </dt>
+                            <dd>{{this.address}}</dd>
+                            <dt>Start Time:</dt>
+                            <dd>{{this.startTime}}</dd>
+                            <dt>End Time:</dt>
+                            <dd>{{this.endTime}}</dd>
+                            <dt>Minimum Number of Participants</dt>
+                            <dd>{{this.minimumParticipants}}</dd>
+                            <dt>Maximum Number of Participants</dt>
+                            <dd>{{this.maximumParticipants}}</dd>
+                            <dt>Current Number of Participants</dt>
+                            <dd>{{this.currentNumberOfParticipants}}</dd>
+                        </dl>
+                        <form action = '/userEvents/{{this._id}}' method = 'DELETE' id = 'userEventsDeleteForm'>
+                            <button type = "submit" id="removeButton">Leave</button>
+                        </form>
+                        <form action = '/userEvents' method = 'POST' id = 'userEventsPostForm'>
+                            <button type = "submit" id="editButton"> Edit</button>
+                        </form>
+                    </div>
+                </li>
+                {{/each}}
+            </ul>
+
     </div>
 </div>
