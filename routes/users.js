@@ -3,6 +3,7 @@ const router = express.Router();
 const usersData = require('../data/users');
 const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
+const session = require('express-session');
 
 router.get('/signup', async (req, res) => {
   if (req.session.user) {
@@ -95,12 +96,12 @@ router.post('/Checksignin', async(req, res) => {
     let users = await usersData.checkUser(email, password);
     if (users.authenticated == true) {
       let user = {}
-      user.userID = users.userID;
-      user.userFirstName = users.firstName;
-      user.userLastName = users.lastName;
-      user.email = users.email;
-      user.userArea = users.area;
-      user.userStreet = users.street;
+      user.userID = users.user._id.toString();
+      user.userFirstName = users.user.firstName;
+      user.userLastName = users.user.lastName;
+      user.email = users.user.email;
+      user.userArea = users.user.area;
+      user.userStreet = users.user.street;
       req.session.user = user;
     } 
   }
