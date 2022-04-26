@@ -38,14 +38,31 @@ async function create (userId, title, status, sportCategory, description, addres
         sportCategory = check.checkString(sportCategory, 'sportCategory');
         description = check.checkString(description, 'description');
         address = check.checkString(address, 'address');
-        /* Need to check if valid address */
-        /* Need to check if longitude and latitude are correct*/
+
+        /* NEED to check if valid address */
+       
+        if(!check.checkCoordinates(longitude, latitude)){
+            throw "Error: coordinates are NOT valid"
+        }
+
         startTime = check.checkDate(startTime, 'startTime');
         endTime = check.checkDate(endTime, 'endTime');
+
+        if(!check.areValidTimes(startTime, endTime)){
+            throw "Error: endTime must be at least 1 hour after startTime"
+        }
+
         minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-        minimumParticipants = check.checkMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants');
+        if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
+            throw "Error: minimum participation limit is not valid"
+        }
         maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-        maximumParticipants = check.checkMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants');
+        if(check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
+            throw "Error: maximum participation limit is not valid"
+        }
+        if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
+            throw "Error: minimum participants is greater than maximum participants"
+        }
 
         const gameEventCollection = await gameEvents();
 
