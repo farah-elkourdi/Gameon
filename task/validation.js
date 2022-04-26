@@ -168,7 +168,7 @@ module.exports = {
     }
   },
   
-  
+
   checkCoordinates(x,y)
   {
     if(!isNaN(parseFloat(x)) && !isNaN(parseFloat(y)) ) 

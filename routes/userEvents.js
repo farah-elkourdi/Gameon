@@ -90,7 +90,8 @@ router.post('/:id', async(req,res) => {
         } = editGameEventData;
         const gameEvent = await data.userEvents.update(userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, latitude,
             longitude, startTime, endTime, minimumParticipants, maximumParticipants);
-        /* render the individual game page */
+
+        /* rerender userEvents Page with updated data */
         if (gameEvent.gameEventUpdated) {
             res.status(200).json({
                 status: "success"
@@ -111,19 +112,20 @@ router.post('/:id', async(req,res) => {
 });
 
 router.delete('/:id', async(req,res) =>{
+    let gameEventId = req.params.id;
+    let userId = req.session.user.userID;
+
     try{
-        let gameEventId = req.params.id;
         gameEventId = check.checkId(gameEventId);
-        await data.gameEvent.getGameEvent(gameEventId);
+        userId = check.checkId(userId);
+        let gameEvents = await data.userEvents.getAllGameEvents(userId);
     } catch (e){
-        res.status(404).render('userEvents/userEvents', {errorFlagOneEvent: true, error: e})
+        return res.status(400).render('userEvents/userEvents', {errorFlagOneEvent: true, errorOneEvent: e, gameEventsList: gameEvents});
     }
 
     try{   
-        let result = await data.userEvents.remove(userId, req.params.id);
-        if(result.userRemoved){
-            res.status(200).render('userEvents/userEvents', {errorFlagOneEvent: false, gameEventsList: gameEvents});
-        } 
+        let gameEvents = await data.userEvents.remove(userId, gameEventId);
+        res.status(200).render('userEvents/userEvents', {errorFlagOneEvent: false, gameEventsList: gameEvents});
     } catch (e){
         res.status(500).render('userEvents/userEvents', {errorFlagOneEvent: true, errorOneEvent: e, gameEventsList: gameEvents});
     }

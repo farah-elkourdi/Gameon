@@ -42,7 +42,7 @@ async function remove(userId, gameEventId){
     if(updated_info.modifiedCount === 0){
         throw "Error: failed to remove user from gameEvent."
     }
-    return {userRemoved: true};                    
+    return await getAllGameEvents(userId);                    
 } 
 
 /* update a gameEvent */

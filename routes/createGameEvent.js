@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
 const geocode = require('../public/js/geocode');
+const task =  require('../task/manipulate');
 
 // Global variable createGameEventData
 var createGameEventData;
@@ -28,16 +29,18 @@ router.get('/', async (req, res) => {
         return res.redirect('/');
     }
     let now = new Date();
+    let datetimelocalNow = task.toDateTimeLocal(now);
     let end = now.setHours(now.getHours() + 1);
+    let datetimelocalminEnd = task.toDateTimeLocal(end);
     res.render('createGameEvent', {
         error_flag: false,
-        today: now,
-        limit: end
+        minStart: datetimelocalNow
     });
 });
 
 router.post('/', async (req, res) => {
     let now = new Date();
+    let datetimelocalNow = task.toDateTimeLocal(now);
     createGameEventData = req.body;
     let userId = req.session.user.userID;
     try {
@@ -61,8 +64,8 @@ router.post('/', async (req, res) => {
         return res.status(400).render('createGameEvent', {
             error_flag: true,
             error: e,
-            today: now, 
-            input: createGameEventData
+            minStart: now, 
+            minEnd: createGameEventData
         })
     }
 
@@ -96,7 +99,7 @@ router.post('/', async (req, res) => {
         res.status(500).render('createGameEvent', {
             error_flag: true,
             error: e,
-            today: now, 
+            minStart: datetimelocalNow, 
             input: createGameEventData
         })
     }
