@@ -24,8 +24,7 @@ Run the application using the following command:
 | `/config`      | This directory contains database configuration files                                                                              |
 | `/data`        | This directory contains the database operations                                                                                  |
 | `/routes`      | This directory contains all the routes for the website                                               |                                                                                                                                                                   |
-| `/views`       | This directory contains the handlebar files
-| `/middlewares` | This directory contains all the middleware logic for the website                                       |      
+| `/views`       | This directory contains the handlebar files   
 | `/public` | This directory contains CSS files, JS files and images                                      |      
 | `/task` | This directory contains the validation file                                  |      
 
