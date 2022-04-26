@@ -140,34 +140,34 @@ module.exports = {
 
   validMinParticipantLimit (sport, numParticipants, varName){
     if(sport === 'Soccer' && numParticipants < min_soccer){
-      false;
+      return false;
     }
     if(sport === 'Football' && numParticipants < min_football){
-      throw false;
+      return false;
     }
     if(sport === 'Golf' && numParticipants < min_golf){
-      throw false;
+      return false;
     }
     if(sport === 'Baseball' && numParticipants < min_baseball){
-      throw false;
+      return false;
     }
     if(sport === 'Basketball' && numParticipants < min_basketball){
-      throw false;
+      return false;
     }
     if(sport === 'Badminton' && numParticipants < min_badminton){
-      throw false;
+      return false;
     }
     if(sport === 'Swimming' && numParticipants < min_swimming){
-      throw false;
+      return false;
     }
     if(sport === 'Archery' && numParticipants < min_archery){
-      throw false;
+      return false;
     }
     if(sport === 'Dodgeball' && numParticipants < min_dodgeball){
-      throw false;
+      return false;
     }
     if(sport === 'Frisbee' && numParticipants < min_frisbee){
-      throw false;
+      return false;
     }
     
     return true;
@@ -175,34 +175,34 @@ module.exports = {
 
   validMaxParticipantLimit(sport, numParticipants, varName){
     if(sport === 'Soccer' && numParticipants > max_soccer){
-      false;
+      return false;
     }
     if(sport === 'Football' && numParticipants > max_football){
-      false;
+      return false;
     }
     if(sport === 'Golf' && numParticipants > max_golf){
-      false;
+      return false;
     }
     if(sport === 'Baseball' && numParticipants > max_baseball){
-      false;
+      return false;
     }
     if(sport === 'Basketball' && numParticipants > max_basketball){
-      false;
+      return false;
     }
     if(sport === 'Badminton' && numParticipants > max_badminton){
-      false;
+      return false;
     }
     if(sport === 'Swimming' && numParticipants > max_swimming){
-      false;
+      return false;
     }
     if(sport === 'Archery' && numParticipants > max_archery){
-      false;
+      return false;
     }
     if(sport === 'Dodgeball' && numParticipants > max_dodgeball){
-      false;
+      return false;
     }
     if(sport === 'Frisbee' && numParticipants > max_frisbee){
-      false;
+      return false;
     }
     return true;
   },
