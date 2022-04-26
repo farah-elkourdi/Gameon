@@ -15,7 +15,9 @@ function validateAddress(addressGeocode) {
         return res.status(400).render('createGameEvent', {
             error_flag: true,
             error: `Please enter a valid US address`,
-            today: now
+            input: createGameEventData, 
+            minStartDate: nowStrDate, 
+            minStartTime: startStrTimeMin
         })
     }
     createGameEventData.address = addressResult.display_name;
@@ -24,49 +26,67 @@ function validateAddress(addressGeocode) {
 }
 
 router.get('/', async (req, res) => {
+    if(!req.session.user){
+        return res.redirect('/');
+    }
     let now = new Date();
-    let end = now.setHours(now.getHours() + 1);
+    let nowStrDate =  new Date().toLocaleDateString('en-CA');
+
+    let startStrTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
     res.render('createGameEvent', {
         error_flag: false,
-        today: now,
-        limit: end
+        minStartDate: nowStrDate, 
+        minStartTime: startStrTimeMin
     });
 });
 
 router.post('/', async (req, res) => {
     let now = new Date();
+    let nowStrDate =  new Date().toLocaleDateString('en-CA');
+ 
+    let startStrTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     createGameEventData = req.body;
+    let userId = req.session.user.userID;
+
     try {
+        userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
-        /* How would we get coordinator userId? From the session. */
-        // userId = check.checkId(userId);
-        //createGameEventData.status = check.checkString(createGameEventData.status, 'status');
+        createGameEventData.status = "Upcoming";
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
-        createGameEventData.address = check.checkString(createGameEventData.address, 'address');
-        /* Need to check if valid address */
-        /* Need to check if longitude and latitude are correct */
+        createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
+        s
+        createGameEventData.date = check.checkString(createGameEventData.date, 'date');        
+        createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
+        createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
+        createGameEventData.startTime = check.convertStringToDate(createGameEventData.date, createGameEventData.startTime);
+       
+        createGameEventData.endTime = check.convertStringToDate(createGameEventData.date, createGameEventData.endTime);
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
+
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
-        createGameEventData.minimumParticipants = check.checkMinParticipantLimit(createGameEventData.sportCategory, createGameEventData.minimumParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-        createGameEventData.maximumParticipants = check.checkMaxParticipantLimit(createGameEventData.sportCategory, createGameEventData.maximumParticipants, 'maximumParticipants');
+     
 
         //Validating address using callback
         await geocode.validate(createGameEventData.address, validateAddress);
+
+        /* HOW should we validate/check longitude and latitude here in routes?*/
 
     } catch (e) {
         return res.status(400).render('createGameEvent', {
             error_flag: true,
             error: e,
-            today: now
+            input: createGameEventData,
+            minStartDate: nowStrDate, 
+            minStartTime: startStrTimeMin
         })
     }
 
     try {
         const {
-            userId,
             title,
             status,
             sportCategory,
@@ -95,7 +115,9 @@ router.post('/', async (req, res) => {
         res.status(500).render('createGameEvent', {
             error_flag: true,
             error: e,
-            today: now
+            input: createGameEventData, 
+            minStartDate: nowStrDate, 
+            minStartTime: startStrTimeMin
         })
     }
 });

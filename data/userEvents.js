@@ -11,8 +11,8 @@ async function getAllGameEvents (userId){
     const gameEventCollection = await gameEvents();
     const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)}).toArray();
 
-    if(gameEventList.length === 0){
-        throw "Error: No gameEvents found for user."
+    if(gameEventList.length == 0){
+        throw "No game events found."
     }
 
     gameEventList.forEach( (gameEvent) => {
@@ -42,8 +42,8 @@ async function remove(userId, gameEventId){
     if(updated_info.modifiedCount === 0){
         throw "Error: failed to remove user from gameEvent."
     }
-    return {userRemoved: true};                    
-} 
+    return await getAllGameEvents(userId);                    
+}
 
 /* update a gameEvent */
 async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, 
@@ -63,14 +63,33 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
     address = check.checkString(address, 'address');
-    /* Need to check if valid address */
-    /* Need to check if longitude and latitude are correct*/
+
+    /* NEED to check if valid address */
+
+    if(!check.checkCoordinates(longitude, latitude)){
+        throw "Error: coordinates are NOT valid"
+    }
+
+
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
+
+    if(!check.areValidTimes(startTime, endTime)){
+        throw "Error: endTime must be at least 1 hour after startTime"
+    }
+
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    minimumParticipants = check.checkMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants');
+    if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
+        throw "Error: minimum participation limit is not valid"
+    }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    maximumParticipants = check.checkMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants');
+    if(check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
+        throw "Error: maximum participation limit is not valid"
+    }
+
+    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
+        throw "Error: minimum participants is greater than maximum participants"
+    }
 
     let updatedGameEvent = {
         userId: eventCoordinator, 
