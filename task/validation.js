@@ -68,7 +68,7 @@ module.exports = {
     return arr;
   },
 
-  /* we might nee further input checking for Date*/
+  /* we might need further input checking for Date*/
   checkDate(date, varName){
     if(!date){
       throw `Error: you must supply a ${varName}`
@@ -167,6 +167,7 @@ module.exports = {
       return true;
     }
   },
+  
   
   checkCoordinates(x,y)
   {

@@ -1,10 +1,17 @@
 <div  class = "outer_container">
     <h1> Your Events </h1>
      <div class = "container">
+          {{#if errorFlagAllEvents}}
+            <div id="errorDivUserEvents"> {{errorAllEvents}}</div>
+          {{/if}}
+            <div id></div>
             <ul id="events" class = "scrollable_list">
                 {{#each gameEventsList}}
-                <li> 
+                <li id="event"> 
                     <div>
+                        {{#if errorFlagOneEvent}}
+                        <div id="errorDivUserEventEdit"> {{errorOneEvent}}</div>
+                        {{/if}}
                         <dl>
                             <dt>Title: </dt>
                             <dd>{{this.title}}</dd>
@@ -28,7 +35,7 @@
                         <form action = '/userEvents/{{this._id}}' method = 'DELETE' id = 'userEventsDeleteForm'>
                             <button type = "submit" id="removeButton">Leave</button>
                         </form>
-                        <form action = '/userEvents' method = 'POST' id = 'userEventsPostForm'>
+                        <form action = '/userEvents/{{this._id}}' method = 'POST' id = 'userEventsPostForm'>
                             <button type = "submit" id="editButton"> Edit</button>
                         </form>
                     </div>

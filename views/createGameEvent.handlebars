@@ -1,7 +1,7 @@
 <div>
     <h1> Create Event </h1>
     {{#if error_flag}}
-    <div>{{error}}</div>
+    <div id="errorDivCreateGameEvent">{{error}}</div>
     {{/if}}
     <form action = '/createGameEvent' method = 'POST' id = 'createGameEvent-form'>
         <label for = "title"> Title </label>

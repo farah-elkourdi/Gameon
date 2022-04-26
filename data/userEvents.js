@@ -65,7 +65,10 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     address = check.checkString(address, 'address');
 
     /* NEED to check if valid address */
-    /* NEED to get longiude and latitude and insert it into database*/
+
+    if(!check.checkCoordinates(longitude, latitude)){
+        throw "Error: coordinates are NOT valid"
+    }
 
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');

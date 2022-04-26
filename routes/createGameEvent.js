@@ -25,7 +25,7 @@ function validateAddress(addressGeocode) {
 
 router.get('/', async (req, res) => {
     if(!req.session.user){
-        res.redirect('/');
+        return res.redirect('/');
     }
     let now = new Date();
     let end = now.setHours(now.getHours() + 1);
@@ -54,6 +54,8 @@ router.post('/', async (req, res) => {
 
         //Validating address using callback
         await geocode.validate(createGameEventData.address, validateAddress);
+
+        /* HOW should we validate/check longitude and latitude here in routes?*/
 
     } catch (e) {
         return res.status(400).render('createGameEvent', {
