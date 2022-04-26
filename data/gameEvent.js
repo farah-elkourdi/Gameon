@@ -48,6 +48,10 @@ async function create (userId, title, status, sportCategory, description, addres
         startTime = check.checkDate(startTime, 'startTime');
         endTime = check.checkDate(endTime, 'endTime');
 
+        if(!check.areValidTimes(startTime, endTime)){
+            throw "Error: endTime must be at least 1 hour after startTime"
+        }
+
         minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
         if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
             throw "Error: minimum participation limit is not valid"

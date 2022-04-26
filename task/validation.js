@@ -68,16 +68,63 @@ module.exports = {
     return arr;
   },
 
-  /* we might need further input checking for Date*/
+  /* checks if date string is in valid format yyyy-mm-dd */
+  dateIsValid(dateStr) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+  
+    if (dateStr.match(regex) === null) {
+      return false;
+    }
+  
+    const date = new Date(dateStr);
+  
+    const timestamp = date.getTime();
+  
+    if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+      return false;
+    }
+  
+    return date.toISOString().startsWith(dateStr);
+  },
+
+  checkTime(timeStr, varName){
+    if (!timeStr) throw `Error: You must supply a ${varName}!`;
+    if (typeof timeStr !== 'string') throw `Error: ${varName} must be a string!`;
+    timeStr = timeStr.trim();
+    if (timeStr.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    let isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(timeStr);
+    if(!isValid){
+      throw `Error: ${varName} is not Valid`;
+    }
+    return timeStr;
+  }, 
+
+  convertStringToDate(date, time){
+    let s = `${date}T${time}:00`;
+    let result = new Date(s);
+    return result;
+  },
+
   checkDate(date, varName){
     if(!date){
-      throw `Error: you must supply a ${varName}`
-    }
-    if(!date instanceof Date){
-      throw `Error: ${varName} is not a Date object`
-    }
+      throw `Error: you must supply a ${varName}`;
+    } else if(!date instanceof Date ){
+      throw `Error: ${varName} is not of type Date`;
+    } 
     return date;
   },
+
+  areValidTimes(startTime, endTime){
+    let temp = startTime;
+    temp.setHours(startTime.getHours() + 1);
+    if(endTime <= startTime){
+      return false;
+    } else if (endTime < temp){
+      return false;
+    }
+    return true;
+  }, 
 
   checkNum (num, varName){
     if(!num){

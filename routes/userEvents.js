@@ -54,9 +54,10 @@ router.post('/:id', async(req,res) => {
         editGameEventData.status = check.checkString(editGameEventData.status, 'status');
         editGameEventData.sportCategory = check.checkString(editGameEventData.sportCategory, 'sportCategory');
         editGameEventData.description = check.checkString(editGameEventData.description, 'description');
-        editGameEventData.address = check.checkString(editGameEventData.address, 'address');        
-        editGameEventData.startTime = check.checkDate(editGameEventData.startTime, 'startTime');
-        editGameEventData.endTime = check.checkDate(editGameEventData.endTime, 'endTime');
+        editGameEventData.address = check.checkString(editGameEventData.address, 'address');   
+        createGameEventData.date = check.checkString(editGameEventData.date, 'date');       
+        editGameEventData.startTime = check.checkString(editGameEventData.startTime, 'startTime');
+        editGameEventData.endTime = check.checkString(editGameEventData.endTime, 'endTime');
         editGameEventData.minimumParticipants = check.checkNum(editGameEventData.minParticipants, 'minimumParticipants');
         editGameEventData.maximumParticipants = check.checkNum(editGameEventData.maxParticipants, 'maximumParticipants');
 

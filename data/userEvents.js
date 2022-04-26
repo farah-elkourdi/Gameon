@@ -43,7 +43,7 @@ async function remove(userId, gameEventId){
         throw "Error: failed to remove user from gameEvent."
     }
     return await getAllGameEvents(userId);                    
-} 
+}
 
 /* update a gameEvent */
 async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, 
@@ -70,8 +70,13 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
         throw "Error: coordinates are NOT valid"
     }
 
+
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
+
+    if(!check.areValidTimes(startTime, endTime)){
+        throw "Error: endTime must be at least 1 hour after startTime"
+    }
 
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
     if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){

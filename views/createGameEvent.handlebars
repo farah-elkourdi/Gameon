@@ -36,13 +36,14 @@
         <label for = "address"> Address </label>
         <input name = 'address' type = 'text' id ='address' placeholder = 'Address' value="{{input.address}}">
 
+        <label for = "date"> Choose Date of the Event </label>
+        <input name = 'date' type = 'date' id ='date' min = "{{minStartDate}}" value="{{input.date}}">
 
-        <!-- Need to handle inputs for date/time -->
-        <label for = "startTime"> Choose Start Date and Time </label>
-        <input name = 'startTime' type = 'datetime-local' id ='startTime' min = "{{today}}" value="{{input.startTime}}">
+        <label for = "startTime"> Choose Start Time </label>
+        <input name = 'startTime' type = 'time' id ='startTime' min = "{{minStartTime}}" value="{{input.startTime}}">
 
-        <label for = "endTime"> Choose End Date and Time </label>
-        <input name = 'endTime' type = 'datetime-local' id ='endTime' min = "{{today}}" max = "{{limit}}" value="{{input.endTime}} ">
+        <label for = "endTime"> Choose End Time </label>
+        <input name = 'endTime' type = 'time' id ='endTime' min = "{{minStartTime}}" value="{{input.endTime}}">
 
         <label for = "minParticipants"> Minimum number of Participants </label>
         <input name = 'minParticipants' type = 'number' id ='minParticipants' placeholder = 'Minimum' value = "{{input.minimumParticipants}}">
