@@ -17,8 +17,7 @@ function validateAddress(addressGeocode) {
             error: `Please enter a valid US address`,
             input: createGameEventData, 
             minStartDate: nowStrDate, 
-            minStartTime: startStrTimeMin, 
-            minEndTime: endStrTimeMin
+            minStartTime: startStrTimeMin
         })
     }
     createGameEventData.address = addressResult.display_name;
