@@ -118,9 +118,7 @@ module.exports = {
   areValidTimes(startTime, endTime){
     let temp = startTime;
     temp.setHours(startTime.getHours() + 1);
-    if(endTime <= startTime){
-      return false;
-    } else if (endTime < temp){
+    if (endTime < temp){
       return false;
     }
     return true;
@@ -138,7 +136,7 @@ module.exports = {
     return num;
   },
 
-  validMinParticipantLimit (sport, numParticipants, varName){
+  validMinParticipantLimit (sport, numParticipants){
     if(sport === 'Soccer' && numParticipants < min_soccer){
       return false;
     }
@@ -173,7 +171,7 @@ module.exports = {
     return true;
   }, 
 
-  validMaxParticipantLimit(sport, numParticipants, varName){
+  validMaxParticipantLimit(sport, numParticipants){
     if(sport === 'Soccer' && numParticipants > max_soccer){
       return false;
     }

@@ -28,7 +28,7 @@ async function getGameEvent(id){
  */
 
 /*create a gameEvent and insert it into the database*/
-async function create (userId, title, status, sportCategory, description, address, 
+async function create (userId, title, status, sportCategory, description, area, address, 
             latitude, longitude, startTime, endTime, minimumParticipants, 
             maximumParticipants){
 
@@ -37,6 +37,7 @@ async function create (userId, title, status, sportCategory, description, addres
         status = check.checkString(status, 'status');
         sportCategory = check.checkString(sportCategory, 'sportCategory');
         description = check.checkString(description, 'description');
+        area = check.checkString(area, 'area');
         address = check.checkString(address, 'address');
 
         /* NEED to check if valid address */
@@ -53,11 +54,11 @@ async function create (userId, title, status, sportCategory, description, addres
         }
 
         minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-        if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
+        if(!check.validMinParticipantLimit(sportCategory, minimumParticipants)){
             throw "Error: minimum participation limit is not valid"
         }
         maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-        if(check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
+        if(!check.validMaxParticipantLimit(sportCategory, maximumParticipants)){
             throw "Error: maximum participation limit is not valid"
         }
         if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
@@ -72,6 +73,7 @@ async function create (userId, title, status, sportCategory, description, addres
             status: status,
             sportCategory: sportCategory,
             description: description,
+            area: area,
             address: address,
             latitude: latitude,
             longitude: longitude,

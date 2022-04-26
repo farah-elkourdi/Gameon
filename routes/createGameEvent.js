@@ -12,12 +12,12 @@ router.get('/', async (req, res) => {
     }
     let now = new Date();
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
+    let startTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
 
-    let startStrTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
     res.render('createGameEvent', {
         error_flag: false,
         minStartDate: nowStrDate, 
-        minStartTime: startStrTimeMin
+        minStartTime: startTimeMin
     });
 });
 
@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
     let now = new Date();
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
  
-    let startStrTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let startTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     createGameEventData = req.body;
     let userId = req.session.user.userID;
@@ -38,6 +38,7 @@ router.post('/', async (req, res) => {
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
         createGameEventData.area = check.checkString(createGameEventData.area, 'area');
+
         createGameEventData.latitude = createGameEventData.latitude;
         createGameEventData.longitude = createGameEventData.longitude;
 
@@ -61,7 +62,7 @@ router.post('/', async (req, res) => {
             error: e,
             input: createGameEventData,
             minStartDate: nowStrDate, 
-            minStartTime: startStrTimeMin
+            minStartTime: startTimeMin
         })
     }
 
@@ -71,6 +72,7 @@ router.post('/', async (req, res) => {
             status,
             sportCategory,
             description,
+            area,
             address,
             latitude,
             longitude,
@@ -79,7 +81,7 @@ router.post('/', async (req, res) => {
             minimumParticipants,
             maximumParticipants
         } = createGameEventData;
-        const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, address, latitude,
+        const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, area, address, latitude,
             longitude, startTime, endTime, minimumParticipants, maximumParticipants);
         /* render the individual game page */
         if (gameEvent.gameEventCreated) {
@@ -97,7 +99,7 @@ router.post('/', async (req, res) => {
             error: e,
             input: createGameEventData, 
             minStartDate: nowStrDate, 
-            minStartTime: startStrTimeMin
+            minStartTime: startTimeMin
         })
     }
 });
