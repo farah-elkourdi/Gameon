@@ -21,8 +21,8 @@ async function eventList(){
             'address': value['address'],
             'startTime': value['startTime'],
             'endTime': value['endTime'],
-            'minimumParticipants': value['minimumParticipants'],
-            'minimumParticipants': value['minimumParticipants'],
+            // 'minimumParticipants': value['minimumParticipants'],
+            // 'minimumParticipants': value['minimumParticipants'],
         });
     });
     return gameList;
