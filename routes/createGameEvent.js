@@ -2,28 +2,9 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
-const geocode = require('../public/js/geocode');
 
 // Global variable createGameEventData
 var createGameEventData;
-
-// Function to validate address and fetch lat and long
-
-function validateAddress(addressGeocode) {
-    let addressResult = addressGeocode;
-    if (addressResult.address.country_code !== 'us') {
-        return res.status(400).render('createGameEvent', {
-            error_flag: true,
-            error: `Please enter a valid US address`,
-            input: createGameEventData, 
-            minStartDate: nowStrDate, 
-            minStartTime: startStrTimeMin
-        })
-    }
-    createGameEventData.address = addressResult.display_name;
-    createGameEventData.latitude = addressResult.lat;
-    createGameEventData.longitude = addressResult.lon;
-}
 
 router.get('/', async (req, res) => {
     if(!req.session.user){
@@ -56,7 +37,10 @@ router.post('/', async (req, res) => {
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
-        s
+        createGameEventData.area = check.checkString(createGameEventData.area, 'area');
+        createGameEventData.latitude = createGameEventData.latitude;
+        createGameEventData.longitude = createGameEventData.longitude;
+
         createGameEventData.date = check.checkString(createGameEventData.date, 'date');        
         createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
@@ -70,11 +54,7 @@ router.post('/', async (req, res) => {
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
      
 
-        //Validating address using callback
-        await geocode.validate(createGameEventData.address, validateAddress);
-
-        /* HOW should we validate/check longitude and latitude here in routes?*/
-
+        
     } catch (e) {
         return res.status(400).render('createGameEvent', {
             error_flag: true,

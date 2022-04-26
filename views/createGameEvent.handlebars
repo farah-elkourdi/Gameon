@@ -1,56 +1,179 @@
-<div>
+<div class="container">
     <h1> Create Event </h1>
     {{#if error_flag}}
     <div id="errorDivCreateGameEvent">{{error}}</div>
     {{/if}}
-    <form action = '/createGameEvent' method = 'POST' id = 'createGameEvent-form'>
-        <label for = "title"> Title </label>
-        <input name = 'title' type = 'text' id ='title' placeholder = 'Title' value="{{input.title}}">
-        <br>
-        <p> Choose a sport <p>
-        <br>
-        <label for = "soccer"> Soccer </label>
-        <input name = 'sportCategory' type = 'radio' id ='soccer' value = "Soccer">
-        <label for = "football"> Football </label>
-        <input name = 'sportCategory' type = 'radio' id ='football' value = "Football">
-        <label for = "golf"> Golf </label>
-        <input name = 'sportCategory' type = 'radio' id ='golf' value = "Golf">
-        <label for = "baseball"> Baseball </label>
-        <input name = 'sportCategory' type = 'radio' id ='baseball' value = "Baseball">
-        <label for = "basketball"> Basketball </label>
-        <input name = 'sportCategory' type = 'radio' id ='basketball' value = "Basketball">
-        <label for = "badminton"> Badminton </label>
-        <input name = 'sportCategory' type = 'radio' id ='badminton' value = "Badminton">
-        <label for = "swimming"> Swimming </label>
-        <input name = 'sportCategory' type = 'radio' id ='swimming' value = "Swimming">
-        <label for = "archery"> Archery </label>
-        <input name = 'sportCategory' type = 'radio' id ='archery' value = "Archery">
-        <label for = "dodgeball"> Dodgeball </label>
-        <input name = 'sportCategory' type = 'radio' id ='dodgeball' value = "Dodgeball">
-        <label for = "frisbee"> Frisbee </label>
-        <input name = 'sportCategory' type = 'radio' id ='frisbee' value = "Frisbee">
-        <br>
-        <label for = "description"> Description </label>
-        <input name = 'description' type = 'text' id ='description' placeholder = 'Description' value="{{input.description}}">
-        <br>
-        <label for = "address"> Address </label>
-        <input name = 'address' type = 'text' id ='address' placeholder = 'Address' value="{{input.address}}">
-
-        <label for = "date"> Choose Date of the Event </label>
-        <input name = 'date' type = 'date' id ='date' min = "{{minStartDate}}" value="{{input.date}}">
-
-        <label for = "startTime"> Choose Start Time </label>
-        <input name = 'startTime' type = 'time' id ='startTime' min = "{{minStartTime}}" value="{{input.startTime}}">
-
-        <label for = "endTime"> Choose End Time </label>
-        <input name = 'endTime' type = 'time' id ='endTime' min = "{{minStartTime}}" value="{{input.endTime}}">
-
-        <label for = "minParticipants"> Minimum number of Participants </label>
-        <input name = 'minParticipants' type = 'number' id ='minParticipants' placeholder = 'Minimum' value = "{{input.minimumParticipants}}">
-
-        <label for = "maxParticipants"> Maximum number of Participants </label>
-        <input name = 'maxParticipants' type = 'number' id ='maxParticipants' placeholder = 'Maximum' value = "{{input.maximumParticipants}}">
-
-        <button type = "submit"> Create Event </button>
+    <form class="form-horizontal" action='/createGameEvent' method='POST' id='createGameEvent-form'>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="title">Title:</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="title" placeholder="Enter title" name="title"
+                    value="{{input.title}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="sportCategory">Sport:</label>
+            <div class="col-sm-5">
+                <select class="form-control" id="sportCategory" name="sportCategory">
+                    <option value="none" selected disabled hidden>Choose a sport</option>
+                    <option value="soccer">Soccer</option>
+                    <option value="football">Football</option>
+                    <option value="golf">Golf</option>
+                    <option value="baseball">Baseball</option>
+                    <option value="basketball">Basketball</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="swimming">Swimming</option>
+                    <option value="archery">Archery</option>
+                    <option value="dodgeball">Dodgeball</option>
+                    <option value="frisbee">Frisbee</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="description">Description:</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" id="description" placeholder="Enter description" name="description"
+                    value="{{input.description}}"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="address">Address:</label>
+            <div class="col-sm-2">
+                <select class="form-control" name="area" id="area">
+                    <option value="none" selected disabled hidden>Choose your area</option>
+                    <option value="hoboken">Hoboken</option>
+                    <option value="jersey city">Jersey City</option>
+                    <option value="kearny">Kearny</option>
+                    <option value="union city">Union City</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
+                    value="{{input.address}}">
+            </div>
+        </div>
+        <div class="event-maps row">
+            <div class="col-md-2">
+                <label hidden for="latitude">latitude</label>
+                <input hidden type="text" id="latitude" name="latitude" value="{{latitude}}">
+                <label hidden for="longitude">longitude</label>
+                <input hidden type="text" id="longitude" name="longitude" value="{{longitude}}">
+                {{!-- <div hidden id="latitude" name="latitude" value="{{latitude}}"></div>
+                <div hidden id="longitude" name="longitude" value="{{longitude}}"></div> --}}
+            </div>
+            <div class="col-md-7">
+                <div id="map"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="date">Date of the Event:</label>
+            <div class="col-sm-3">
+                <input type="date" class="form-control" id="date" name="date" min="{{minStartDate}}"
+                    value="{{input.date}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="startTime">Event Start Time:</label>
+            <div class="col-sm-3">
+                <input type="time" class="form-control" id="startTime" name="startTime" min="{{minStartTime}}"
+                    value="{{input.startTime}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="endTime">Event End Time:</label>
+            <div class="col-sm-3">
+                <input type="time" class="form-control" id="endTime" name="endTime" min="{{minStartTime}}"
+                    value="{{input.endTime}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="minParticipants">Minimum number of Participants:</label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="minParticipants" name="minParticipants"
+                    placeholder='Minimum' value="{{input.minimumParticipants}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="maxParticipants">Maximum number of Participants:</label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"
+                    placeholder='Maximum' value="{{input.maximumParticipants}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Create Event</button>
+            </div>
+        </div>
     </form>
 </div>
+
+{{!-- Script section --}}
+<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<script>
+    var element = document.getElementById('map');
+    var map = L.map(element);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    var target = L.latLng('40.7447411', '-74.0464602');
+    map.setView(target, 15);
+</script>
+
+<script>
+    var theMarker = {};
+    //$('#street').on("keyup", function () {
+    $('#address').on("keydown , keyup , change", function () {
+        loadmap();
+    });
+    $("#area").change(function (e) {
+        loadmap();
+    });
+
+    function loadmap() {
+        var street = $('#address').val();
+        var area = $('#area').val();
+        var requestConfig = {
+            method: 'POST',
+            url: '/user/map',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                street: street,
+                area: area
+            }),
+            cache: false
+        };
+
+        $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.message != "Error") {
+                    if (street.trim() == "") {
+                        if (theMarker != undefined) {
+                            map.removeLayer(theMarker);
+                        };
+                    } else {
+                        if (theMarker != undefined) {
+                            map.removeLayer(theMarker);
+                        };
+                        var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
+                        map.setView(target, 14);
+                        theMarker = L.marker(target).addTo(map);
+                        $('#labelStreet').attr('lat', responseMessage.message.lat);
+                        $('#labelStreet').attr('lon', responseMessage.message.lon);
+                        document.getElementById("latitude").value = responseMessage.message.lat;
+                        document.getElementById("longitude").value = responseMessage.message.lon;
+                    }
+                } else {
+                    if (theMarker != undefined) {
+                        map.removeLayer(theMarker);
+                    };
+                }
+
+            })
+            .catch(function (response) {
+                if (theMarker != undefined) {
+                    map.removeLayer(theMarker);
+                };
+            });
+    }
+</script>
