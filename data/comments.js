@@ -4,7 +4,8 @@ const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 
 /* Find comments associated with the given event id*/
-async function getCommentsForEvent(eventId){
+module.exports = {
+async getCommentsForEvent(eventId){
     if(arguments.length != 1){ throw "getCommentsForEvent : pass one argument."};
     if(!eventId) throw "getCommentsForEvent: must pass eventId";
     let ID = check.checkId(eventId);
@@ -21,8 +22,33 @@ async function getCommentsForEvent(eventId){
         eventComments[i].name = poster.firstName + ' ' + poster.lastName;
     }
     return eventComments;
-}
+},
+async postComment(userId, gameEventId, comment, timestamp){
+    /* input checking */
+    if(arguments.length != 4) throw "postComment: pass 4 arguments.";
+    if(!userId) throw "postComment: pass userId.";
+    if(!gameEventId) throw "postComment: pass gameEventId.";
+    if(!comment) throw "postComment: pass comment.";
+    if(!timestamp) throw "postComment: pass timestamp.";
+    userId = check.checkId(userId);
+    gameEventId = check.checkId(gameEventId);
+    comment = check.checkString(comment, 'comment');
+    timestamp = check.checkDate(timestamp, 'timestamp');
 
-module.exports = {
-    getCommentsForEvent
+    const commentCollection = await comment();
+
+    let newComment = {
+        userId : userId,
+        gameEventId : gameEventId,
+        comment : comment,
+        timestamp : timestamp
+    };
+
+    const insert = await commentCollection.insertOne(newComment);
+    if(!insert.acknowledged || !insert.insertedId){
+        throw "Error: could not post comment";
+    }
+    newComment._id = insert.insertedId;
+    return newComment;
 }
+};

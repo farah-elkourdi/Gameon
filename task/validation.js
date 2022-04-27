@@ -68,7 +68,8 @@ module.exports = {
     return arr;
   },
 
-  /* we might nee further input checking for Date*/
+  /* we might nee further input checking for Date*/ 
+  /* if we do, can we do it in another function, having a simple checkData can be useful */
   checkDate(date, varName){
     if(!date){
       throw `Error: you must supply a ${varName}`
