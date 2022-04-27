@@ -37,12 +37,15 @@ router.post('/', async (req, res) => {
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
+
         createGameEventData.area = check.checkString(createGameEventData.area, 'area');
 
         createGameEventData.latitude = createGameEventData.latitude;
         createGameEventData.longitude = createGameEventData.longitude;
 
-        createGameEventData.date = check.checkString(createGameEventData.date, 'date');        
+
+        createGameEventData.date = check.checkString(createGameEventData.date, 'date');     
+        createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');   
         createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
         createGameEventData.startTime = check.convertStringToDate(createGameEventData.date, createGameEventData.startTime);

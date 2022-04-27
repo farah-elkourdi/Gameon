@@ -84,7 +84,7 @@ async function create (userId, title, status, sportCategory, description, area, 
             currentNumberOfParticipants: 1,
             participants: [ObjectId(userId)]
         };
-
+        
         const insert = await gameEventCollection.insertOne(newGameEvent);
         if(!insert.acknowledged || !insert.insertedId){
             throw "Error: could not add gameEvent";
