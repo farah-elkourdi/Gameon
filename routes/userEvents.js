@@ -119,7 +119,7 @@ router.delete('/:id', async(req,res) =>{
         let updatedGameEvents = await data.userEvents.remove(userId, gameEventId);
         res.status(200).render('userEvents/userEvents', {errorFlagOneEvent: false, gameEventsList: updatedGameEvents, today: nowStrDate});
     } catch (e){
-        return res.status(400).render('userEvents/userEvents', {errorFlagAllEvents: true, errorAllEvents: e});
+        return res.status(400).render('userEvents/userEvents', {errorFlagOneEvent: true, errorOneEvent: e});
     }
 });
 
