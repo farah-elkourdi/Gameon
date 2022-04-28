@@ -2,6 +2,7 @@ const mongoCollections = require('../config/mongoCollections');
 const comment = mongoCollections.comment;
 const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
+const userEvents = require('./userEvents');
 
 /* Find comments associated with the given event id*/
 module.exports = {
@@ -35,6 +36,16 @@ async postComment(userId, gameEventId, comment, timestamp){
     comment = check.checkString(comment, 'comment');
     timestamp = check.checkDate(timestamp, 'timestamp');
 
+    //check if the user is a participant in the event
+    let joined;
+    try{
+        joined = await userEvents.checkParticipation(userId, gameEventId);
+    }
+    catch(e){
+        throw e.toString();
+    }
+    if(!joined.participant) throw "user must be a participant in the event to post a comment.";
+    
     const commentCollection = await comment();
 
     let newComment = {

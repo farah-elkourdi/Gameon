@@ -34,6 +34,11 @@ router.route('/:id')
     }catch(e){
         return res.status(404).render('errors/error', {error: e.toString()});
     }
+    //check the user's area and the event area align
+    if(event.area != req.session.user.area){
+
+    } 
+
     //check if current user is already registered for the event
     let joined = false;
     if(event.participants.map(x =>x.toString()).includes(currentUserId)){
@@ -78,6 +83,18 @@ router.route('/:id')
     }catch(e){
         return res.status(400).render('errors/error', {error: e.toString()});
     }
+    //get event
+    let event;
+    try{
+        event = await gameEvent.getGameEvent(ID);
+    }catch(e){
+        return res.status(404).render('errors/error', {error: e.toString()});
+    }
+    //check the user's area and the event area align
+    if(event.area != req.session.user.area){
+        return res.redirect(303, '/');
+    }
+
     let inserted;
     try{
         inserted = await userEvents.insert(currentUserId, ID);
@@ -106,6 +123,19 @@ router.route('/:id/leave')
     }catch(e){
         return res.status(400).render('errors/error', {error: e.toString()});
     }
+
+    //get event
+    let event;
+    try{
+        event = await gameEvent.getGameEvent(ID);
+    }catch(e){
+        return res.status(404).render('errors/error', {error: e.toString()});
+    }
+    //check the user's area and the event area align
+    if(event.area != req.session.user.area){
+        return res.redirect(303, '/');
+    }
+    
     let removed;
     try{
         removed = await userEvents.remove(currentUserId, ID);

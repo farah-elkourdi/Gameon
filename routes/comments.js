@@ -31,6 +31,19 @@ router.route('/')
     }catch(e){
         return res.json({success : false, error : e.toString()});
     }
+
+     //check user is a participant in the event
+     let joined;
+     try{
+         joined = await userEvents.checkParticipation(userId, gameEventId);
+     }
+     catch(e){
+        return res.status(404).render('errors/error', {error: e.toString()});
+     }
+    if(!joined.participant){
+        return res.status(404).render('errors/error', {error: "You must be registered for this event to post a comment."});
+    }
+
     let posted;
     try{
         posted = await comments.postComment(userId, gameEventId, comment, timestamp);
