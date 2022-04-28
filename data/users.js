@@ -15,7 +15,7 @@ module.exports = {
     if (!validation.validString(lastName, "lastName")) throw 'Invalid last name.';
     if (!validation.validString(password)) throw 'Invalid password.';
     if (!validation.validString(area)) throw 'Invalid area.';
-    if (!validation.chackEmail(email)) throw 'Invalid email.';
+    if (!validation.checkEmail(email)) throw 'Invalid email.';
     if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
 
     const userCollection = await users();
@@ -46,7 +46,7 @@ async checkUser(email, password)
 {
   email = email.trim().toLowerCase();
   if (!validation.validString(password)) throw 'Invalid password.';
-  if (!validation.chackEmail(email)) throw 'Invalid email.';
+  if (!validation.checkEmail(email)) throw 'Invalid email.';
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });

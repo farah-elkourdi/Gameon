@@ -255,7 +255,7 @@ if (!str || typeof str !== 'string' || !str.trim()) return false;
     return true;
 } return false;
 },
-chackEmail(email)
+checkEmail(email)
 {
 return validator.validate(email); 
 },
