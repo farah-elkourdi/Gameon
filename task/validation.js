@@ -68,17 +68,61 @@ module.exports = {
     return arr;
   },
 
-  /* we might nee further input checking for Date*/ 
-  /* if we do, can we do it in another function, having a simple checkData can be useful */
+  /* checks if date string is in valid format yyyy-mm-dd */
+  dateIsValid(dateStr) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+  
+    if (dateStr.match(regex) === null) {
+      return false;
+    }
+  
+    const date = new Date(dateStr);
+  
+    const timestamp = date.getTime();
+  
+    if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+      return false;
+    }
+  
+    return date.toISOString().startsWith(dateStr);
+  },
+
+  checkTime(timeStr, varName){
+    if (!timeStr) throw `Error: You must supply a ${varName}!`;
+    if (typeof timeStr !== 'string') throw `Error: ${varName} must be a string!`;
+    timeStr = timeStr.trim();
+    if (timeStr.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    let isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(timeStr);
+    if(!isValid){
+      throw `Error: ${varName} is not Valid`;
+    }
+    return timeStr;
+  }, 
+
+  convertStringToDate(date, time){
+    let s = `${date}T${time}:00`;
+    let result = new Date(s);
+    return result;
+  },
+
   checkDate(date, varName){
     if(!date){
-      throw `Error: you must supply a ${varName}`
-    }
-    if(!date instanceof Date){
-      throw `Error: ${varName} is not a Date object`
-    }
+      throw `Error: you must supply a ${varName}`;
+    } else if(!date instanceof Date ){
+      throw `Error: ${varName} is not of type Date`;
+    } 
     return date;
   },
+
+  areValidTimes(startTime, endTime){
+    let temp = startTime;
+    temp.setHours(startTime.getHours() + 1);
+    if (endTime < temp){
+      return false;
+    }
+    return true;
+  }, 
 
   checkNum (num, varName){
     if(!num){
@@ -92,76 +136,84 @@ module.exports = {
     return num;
   },
 
-  checkMinParticipantLimit (sport, numParticipants, varName){
+  validMinParticipantLimit (sport, numParticipants){
     if(sport === 'Soccer' && numParticipants < min_soccer){
-      throw `${varName} for Soccer must be greater than ${min_soccer}`;
+      return false;
     }
     if(sport === 'Football' && numParticipants < min_football){
-      throw `${varName} for Soccer must be greater than ${min_football}`;
+      return false;
     }
     if(sport === 'Golf' && numParticipants < min_golf){
-      throw `${varName} for Soccer must be greater than ${min_golf}`;
+      return false;
     }
     if(sport === 'Baseball' && numParticipants < min_baseball){
-      throw `${varName} for Soccer must be greater than ${min_baseball}`;
+      return false;
     }
     if(sport === 'Basketball' && numParticipants < min_basketball){
-      throw `${varName} for Soccer must be greater than ${min_basketball}`;
+      return false;
     }
     if(sport === 'Badminton' && numParticipants < min_badminton){
-      throw `${varName} for Soccer must be greater than ${min_badminton}`;
+      return false;
     }
     if(sport === 'Swimming' && numParticipants < min_swimming){
-      throw `${varName} for Soccer must be greater than ${min_swimming}`;
+      return false;
     }
     if(sport === 'Archery' && numParticipants < min_archery){
-      throw `${varName} for Soccer must be greater than ${min_archery}`;
+      return false;
     }
     if(sport === 'Dodgeball' && numParticipants < min_dodgeball){
-      throw `${varName} for Soccer must be greater than ${min_dodgeball}`;
+      return false;
     }
     if(sport === 'Frisbee' && numParticipants < min_frisbee){
-      throw `${varName} for Soccer must be greater than ${min_frisbee}`;
+      return false;
     }
     
-    return numParticipants;
+    return true;
   }, 
 
-  checkMaxParticipantLimit(sport, numParticipants, varName){
+  validMaxParticipantLimit(sport, numParticipants){
     if(sport === 'Soccer' && numParticipants > max_soccer){
-      throw `${varName} for Soccer must be less than ${max_soccer}`;
+      return false;
     }
     if(sport === 'Football' && numParticipants > max_football){
-      throw `${varName} for Soccer must be less than ${max_football}`;
+      return false;
     }
     if(sport === 'Golf' && numParticipants > max_golf){
-      throw `${varName} for Soccer must be less than ${max_golf}`;
+      return false;
     }
     if(sport === 'Baseball' && numParticipants > max_baseball){
-      throw `${varName} for Soccer must be less than ${max_baseball}`;
+      return false;
     }
     if(sport === 'Basketball' && numParticipants > max_basketball){
-      throw `${varName} for Soccer must be less than ${max_basketball}`;
+      return false;
     }
     if(sport === 'Badminton' && numParticipants > max_badminton){
-      throw `${varName} for Soccer must be less than ${max_badminton}`;
+      return false;
     }
     if(sport === 'Swimming' && numParticipants > max_swimming){
-      throw `${varName} for Soccer must be less than ${max_swimming}`;
+      return false;
     }
     if(sport === 'Archery' && numParticipants > max_archery){
-      throw `${varName} for Soccer must be less than ${max_archery}`;
+      return false;
     }
     if(sport === 'Dodgeball' && numParticipants > max_dodgeball){
-      throw `${varName} for Soccer must be less than ${max_dodgeball}`;
+      return false;
     }
     if(sport === 'Frisbee' && numParticipants > max_frisbee){
-      throw `${varName} for Soccer must be less than ${max_frisbee}`;
+      return false;
     }
-    return numParticipants;
+    return true;
   },
 
+  validNumParticipants (min, max){
+    if(min > max){
+      return false;
+    } else {
+      return true;
+    }
+  },
   
+
   checkCoordinates(x,y)
   {
     if(!isNaN(parseFloat(x)) && !isNaN(parseFloat(y)) ) 

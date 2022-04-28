@@ -13,8 +13,8 @@ async function getAllGameEvents (userId){
     const gameEventCollection = await gameEvents();
     const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)}).toArray();
 
-    if(gameEventList.length === 0){
-        throw "Error: No gameEvents found for user."
+    if(gameEventList.length == 0){
+        throw "No game events found."
     }
 
     gameEventList.forEach( (gameEvent) => {
@@ -28,6 +28,43 @@ async function getAllGameEvents (userId){
     });
 
     return gameEventList;
+}
+
+/* checks if a user is a participant in an event */
+async function checkParticipation(userId, gameEventId){
+    userId = check.checkId(userId);
+    gameEventId = check.checkId(gameEventId);
+    let gameEvent;
+    try{
+        gameEvent = await gameEventData.getGameEvent(gameEventId);
+    }
+    catch(e){
+        throw "checkParticipation: " + e.toString();
+    }
+    if(userId === gameEvent.userId){
+        return {participant: true};
+    }
+    if(gameEvent.participants.map(x =>x.toString()).includes(userId)){
+        return {participant: true};
+    }
+    return {participant: false}
+}
+
+async function checkArea(userId, gameEventId){
+    userId = check.checkId(userId);
+    gameEventId = check.checkId(gameEventId);
+    let event, user;
+    try{
+        event = await gameEventData.getGameEvent(gameEventId);
+        user = await userData.getUser(userId);
+    }catch(e){
+        throw "checkArea: " + e.toString();
+    }
+    //check the user's area and the event area align
+    if(event.area != user.area){
+        return {sameArea: false};
+    } 
+    return {sameArea: true};
 }
 
 /* removes user from a gameEvent */
@@ -82,13 +119,14 @@ async function insert(userId, gameEventId){
 }
 
 /* update a gameEvent */
-async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, 
+async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, area, address, 
     latitude, longitude, startTime, endTime, minimumParticipants, maximumParticipants){
+
     userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
-
+    
     if(userId !== gameEvent.userId){
         throw 'Error: user is not the event coordinator.'
     }
@@ -99,14 +137,33 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
     address = check.checkString(address, 'address');
-    /* Need to check if valid address */
-    /* Need to check if longitude and latitude are correct*/
+
+    /* NEED to check if valid address */
+
+    if(!check.checkCoordinates(longitude, latitude)){
+        throw "Error: coordinates are NOT valid"
+    }
+
+
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
+
+    if(!check.areValidTimes(startTime, endTime)){
+        throw "Error: endTime must be at least 1 hour after startTime"
+    }
+
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    minimumParticipants = check.checkMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants');
+    if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
+        throw "Error: minimum participation limit is not valid"
+    }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    maximumParticipants = check.checkMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants');
+    if(check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
+        throw "Error: maximum participation limit is not valid"
+    }
+
+    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
+        throw "Error: minimum participants is greater than maximum participants"
+    }
 
     let updatedGameEvent = {
         userId: eventCoordinator, 
@@ -140,5 +197,7 @@ module.exports = {
     getAllGameEvents, 
     remove, 
     insert,
-    update
+    update,
+    checkParticipation,
+    checkArea
 }
