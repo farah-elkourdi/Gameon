@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
 
     createGameEventData = req.body;
     let userId = req.session.user.userID;
-
+    
     try {
         userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
@@ -54,10 +54,8 @@ router.post('/', async (req, res) => {
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
 
-        createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
-        createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-     
-
+        createGameEventData.minParticipants = check.checkNum(createGameEventData.minParticipants, 'minParticipants');
+        createGameEventData.maxParticipants = check.checkNum(createGameEventData.maxParticipants, 'maxParticipants');
         
     } catch (e) {
         return res.status(400).render('createGameEvent', {
@@ -66,7 +64,7 @@ router.post('/', async (req, res) => {
             input: createGameEventData,
             minStartDate: nowStrDate, 
             minStartTime: startTimeMin
-        })
+        });
     }
 
     try {
@@ -81,11 +79,11 @@ router.post('/', async (req, res) => {
             longitude,
             startTime,
             endTime,
-            minimumParticipants,
-            maximumParticipants
+            minParticipants,
+            maxParticipants
         } = createGameEventData;
         const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, area, address, latitude,
-            longitude, startTime, endTime, minimumParticipants, maximumParticipants);
+            longitude, startTime, endTime, minParticipants, maxParticipants);
         /* render the individual game page */
         if (gameEvent.gameEventCreated) {
             res.status(200).json({
