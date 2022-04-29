@@ -46,13 +46,14 @@ async function remove(userId, gameEventId){
 }
 
 /* update a gameEvent */
-async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, address, 
+async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, area, address, 
     latitude, longitude, startTime, endTime, minimumParticipants, maximumParticipants){
+
     userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
-
+    
     if(userId !== gameEvent.userId){
         throw 'Error: user is not the event coordinator.'
     }
