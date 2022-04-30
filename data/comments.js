@@ -3,6 +3,7 @@ const comment = mongoCollections.comment;
 const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 const userEvents = require('./userEvents');
+const users = require('./users');
 
 /* Find comments associated with the given event id*/
 module.exports = {
@@ -11,7 +12,7 @@ async getCommentsForEvent(eventId){
     if(!eventId) throw "getCommentsForEvent: must pass eventId";
     let ID = check.checkId(eventId);
     const commentCollection = await comment();
-    const eventComments =  await commentCollection.find({gameEventId: ObjectId(ID)}).sort({timestamp: -1}).toArray();
+    const eventComments =  await commentCollection.find({gameEventId: ID}).sort({timestamp: -1}).toArray();
     for(let i =0; i<eventComments.length; i++){
         eventComments[i]._id = eventComments[i]._id.toString();
         eventComments[i].userId = eventComments[i].userId.toString();
@@ -24,16 +25,16 @@ async getCommentsForEvent(eventId){
     }
     return eventComments;
 },
-async postComment(userId, gameEventId, comment, timestamp){
+async postComment(userId, gameEventId, commentStr, timestamp){
     /* input checking */
     if(arguments.length != 4) throw "postComment: pass 4 arguments.";
     if(!userId) throw "postComment: pass userId.";
     if(!gameEventId) throw "postComment: pass gameEventId.";
-    if(!comment) throw "postComment: pass comment.";
+    if(!commentStr) throw "postComment: pass comment.";
     if(!timestamp) throw "postComment: pass timestamp.";
     userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
-    comment = check.checkString(comment, 'comment');
+    commentStr = check.checkString(commentStr, 'comment');
     timestamp = check.checkDate(timestamp, 'timestamp');
 
     //check if the user is a participant in the event
@@ -51,7 +52,7 @@ async postComment(userId, gameEventId, comment, timestamp){
     let newComment = {
         userId : userId,
         gameEventId : gameEventId,
-        comment : comment,
+        comment : commentStr,
         timestamp : timestamp
     };
 

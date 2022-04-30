@@ -63,7 +63,6 @@ router.post('/Checksignup', async(req, res) => {
   }
   catch(e)
   {
-    console.log(e.toString());
     errors.push('Error this email exists.');
   return res.json({success: true, message: errors});
 }

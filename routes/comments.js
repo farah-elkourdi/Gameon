@@ -27,7 +27,7 @@ router.route('/')
     gameEventId = check.checkId(body.gameEventId);
     userId =  req.session.user.userID;
     comment = check.checkString(body.comment);
-    timestamp = Date.now();
+    timestamp = new Date();
     }catch(e){
         return res.json({success : false, error : e.toString()});
     }
@@ -38,10 +38,10 @@ router.route('/')
          joined = await userEvents.checkParticipation(userId, gameEventId);
      }
      catch(e){
-        return res.status(404).render('errors/error', {error: e.toString()});
+        return res.json({success : false, error : e.toString()});
      }
     if(!joined.participant){
-        return res.status(404).render('errors/error', {error: "You must be registered for this event to post a comment."});
+        return res.json({success : false, error : 'you must be registered for this event to post a comment'});
     }
 
     let posted;
@@ -56,3 +56,46 @@ router.route('/')
     }
     return res.json({success : true, error : ''});
 });
+router.route('/:gameEventId')
+.get(async (req, res) => {
+    //check if the user is signed in...
+    if(!req.session.user){
+        return res.redirect('/');
+    }
+    let userId = req.session.user.userID;
+    //get current user id
+    let params = req.params;
+    let gameEventId
+    /* input checking */
+    try{
+        if(Object.keys(params).length != 1){ throw "get /comments: only pass gameEventId in req body."};
+    if(!params.gameEventId) throw 'supply gameEventId';
+    gameEventId = check.checkId(params.gameEventId);
+    
+    }catch(e){
+        return res.status(400).send(e.toString());
+    }
+
+     //check user is a participant in the event
+     let joined;
+     try{
+         joined = await userEvents.checkParticipation(userId, gameEventId);
+     }
+     catch(e){
+        return res.status(400).send(e.toString());
+     }
+    if(!joined.participant){
+        return res.status(403).send("You must be registered for this event to view comments.");
+    }
+
+    let eventComments;
+    try{
+        eventComments = await comments.getCommentsForEvent(gameEventId);
+    }
+    catch(e){
+        return res.status(400).send(e.toString());
+    }
+    return res.render('commentList', {comments: eventComments, layout:false});
+});
+
+module.exports = router;

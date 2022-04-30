@@ -1,0 +1,9 @@
+<div class="commentList">
+        {{#each comments}}
+            <div class="comment">
+                <h1><a href="/user/{{this.userId}}">{{this.name}}</a>:</h1>
+                <h2>{{{this.timestamp}}}</h2>
+                <p>{{this.comment}}</p>
+            </div>
+        {{/each}}
+    </div>

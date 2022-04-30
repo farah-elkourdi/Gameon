@@ -44,8 +44,6 @@ router.route('/:id')
     if(event.participants.map(x =>x.toString()).includes(currentUserId)){
         joined = true;
     }
-    console.log(currentUserId);
-    console.log(event.participants.map(x =>x.toString()));
     //gets the organizer object from the userId in event & stores their name.
     const organizer = await users.getUser(event.userId);
     event.organizerName = organizer.firstName + ' ' + organizer.lastName;

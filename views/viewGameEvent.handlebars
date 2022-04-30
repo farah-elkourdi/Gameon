@@ -38,7 +38,7 @@
         <div id="participants">
         <ul>
             {{#each event.participants}}
-            <li><a href="/userEvents/{{this.id}}">{{this.name}}</a></li>
+            <li><a href="/user/{{this.id}}">{{this.name}}</a></li>
             {{/each}}
         </ul>
         </div>
@@ -54,14 +54,20 @@
             {{/if}}
         </div>
     </section>
-    <section class = "commentSection">
-        <!-- Form for adding a comment -->
-        {{#each comments}}
-            <div class="comment">
-                <h1><a href="/userEvents/{{this.userId}}">{{this.name}}</a>:</h1>
-                <h2>{{{dateFormat "LLL" this.timestamp}}}</h2>
-                <p>{{this.comment}}</p>
-            </div>
-        {{/each}}
+    {{#if joined}}
+    <section id="commentSection">
+    <div class = "commentForm">
+        <form method="POST" id="comment-form">
+            <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+            <textarea name="comment" id="comment"></textarea>
+            <button id="submitComment">Submit</button>
+        </form>
+    </div>
+    <div id = "error" hidden></div>
+    <!-- comment list -->
+    <section id = "showComments" hidden></section>
+    
     </section>
+    {{/if}}
 </div>
+<script src="/public/js/viewGameEvent.js"></script>
