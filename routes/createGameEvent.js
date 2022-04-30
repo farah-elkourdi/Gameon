@@ -14,12 +14,11 @@ router.get('/', async (req, res) => {
     
     // let startTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
-    let startTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
+    
     
     res.render('createGameEvent/createGameEvent', {
         error_flag: false,
         minStartDate: nowStrDate, 
-        minStartTime: startTimeMin,
         userDetails: req.session.user
     });
 });
@@ -27,8 +26,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
- 
-    let startTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
     
 
     createGameEventData = req.body;
@@ -75,7 +72,7 @@ router.post('/', async (req, res) => {
             error: e,
             input: createGameEventData,
             minStartDate: nowStrDate, 
-            minStartTime: startTimeMin,
+
             userDetails: req.session.user
         });
     }
@@ -113,7 +110,6 @@ router.post('/', async (req, res) => {
             error: e,
             input: createGameEventData, 
             minStartDate: nowStrDate, 
-            minStartTime: startTimeMin,
             userDetails: req.session.user
         })
     }
