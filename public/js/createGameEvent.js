@@ -116,8 +116,10 @@ const min_frisbee = 1;
 
   function areValidTimes(startTime, endTime){
     let now = new Date();
-    let temp = startTime;
+    const temp = new Date(startTime);
     temp.setHours(temp.getHours() + 1);
+   
+    
     if (startTime < now || endTime < temp){
       return false;
     }
@@ -214,6 +216,7 @@ const min_frisbee = 1;
   }
         
         var errorDiv = $('#errorDivCreateGameEvent');
+        errorDiv.hide();
         $('#createGameEvent-form').submit(function (event){
             event.preventDefault();
             var title = $('#title').val(),
@@ -291,8 +294,10 @@ const min_frisbee = 1;
                         //runs with response status code 200
                         //Need to render individual game page?
                         success: function(response){
+                            errorDiv.empty();
+                            errorDiv.hide();
                             console.log("SUCCESS ADDING TO Database");
-                            console.log(response);
+                            window.open("/eventList", '_self');
                         }
                     }
 

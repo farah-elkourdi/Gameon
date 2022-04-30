@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
     
     
     res.render('createGameEvent/createGameEvent', {
-        error_flag: false,
         minStartDate: nowStrDate, 
         userDetails: req.session.user
     });
@@ -68,7 +67,6 @@ router.post('/', async (req, res) => {
         return res.redirect('/eventList');
     } catch (e) {
         return res.status(400).render('createGameEvent/createGameEvent', {
-            error_flag: true,
             error: e,
             input: createGameEventData,
             minStartDate: nowStrDate, 

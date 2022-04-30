@@ -51,3 +51,7 @@
 .event-maps {
     padding: 15px;
 }
+
+.error {
+    color: red;
+}
