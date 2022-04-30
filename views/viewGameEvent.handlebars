@@ -44,12 +44,12 @@
         </div>
         <div id="joinOrLeave">
             {{#if joined}}
-                <form action="/viewGameEvent/{{event._id}}/leave" method="POST">
-                <button type="submit">Leave Event</button>
+                <form id="leave-form" action="/viewGameEvent/{{event._id}}/leave" method="POST">
+                <button type="submit" id="leaveButton">Leave Event</button>
                 </form>
             {{else}}
-                <form action="/viewGameEvent/{{event._id}}" method="POST">
-                <button type="submit">Join Event</button>
+                <form action="/viewGameEvent/{{event._id}}" method="POST" id="join-form">
+                <button type="submit" id="joinButton">Join Event</button>
                 </form>
             {{/if}}
         </div>
@@ -60,13 +60,13 @@
         <form method="POST" id="comment-form">
             <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
             <textarea name="comment" id="comment"></textarea>
-            <button id="submitComment">Submit</button>
+            <button type="button" id="submitButton" name="submitButton">Submit</button>
         </form>
     </div>
     <div id = "error" hidden></div>
     <!-- comment list -->
+    <button type="button"id="viewComments">Open Comments</button>
     <section id = "showComments" hidden>
-        <button id="viewComments">Open Comments</button>
     </section>
     
     </section>

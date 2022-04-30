@@ -35,7 +35,7 @@ router.route('/:id')
         return res.status(404).render('errors/error', {error: e.toString()});
     }
     //check the user's area and the event area align
-    if(event.area != req.session.user.area){
+    if(event.area != req.session.user.userArea){
 
     } 
 
@@ -66,9 +66,10 @@ router.route('/:id')
     }
     return res.render('viewGameEvent', {title: event.title, event: event, comments: commentsArray, currentUserId: currentUserId, joined: joined});
 })
-.post(async (req,res) => {
+.post(
+    async (req,res) => {
     //check if the user is signed in...
-    console.log('entered post');
+    console.log(JSON.stringify(req.session.user));
     if(!req.session.user){
         return res.redirect(303, '/'); //using code 303 to specify a get request
     }
@@ -99,7 +100,7 @@ router.route('/:id')
         inserted = await userEvents.insert(currentUserId, ID);
     }
     catch(e){
-        return res.status('errors/error', {error: e.toString()});
+        return res.status(500).render('errors/error', {error: e.toString()});
     }
     if(!inserted.userInserted) return res.status(400).render('errors/error', {error: "An unknown error occured during registration. Please try again."});
 
@@ -108,6 +109,8 @@ router.route('/:id')
 
 router.route('/:id/leave')
 .post(async (req,res) => {
+    console.log('leaving');
+    console.log(JSON.stringify(req.session.user));
     //check if the user is signed in...
     if(!req.session.user){
         return res.redirect(303, '/'); //using code 303 to specify a get request
@@ -131,7 +134,7 @@ router.route('/:id/leave')
         return res.status(404).render('errors/error', {error: e.toString()});
     }
     //check the user's area and the event area align
-    if(event.area != req.session.user.area){
+    if(event.area != req.session.user.userArea){
         return res.redirect(303, '/');
     }
     

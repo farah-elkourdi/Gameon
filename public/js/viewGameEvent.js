@@ -59,10 +59,12 @@ const onFormClick = async function(event){
 
 (function ($) {
    
-    $('#showComments').click(async function() {
+    $('#viewComments').click(async function(event) {
+        event.preventDefault();
         const gameEventId = $('#gameEventId').val();
-        getCommentList(gameEventId);
+        await getCommentList(gameEventId);
     });
 
-    $('#submitComment').click(onFormClick);
-  });
+    $('#submitButton').click(onFormClick);
+
+  })(jQuery);
