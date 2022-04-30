@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
+const gameEvent = require('../data/gameEvent');
 
 // Global variable createGameEventData
 var createGameEventData;
@@ -13,8 +14,8 @@ router.get('/', async (req, res) => {
     let now = new Date();
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
     let startTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
-
-    res.render('createGameEvent', {
+    
+    res.render('createGameEvent/createGameEvent', {
         error_flag: false,
         minStartDate: nowStrDate, 
         minStartTime: startTimeMin
@@ -54,7 +55,11 @@ router.post('/', async (req, res) => {
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
      
-
+        await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
+            createGameEventData.sportCategory, createGameEventData.description, createGameEventData.area,
+            createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
+            createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
+            createGameEventData.maximumParticipants);
         
     } catch (e) {
         return res.status(400).render('createGameEvent', {

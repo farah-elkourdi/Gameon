@@ -1,9 +1,9 @@
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .pg-color {
-    background-color:beige;
+    background-color: beige;
 }
 
 .max-height {
@@ -15,6 +15,30 @@
     text-align: center;
 }
 
+#profileImage {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #512DA8;
+    font-size: 30px;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+}
+
+.dropdown-toggle::after{
+    margin-top: 20px;
+}
+
+.nav-item.dropdown .dropdown-menu{
+    min-width:8rem;
+}
+
+.profile_welcome {
+    font-size: 30px;
+    padding-right: 10px;
+}
+
 .section-divider {
     margin-top: 60px;
 }
@@ -22,7 +46,7 @@
 #map {
     height: 300px !important;
     width: 500px !important;
-  }
+}
 
 .event-maps {
     padding: 15px;
