@@ -5,6 +5,14 @@ const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
 const session = require('express-session');
 
+router.get('/profile', async (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/profile");;
+  }
+});
+
 router.get('/signup', async (req, res) => {
   if (req.session.user) {
     res.redirect("/");
@@ -53,7 +61,7 @@ router.post('/Checksignup', async(req, res) => {
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (!validation.validString(area)) errors.push('Invalid area.');
-  if (!validation.chackEmail(email)) errors.push('Invalid email.');
+  if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
   if(errors.length == 0 )
   {
@@ -79,16 +87,14 @@ router.get('/login', async (req, res) => {
     res.render("user/login");
   }
 });
-module.exports = router;
-
 
 router.post('/Checksignin', async(req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
   var errors = [];
-  if (!validation.validString(password)) errors.push('Invalid password.');
-  if (!validation.chackEmail(email)) errors.push('Invalid email.');
+  if (!validation.validString(password)) errors.push('Invalid password or email.');
+  if (!validation.checkEmail(email)) errors.push('Invalid password or email.');
   if(errors.length == 0 )
   {
   try
@@ -107,7 +113,7 @@ router.post('/Checksignin', async(req, res) => {
   }
   catch(e)
   {
-    errors.push('Wrong email or password.');
+    errors.push('Invalid password or email.');
   return res.json({success: true, message: errors});
 }
   return res.json({success: true, message: errors});
@@ -129,3 +135,5 @@ router.get('/logout', async (req, res) => {
     res.redirect("/");
   }
 });
+
+module.exports = router;

@@ -2,85 +2,96 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
-const geocode = require('../public/js/geocode');
+const gameEvent = require('../data/gameEvent');
 
 // Global variable createGameEventData
 var createGameEventData;
 
-// Function to validate address and fetch lat and long
-
-function validateAddress(addressGeocode) {
-    let addressResult = addressGeocode;
-    if (addressResult.address.country_code !== 'us') {
-        return res.status(400).render('createGameEvent', {
-            error_flag: true,
-            error: `Please enter a valid US address`,
-            today: now
-        })
-    }
-    createGameEventData.address = addressResult.display_name;
-    createGameEventData.latitude = addressResult.lat;
-    createGameEventData.longitude = addressResult.lon;
-}
-
 router.get('/', async (req, res) => {
-    let now = new Date();
-    let end = now.setHours(now.getHours() + 1);
-    res.render('createGameEvent', {
-        error_flag: false,
-        today: now,
-        limit: end
+    if(!req.session.user){
+        return res.redirect('/');
+    }
+    
+    // let startTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let nowStrDate =  new Date().toLocaleDateString('en-CA');
+    
+    
+    res.render('createGameEvent/createGameEvent', {
+        minStartDate: nowStrDate, 
+        userDetails: req.session.user
     });
 });
 
 router.post('/', async (req, res) => {
-    let now = new Date();
+    
+    let nowStrDate =  new Date().toLocaleDateString('en-CA');
+    
+
     createGameEventData = req.body;
+    let userId = req.session.user.userID;
+    
     try {
+        userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
-        /* How would we get coordinator userId? From the session. */
-        // userId = check.checkId(userId);
-        //createGameEventData.status = check.checkString(createGameEventData.status, 'status');
+        createGameEventData.status = "Upcoming";
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
-        createGameEventData.address = check.checkString(createGameEventData.address, 'address');
-        /* Need to check if valid address */
-        /* Need to check if longitude and latitude are correct */
+        createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
+
+        createGameEventData.area = check.checkString(createGameEventData.area, 'area');
+
+        createGameEventData.latitude = createGameEventData.latitude;
+        createGameEventData.longitude = createGameEventData.longitude;
+
+
+        createGameEventData.date = check.checkString(createGameEventData.date, 'date');     
+        createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');   
+        createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
+        createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
+        createGameEventData.startTime = check.convertStringToDate(createGameEventData.date, createGameEventData.startTime);
+       
+        createGameEventData.endTime = check.convertStringToDate(createGameEventData.date, createGameEventData.endTime);
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
+
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
-        createGameEventData.minimumParticipants = check.checkMinParticipantLimit(createGameEventData.sportCategory, createGameEventData.minimumParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-        createGameEventData.maximumParticipants = check.checkMaxParticipantLimit(createGameEventData.sportCategory, createGameEventData.maximumParticipants, 'maximumParticipants');
+     
+        await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
+            createGameEventData.sportCategory, createGameEventData.description, createGameEventData.area,
+            createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
+            createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
+            createGameEventData.maximumParticipants);
 
-        //Validating address using callback
-        await geocode.validate(createGameEventData.address, validateAddress);
-
+        
+        return res.redirect('/eventList');
     } catch (e) {
-        return res.status(400).render('createGameEvent', {
-            error_flag: true,
+        return res.status(400).render('createGameEvent/createGameEvent', {
             error: e,
-            today: now
-        })
+            input: createGameEventData,
+            minStartDate: nowStrDate, 
+
+            userDetails: req.session.user
+        });
     }
 
     try {
         const {
-            userId,
             title,
             status,
             sportCategory,
             description,
+            area,
             address,
             latitude,
             longitude,
             startTime,
             endTime,
-            minimumParticipants,
-            maximumParticipants
+            minParticipants,
+            maxParticipants
         } = createGameEventData;
-        const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, address, latitude,
-            longitude, startTime, endTime, minimumParticipants, maximumParticipants);
+        const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, area, address, latitude,
+            longitude, startTime, endTime, minParticipants, maxParticipants);
         /* render the individual game page */
         if (gameEvent.gameEventCreated) {
             res.status(200).json({
@@ -92,10 +103,12 @@ router.post('/', async (req, res) => {
             });
         }
     } catch (e) {
-        res.status(500).render('createGameEvent', {
+        res.status(500).render('createGameEvent/createGameEvent', {
             error_flag: true,
             error: e,
-            today: now
+            input: createGameEventData, 
+            minStartDate: nowStrDate, 
+            userDetails: req.session.user
         })
     }
 });
