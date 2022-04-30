@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
+const gameEvent = require('../data/gameEvent');
 
 // Global variable createGameEventData
 var createGameEventData;
@@ -68,6 +69,7 @@ router.post('/', async (req, res) => {
 
         return res.redirect('/eventList');
 
+        
     } catch (e) {
         return res.status(400).render('createGameEvent/createGameEvent', {
             error_flag: true,

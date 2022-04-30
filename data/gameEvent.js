@@ -4,24 +4,40 @@ const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 
 /* returns gameEvent by gameEvent Id */
-async function getGameEvent(id){
+async function getGameEvent(id) {
     id = check.checkId(id);
     const gameEventCollection = await gameEvents();
-    const gameEvent = await gameEventCollection.findOne({_id: ObjectId(id)});
+    const gameEvent = await gameEventCollection.findOne({
+        _id: ObjectId(id)
+    });
 
-    if(gameEvent === null){
+    if (gameEvent === null) {
         throw "Error: gameEvent not found"
     }
     gameEvent._id = gameEvent._id.toString();
     gameEvent.userId = gameEvent.userId.toString();
 
-    if(gameEvent.participants.length !== 0){
-        for (let participant of gameEvent.participants){
+    if (gameEvent.participants.length !== 0) {
+        for (let participant of gameEvent.participants) {
             participant = participant.toString();
         }
     }
     return gameEvent;
-} 
+}
+
+async function getGameEventbyArea(area){
+    const gameEventCollection = await gameEvents();
+    const gameEvent = (await gameEventCollection.find({area: area})).toArray();
+
+    return gameEvent;
+}
+
+async function getGameEventbyAreaLimit(area, limitCount){
+    const gameEventCollection = await gameEvents();
+    const eventList = (await gameEventCollection.find({area: area}).limit(limitCount)).toArray();
+    
+    return eventList;
+}
 
 /***
  * NEEDS TO check validity of Longitude and Latitude
@@ -90,10 +106,14 @@ async function create(userId, title, status, sportCategory, description, area, a
         throw "Error: could not add gameEvent";
     }
 
-        return {gameEventCreated: true};
+    return {
+        gameEventCreated: true
+    };
 }
 
 module.exports = {
     create,
-    getGameEvent
+    getGameEvent,
+    getGameEventbyArea,
+    getGameEventbyAreaLimit
 }
