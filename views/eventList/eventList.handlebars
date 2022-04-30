@@ -1,23 +1,4 @@
-<div class="welcome">
-    <h1>{{title}}</h1>
-    <article>
-        <div class="welcome-logo">
-            <img src="/public/img/logo.png">
-        </div>
-    </article>
-    <div class="jumbotron jumbotron-fluid section-divider">
-        <div class="container">
-            <h1>Event List</h1>
-            <p>We have variety of sport events created by various organizers which can be found below</p>
-            {{#if userDetails}}
-            <a class="btn btn-primary" href="/eventList" role="button">View all events</a>
-            {{else}}
-            <p>Login to view all events</p>
-            <a class="btn btn-primary" href="/user/login" role="button">Login / Signup</a>
-            {{/if}}
-        </div>
-    </div>
-    <div class="event-maps container">
+<div class="event-maps container">
         <div class="row">
             <div class="col-md-5">
                 <ul id="default-map" class="list-group list-group-flush border-bottom scrollarea">
@@ -47,6 +28,5 @@
         <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
             integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
             crossorigin=""></script>
-        <script type="module" src="/public/js/landingPageMaps.js"></script>
+        <script type="module" src="/public/js/eventList.js"></script>
     </div>
-</div>
