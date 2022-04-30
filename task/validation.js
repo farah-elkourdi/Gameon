@@ -118,9 +118,10 @@ module.exports = {
   },
 
   areValidTimes(startTime, endTime){
+    let now = new Date();
     let temp = startTime;
     temp.setHours(startTime.getHours() + 1);
-    if (endTime < temp){
+    if (startTime < now || endTime < temp){
       return false;
     }
     return true;
