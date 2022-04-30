@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
     
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
  
+    let startTimeMin =  now.toLocaleTimeString([], {hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
     
 
     createGameEventData = req.body;
