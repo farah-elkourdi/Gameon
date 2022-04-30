@@ -1,18 +1,5 @@
 <div class="welcome">
     <h1>{{title}}</h1>
-    <div class="topnav">
-        <a class="active" href="#home">Home</a>
-        {{#if userDetails}}
-        <a href="/user/logout">logout</a>
-        <a href="#profile">profile</a>
-        <a href="/contactus">Contact us</a>
-        {{else}}
-        <a href="/user/login">Login</a>
-        <a href="/user/signup">Signup</a>
-        <a href="/contactus">Contact us</a>
-        {{/if}}
-
-    </div>
     <article>
         <div class="welcome-logo">
             <img src="/public/img/logo.png">
@@ -22,39 +9,31 @@
         <div class="container">
             <h1>Event List</h1>
             <p>We have variety of sport events created by various organizers which can be found below</p>
+            {{#if userDetails}}
+            <a class="btn btn-primary" href="/eventList" role="button">View all events</a>
+            {{else}}
+            <p>Login to view all events</p>
+            <a class="btn btn-primary" href="/user/login" role="button">Login / Signup</a>
+            {{/if}}
         </div>
     </div>
     <div class="event-maps container">
         <div class="row">
             <div class="col-md-5">
-                <ul class="list-group list-group-flush border-bottom scrollarea">
-                    <li class="list-group-item active" aria-current="true">
-                        <div class="d-flex w-100 align-items-center justify-content-between">
-                            <strong class="mb-1">Event 1</strong>
-                            <small>April 25, Monday</small>
-                        </div>
-                        <div class="col-10 mb-1 small">
-                            This is event 1
-                        </div>
-                    </li>
+                <ul id="default-map" class="list-group list-group-flush border-bottom scrollarea">
+                    {{#each gameEvents}}
                     <li class="list-group-item" aria-current="true">
+                        <input name="latitude" hidden value="{{latitude}}">
+                        <input name="longitude" hidden value="{{longitude}}">
                         <div class="d-flex w-100 align-items-center justify-content-between">
-                            <strong class="mb-1">Event 2</strong>
-                            <small>May 04, Wednesday</small>
+                            <strong class="mb-1">{{title}}</strong>
+                            <small>{{startTime}}</small>
                         </div>
                         <div class="col-10 mb-1 small">
-                            This is event 2
+                            {{description}}
                         </div>
                     </li>
-                    <li class="list-group-item" aria-current="true">
-                        <div class="d-flex w-100 align-items-center justify-content-between">
-                            <strong class="mb-1">Event 3</strong>
-                            <small>April 21, Thursday</small>
-                        </div>
-                        <div class="col-10 mb-1 small">
-                            This is event 3
-                        </div>
-                    </li>
+                    {{/each}}
                 </ul>
             </div>
             <div class="col-md-7">

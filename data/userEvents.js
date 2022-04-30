@@ -6,7 +6,6 @@ const check = require('../task/validation');
 const gameEventData = require('./gameEvent');
 const userData = require('./users');
 
-
 /* Given a userId, return all game events associated with that user */
 async function getAllGameEvents (userId){
     userId = check.checkId(userId);
@@ -136,6 +135,7 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     status = check.checkString(status, 'status');
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
+    area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
 
     /* NEED to check if valid address */
