@@ -41,34 +41,29 @@ async function create (userId, title, status, sportCategory, description, area, 
         address = check.checkString(address, 'address');
 
         /* NEED to check if valid address */
-       
-        if(!check.checkCoordinates(longitude, latitude)){
-            throw "Error: coordinates are NOT valid"
-        }
-
         startTime = check.checkDate(startTime, 'startTime');
         endTime = check.checkDate(endTime, 'endTime');
-
-        if(!check.areValidTimes(startTime, endTime)){
+    
+        if (!check.areValidTimes(startTime, endTime)) {
             throw "Error: endTime must be at least 1 hour after startTime"
         }
-
+    
         minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-        if(!check.validMinParticipantLimit(sportCategory, minimumParticipants)){
+        if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
             throw "Error: minimum participation limit is not valid"
         }
         maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-        if(!check.validMaxParticipantLimit(sportCategory, maximumParticipants)){
+        if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
             throw "Error: maximum participation limit is not valid"
         }
-        if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
+        if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
             throw "Error: minimum participants is greater than maximum participants"
         }
-
+    
         const gameEventCollection = await gameEvents();
-
+    
         let newGameEvent = {
-            userId: userId, 
+            userId: userId,
             title: title,
             status: status,
             sportCategory: sportCategory,
@@ -77,16 +72,16 @@ async function create (userId, title, status, sportCategory, description, area, 
             address: address,
             latitude: latitude,
             longitude: longitude,
-            startTime: startTime, 
-            endTime: endTime, 
+            startTime: startTime,
+            endTime: endTime,
             minimumParticipants: minimumParticipants,
             maximumParticipants: maximumParticipants,
             currentNumberOfParticipants: 1,
             participants: [ObjectId(userId)]
         };
-        
+    
         const insert = await gameEventCollection.insertOne(newGameEvent);
-        if(!insert.acknowledged || !insert.insertedId){
+        if (!insert.acknowledged || !insert.insertedId) {
             throw "Error: could not add gameEvent";
         }
 

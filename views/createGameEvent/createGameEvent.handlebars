@@ -1,15 +1,17 @@
 <div class="container">
     <h1> Create Event </h1>
-    <div id="errorDivCreateGameEvent" hidden>{{error}}</div>
+      {{#if error_flag}}
+        <div id="errorDivCreateGameEvent">{{error}}</div>
+    {{/if}}
     <form class="form-horizontal" action='/createGameEvent' method='POST' id='createGameEvent-form'>
-        <div class="form-group">
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="title">Title:</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="title" placeholder="Enter title" name="title"
                     value="{{input.title}}">
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="sportCategory">Sport:</label>
             <div class="col-sm-5">
                 <select class="form-control" id="sportCategory" name="sportCategory">
@@ -27,14 +29,14 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="description">Description:</label>
             <div class="col-sm-5">
                 <textarea class="form-control" id="description" placeholder="Enter description" name="description"
                     value="{{input.description}}"></textarea>
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="address">Address:</label>
             <div class="col-sm-2">
                 <select class="form-control" name="area" id="area">
@@ -56,49 +58,48 @@
                 <input hidden type="text" id="latitude" name="latitude" value="{{latitude}}">
                 <label hidden for="longitude">longitude</label>
                 <input hidden type="text" id="longitude" name="longitude" value="{{longitude}}">
-                {{!-- <div hidden id="latitude" name="latitude" value="{{latitude}}"></div>
-                <div hidden id="longitude" name="longitude" value="{{longitude}}"></div> --}}
+               
             </div>
             <div class="col-md-7">
                 <div id="map"></div>
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="date">Date of the Event:</label>
             <div class="col-sm-3">
                 <input type="date" class="form-control" id="date" name="date" min="{{minStartDate}}"
                     value="{{input.date}}">
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="startTime">Event Start Time:</label>
             <div class="col-sm-3">
                 <input type="time" class="form-control" id="startTime" name="startTime" min="{{minStartTime}}"
                     value="{{input.startTime}}">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="endTime">Event End Time:</label>
             <div class="col-sm-3">
                 <input type="time" class="form-control" id="endTime" name="endTime" min="{{minStartTime}}"
                     value="{{input.endTime}}">
             </div>
         </div>
-        <div class="form-group">
+         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="minParticipants">Minimum number of Participants:</label>
             <div class="col-sm-3">
                 <input type="number" class="form-control" id="minParticipants" name="minParticipants"
-                    placeholder='Minimum' value="{{input.minParticipants}}">
+                    placeholder='Minimum' value="{{input.minimumParticipants}}">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="maxParticipants">Maximum number of Participants:</label>
             <div class="col-sm-3">
                 <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"
-                    placeholder='Maximum' value="{{input.maxParticipants}}">
+                    placeholder='Maximum' value="{{input.maximumParticipants}}">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group d-flex">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">Create Event</button>
             </div>
@@ -175,4 +176,3 @@
             });
     }
 </script>
-<script src="/public/js/createGameEvent.js"></script>

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
     
 
-    res.render('createGameEvent', {
+    res.render('createGameEvent/createGameEvent', {
         error_flag: false,
         minStartDate: nowStrDate, 
     });
@@ -54,9 +54,14 @@ router.post('/', async (req, res) => {
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
 
-        createGameEventData.minParticipants = check.checkNum(createGameEventData.minParticipants, 'minParticipants');
-        createGameEventData.maxParticipants = check.checkNum(createGameEventData.maxParticipants, 'maxParticipants');
-        
+        createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
+        createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
+     
+        await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
+            createGameEventData.sportCategory, createGameEventData.description, createGameEventData.area,
+            createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
+            createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
+            createGameEventData.maximumParticipants);
     } catch (e) {
         return res.status(400).render('createGameEvent', {
             error_flag: true,
