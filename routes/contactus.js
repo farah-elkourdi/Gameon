@@ -4,11 +4,22 @@ const validation = require("../task/validation");
 const contactUs = require('../data/contactus');
 
 router.get('/' ,async (req,res) => {
-  res.render('contactus/contactus');
+  if (!req.session.user) {
+    res.render('contactus/contactus', {
+      title: "Contact us"
+  });
+}
+else
+{
+  res.render('contactus/contactus', {
+    title: "Contact us",
+    userDetails: req.session.user
+});
+}
 });
 
 router.post('/Checksignup', async(req, res) => {
-  const title = req.body.title;
+  const title = req.body.msgtitle;
   const description = req.body.description;
   const email = req.body.email;
 
