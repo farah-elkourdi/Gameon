@@ -2,7 +2,7 @@ const mongoCollections = require('../config/mongoCollections');
  const validation = require("../task/validation");
  const nodemailer = require('nodemailer');
 const hbs = require('nodemailer-handlebars');
-
+require('dotenv').config();
 
 module.exports = {
 

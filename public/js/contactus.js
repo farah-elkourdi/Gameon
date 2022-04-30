@@ -1,7 +1,8 @@
 (function ($) {
+  $('#description').val("")
 $('#btnsend').click(function (event) {
         event.preventDefault();
-        let titleInput = $('#title').val();
+        let titleInput = $('#msgtitle').val();
         let descriptionInput = $('#description').val();
         let emailInput = $('#email').val();
         $('#error').empty();
@@ -10,7 +11,7 @@ $('#btnsend').click(function (event) {
             method: 'POST',
             url: '/contactus/Checksignup',
             contentType: 'application/json',
-            data: JSON.stringify({title:titleInput, description: descriptionInput, email:emailInput }),
+            data: JSON.stringify({msgtitle:titleInput, description: descriptionInput, email:emailInput }),
             cache: false
           }
           $.ajax(requestConfig).then(function (responseMessage) {
@@ -33,7 +34,7 @@ $('#btnsend').click(function (event) {
                   $('#error').show();
                   let myUl = document.getElementById("error")
                   $('#description').val("")
-                  $('#title').val("")
+                  $('#msgtitle').val("")
                   $('#email').val("")
                   let li = document.createElement('li');
                   li.innerHTML = `<li> your response was sent.</li>`;

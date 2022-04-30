@@ -69,22 +69,24 @@ module.exports = {
   },
 
   /* checks if date string is in valid format yyyy-mm-dd */
-  dateIsValid(dateStr) {
+  dateIsValid(dateStr, varName) {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
   
-    if (dateStr.match(regex) === null) {
-      return false;
-    }
-  
     const date = new Date(dateStr);
-  
     const timestamp = date.getTime();
+
+    if (dateStr.match(regex) === null) {
+      throw `Error: ${varName} is not valid format`;
+    }
   
     if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
-      return false;
+      throw `Error: ${varName} is not valid`;
     }
   
-    return date.toISOString().startsWith(dateStr);
+    if(!date.toISOString().startsWith(dateStr)){
+      throw `Error: ${varName} does not match Date object`;
+    }
+    return dateStr;
   },
 
   checkTime(timeStr, varName){
@@ -116,9 +118,10 @@ module.exports = {
   },
 
   areValidTimes(startTime, endTime){
-    let temp = startTime;
-    temp.setHours(startTime.getHours() + 1);
-    if (endTime < temp){
+    let now = new Date();
+    let temp = new Date(startTime);
+    temp.setHours(temp.getHours() + 1);
+    if (startTime < now || endTime < temp){
       return false;
     }
     return true;

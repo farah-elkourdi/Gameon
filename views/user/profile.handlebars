@@ -1,0 +1,34 @@
+<header>
+    <h1>
+        profile page
+    </h1>
+</header>
+
+<form method="POST" id="profile-form">
+
+    <label id="labelfirstname" for="firstName"> first name: </label>
+    <input id="firstName" type="text" placeholder="Enter first name" name="firstName" value="{{firstName}}" />
+
+    <label id="labellastname" for="lastName"> last name: </label>
+    <input id="lastName" type="text" placeholder="Enter last name" name="lastName" value="{{lastName}}" />
+
+    <label id="labelemail" for="email"> email: </label>
+    <input id="email" type="email" placeholder="Enter email" name="email" value="{{email}}" />
+
+    <label id="labelAddress"> Addrress: </label>
+    <label id="labelStreet" for="street"> street: </label>
+    <input id="street" type="text" placeholder="Enter street" name="street" value="{{street}}" />
+
+    <select name="area" id="area" value="jersey city">
+        <option value="hoboken">Hoboken</option>
+        <option value="jersey city">Jersey City</option>
+        <option value="kearny" selected="selected">Kearny</option>
+        <option value="union city">Union City</option>
+    </select>
+
+
+    <button class="btnsave" id="saveSubmit">Save</button>
+</form>
+
+<ul id="error">
+</ul>

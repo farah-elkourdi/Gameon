@@ -5,6 +5,14 @@ const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
 const session = require('express-session');
 
+router.get('/profile', async (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/profile");;
+  }
+});
+
 router.get('/signup', async (req, res) => {
   if (req.session.user) {
     res.redirect("/");
