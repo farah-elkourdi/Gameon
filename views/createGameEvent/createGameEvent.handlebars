@@ -1,8 +1,6 @@
 <div class="container">
     <h1> Create Event </h1>
-    {{#if error_flag}}
-    <div id="errorDivCreateGameEvent">{{error}}</div>
-    {{/if}}
+    <div class = "error" id="errorDivCreateGameEvent">{{error}}</div>
     <form class="form-horizontal" action='/createGameEvent' method='POST' id='createGameEvent-form'>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="title">Title:</label>
@@ -175,4 +173,4 @@
             });
     }
 </script>
-{{!-- <script src="/public/js/createGameEvent.js"></script> --}}
+<script src="/public/js/createGameEvent.js"></script>
