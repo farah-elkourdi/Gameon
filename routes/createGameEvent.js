@@ -65,18 +65,18 @@ router.post('/', async (req, res) => {
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
             createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
             createGameEventData.maximumParticipants);
-            
+
         return res.redirect('/eventList');
 
     } catch (e) {
-        return res.status(400).render('createGameEvent', {
+        return res.status(400).render('createGameEvent/createGameEvent', {
             error_flag: true,
             error: e,
             input: createGameEventData,
             minStartDate: nowStrDate, 
             minStartTime: startTimeMin,
             userDetails: req.session.user
-        });
+        })
     }
 
     try {
@@ -107,7 +107,7 @@ router.post('/', async (req, res) => {
             });
         }
     } catch (e) {
-        res.status(500).render('createGameEvent', {
+        res.status(500).render('createGameEvent/createGameEvent', {
             error_flag: true,
             error: e,
             input: createGameEventData, 
