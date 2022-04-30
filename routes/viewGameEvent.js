@@ -68,6 +68,7 @@ router.route('/:id')
 })
 .post(async (req,res) => {
     //check if the user is signed in...
+    console.log('entered post');
     if(!req.session.user){
         return res.redirect(303, '/'); //using code 303 to specify a get request
     }
@@ -89,7 +90,7 @@ router.route('/:id')
         return res.status(404).render('errors/error', {error: e.toString()});
     }
     //check the user's area and the event area align
-    if(event.area != req.session.user.area){
+    if(event.area != req.session.user.userArea){
         return res.redirect(303, '/');
     }
 

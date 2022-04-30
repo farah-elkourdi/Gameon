@@ -16,7 +16,6 @@ const getCommentList = async function(gameEventId){
         },
         error: function(e) 
         {
-            console.log(e.responseText);
             var err = $('<p></p>').text(e.responseText);
                 $('#error').empty();
                 $('#error').append(err);
@@ -60,10 +59,10 @@ const onFormClick = async function(event){
 
 (function ($) {
    
-    $('#commentSection').ready( function() {
+    $('#showComments').click(async function() {
         const gameEventId = $('#gameEventId').val();
         getCommentList(gameEventId);
     });
 
     $('#submitComment').click(onFormClick);
-  })(jQuery);
+  });
