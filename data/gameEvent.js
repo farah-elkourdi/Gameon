@@ -101,6 +101,8 @@ async function create(userId, title, status, sportCategory, description, area, a
         throw "Error: minimum participants is greater than maximum participants"
     }
 
+    let spots = maximumParticipants - minimumParticipants;
+    // return spots;
     const gameEventCollection = await gameEvents();
 
     let newGameEvent = {
