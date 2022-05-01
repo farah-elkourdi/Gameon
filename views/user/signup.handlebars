@@ -1,40 +1,81 @@
-<header>
-  <h1>
-    signup page
-  </h1>
-</header>
+<div class="container">
+  <h1>Signup</h1>
+  <form class="form-horizontal signup-form" method="POST" id="signup-form">
+    <div class="form-group d-flex">
+      <label class="control-label col-sm-2" id="labelfirstname" for="firstName">First Name:</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="firstName" placeholder="Enter first name" name="firstName"
+          value="{{firstName}}">
+      </div>
+    </div>
+    <div class="form-group d-flex">
+      <label class="control-label col-sm-2" id="labellastname" for="lastName"> Last Name: </label>
+      <div class="col-sm-5">
+        <input class="form-control" id="lastName" type="text" placeholder="Enter last name" name="lastName"
+          value="{{lastName}}" />
+      </div>
+    </div>
+    <div class="form-group d-flex">
+      <label class="control-label col-sm-2" id="labelemail" for="email"> Email: </label>
+      <div class="col-sm-5">
+        <input class="form-control" id="email" type="email" placeholder="Enter email" name="email" value="{{email}}" />
+      </div>
+    </div>
+    <div class="form-group d-flex">
+      <label class="control-label col-sm-2" id="labelPassword" for="password"> Password: </label>
+      <div class="col-sm-5">
+        <input class="form-control" id="password" type="password" placeholder="Enter password" name="password"
+          value="{{password}}" />
+      </div>
+    </div>
+    <div class="form-group d-flex">
+      <label class="control-label col-sm-2" id="labelAddress" for="address">Address:</label>
+      <div class="col-sm-3">
+        <select class="form-control" name="area" id="area">
+          <option value="none" selected disabled hidden>Choose your area</option>
+          <option value="hoboken">Hoboken</option>
+          <option value="jersey city">Jersey City</option>
+          <option value="kearny">Kearny</option>
+          <option value="union city">Union City</option>
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="street" placeholder="Enter street" name="street" value="{{street}}">
+      </div>
+    </div>
+    <div class="event-maps row">
+      <div class="col-md-2">
+        <label id="labelStreet" hidden for="street">Street</label>
+      </div>
+      <div class="col-md-7">
+        {{> (lookup . 'partial') }}
+      </div>
+    </div>
+    <div class="form-group d-flex">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" id="signupSubmit" class="btn btn-primary">Sign up</button>
+      </div>
+    </div>
 
-<form method="POST" id="signup-form">
 
-  <label id="labelfirstname" for="firstName"> Enter your first name: </label>
-  <input id="firstName" type="text" placeholder="Enter first name" name="firstName" value="{{firstName}}" />
+    {{!-- <label id="labelAddress"> Addrress: </label>
+    <label id="labelStreet" for="street"> Enter a street: </label>
+    <input id="street" type="text" placeholder="Enter street" name="street" value="{{street}}" />
 
-  <label id="labellastname" for="lastName"> Enter your last name: </label>
-  <input id="lastName" type="text" placeholder="Enter last name" name="lastName" value="{{lastName}}" />
+    <select name="area" id="area">
+      <option value="hoboken">Hoboken</option>
+      <option value="jersey city">Jersey City</option>
+      <option value="kearny">Kearny</option>
+      <option value="union city">Union City</option>
+    </select> --}}
 
-  <label id="labelemail" for="email"> Enter your email: </label>
-  <input id="email" type="email" placeholder="Enter email" name="email" value="{{email}}" />
+    {{!-- {{> (lookup . 'partial') }} --}}
+  </form>
+  <ul id="error">
+  </ul>
+  <div class="d-flex justify-content-center links">
+    Already have an account? <a href="/user/login" class="ml-2"> Click here to Log-in</a>
+  </div>
 
-  <label id="labelPassword" for="password"> Enter a password: </label>
-  <input id="password" type="password" placeholder="Enter password" name="password" value="{{password}}" />
-  <label id="labelAddress"> Addrress: </label>
-  <label id="labelStreet" for="street"> Enter a street: </label>
-  <input id="street" type="text" placeholder="Enter street" name="street" value="{{street}}" />
-
-  <select name="area" id="area">
-    <option value="hoboken">Hoboken</option>
-    <option value="jersey city">Jersey City</option>
-    <option value="kearny">Kearny</option>
-    <option value="union city">Union City</option>
-  </select>
-
-  {{> (lookup . 'partial') }}
-
-  <button class="btnsignup" id="signupSubmit">Sign up</button>
-</form>
-
-<ul id="error">
-</ul>
-
-<a href="/user/login">Already have an account? Click here to log-in</a>
+</div>
 <script src="/public/js/signup.js"></script>
