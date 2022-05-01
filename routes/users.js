@@ -6,10 +6,20 @@ const validation = require("../task/validation");
 const session = require('express-session');
 
 router.get('/profile', async (req, res) => {
-  if (req.session.user) {
+  if (!req.session.user) {
     res.redirect("/");
   } else {
-    res.render("user/profile");;
+    res.render("user/profile", {
+      title: "Profile",
+      userDetails: req.session.user,
+      firstName: req.session.user.userFirstName,
+      lastName: req.session.user.userLastName,
+      email: req.session.user.email,
+      street:req.session.user.userStreet,
+      area:req.session.user.userArea,
+      lat: req.session.user.lat,
+      lon: req.session.user.lon
+  });
   }
 });
 
@@ -17,7 +27,7 @@ router.get('/signup', async (req, res) => {
   if (req.session.user) {
     res.redirect("/");
   } else {
-    res.render("user/signup", { partial : 'map_signup' });;
+    res.render("user/signup", { partial : 'map_signup' });
   }
 });
 
@@ -27,6 +37,8 @@ router.post("/map", async (req, response) => {
   var lat;
   var lon;
   var status;
+  if (street.trim() == '' || area.trim() == '')
+  { return response.json({success: true, message: "Error"});}
   openGeocoder()
   .geocode( street +', '+ area)
   //.geocode('106 duncan ave, new jersey')
@@ -60,7 +72,7 @@ router.post('/Checksignup', async(req, res) => {
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   if (!validation.validString(password)) errors.push('Invalid password.');
-  if (!validation.validString(area)) errors.push('Invalid area.');
+  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
   if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
   if(errors.length == 0 )
@@ -108,6 +120,8 @@ router.post('/Checksignin', async(req, res) => {
       user.email = users.user.email;
       user.userArea = users.user.area;
       user.userStreet = users.user.street;
+      user.lat = users.user.lat;
+      user.lon = users.user.lon;
       req.session.user = user;
     } 
   }
@@ -134,6 +148,47 @@ router.get('/logout', async (req, res) => {
     //res.render("user/login", { title: "Login" });
     res.redirect("/");
   }
+});
+
+
+router.post('/Checkprofile', async(req, res) => {
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+ // const password = req.body.password;
+// const email = req.body.email;
+  const area = req.body.area;
+  const street = req.body.street;
+  const lat =  req.body.lat;
+  const lon =  req.body.lon;
+
+  var errors = [];
+  if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
+  if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
+  // if (!validation.validString(password)) errors.push('Invalid password.');
+  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
+  // if (!validation.checkEmail(email)) errors.push('Invalid email.');
+  if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
+  if(errors.length == 0 )
+  {
+  try
+  {
+    await usersData.updateUser(firstName,lastName,req.session.user.email,  street, area, lat, lon, req.session.user.userID); 
+    req.session.user.userStreet = street;
+    req.session.user.lat = lat
+    req.session.user.lon = lon
+    req.session.user.userArea = area
+    req.session.user.userFirstName = firstName
+    req.session.user.userLastName = lastName
+  }
+  catch(e)
+  {
+    errors.push('Error no new update.');
+  return res.json({success: true, message: errors});
+}
+  return res.json({success: true, message: errors});
+}
+else
+return res.json({success: true, message: errors});
 });
 
 module.exports = router;
