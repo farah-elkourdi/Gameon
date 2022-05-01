@@ -275,7 +275,8 @@ const min_frisbee = 1;
                             latitude: latitude, date: date, startTime: startTime, endTime: endTime, minParticipants: minParticipants, maxParticipants: maxParticipants}), 
     
                         //response status code not 200
-                        error: function (){
+                        error: function () {
+                         // alert(data.message);
                             errorDiv.show();
                             $('#title').val(title);
                             $('#sportCategory').val(sportCategory);
@@ -294,11 +295,16 @@ const min_frisbee = 1;
                         //runs with response status code 200
                         //Need to render individual game page?
                         success: function(response){
+                          if (response.success == false)
+                          {alert (response.message)}
+                          else
+                          {
                             errorDiv.empty();
                             errorDiv.hide();
                             console.log("SUCCESS ADDING TO Database");
                             window.open("/eventList", '_self');
                         }
+                      }
                     }
 
                     $.ajax(requestConfig);

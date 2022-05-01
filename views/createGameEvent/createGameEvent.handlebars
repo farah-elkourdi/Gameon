@@ -1,6 +1,6 @@
 <div class="container">
     <h1> Create Event </h1>
-    <div class = "error" id="errorDivCreateGameEvent">{{error}}</div>
+    <div class="error" id="errorDivCreateGameEvent">{{error}}</div>
     <form class="form-horizontal" action='/createGameEvent' method='POST' id='createGameEvent-form'>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="title">Title:</label>
@@ -71,15 +71,13 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="startTime">Event Start Time:</label>
             <div class="col-sm-3">
-                <input type="time" class="form-control" id="startTime" name="startTime" 
-                    value="{{input.startTime}}">
+                <input type="time" class="form-control" id="startTime" name="startTime" value="{{input.startTime}}">
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="endTime">Event End Time:</label>
             <div class="col-sm-3">
-                <input type="time" class="form-control" id="endTime" name="endTime" 
-                    value="{{input.endTime}}">
+                <input type="time" class="form-control" id="endTime" name="endTime" value="{{input.endTime}}">
             </div>
         </div>
         <div class="form-group d-flex">
@@ -142,30 +140,30 @@
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
-                if (responseMessage.message != "Error") {
-                    if (street.trim() == "") {
-                        if (theMarker != undefined) {
-                            map.removeLayer(theMarker);
-                        };
-                    } else {
-                        if (theMarker != undefined) {
-                            map.removeLayer(theMarker);
-                        };
-                        var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
-                        map.setView(target, 14);
-                        theMarker = L.marker(target).addTo(map);
-                        $('#labelStreet').attr('lat', responseMessage.message.lat);
-                        $('#labelStreet').attr('lon', responseMessage.message.lon);
-                        document.getElementById("latitude").value = responseMessage.message.lat;
-                        document.getElementById("longitude").value = responseMessage.message.lon;
-                    }
+            if (responseMessage.message != "Error") {
+                if (street.trim() == "") {
+                    if (theMarker != undefined) {
+                        map.removeLayer(theMarker);
+                    };
                 } else {
                     if (theMarker != undefined) {
                         map.removeLayer(theMarker);
                     };
+                    var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
+                    map.setView(target, 14);
+                    theMarker = L.marker(target).addTo(map);
+                    $('#labelStreet').attr('lat', responseMessage.message.lat);
+                    $('#labelStreet').attr('lon', responseMessage.message.lon);
+                    document.getElementById("latitude").value = responseMessage.message.lat;
+                    document.getElementById("longitude").value = responseMessage.message.lon;
                 }
+            } else {
+                if (theMarker != undefined) {
+                    map.removeLayer(theMarker);
+                };
+            }
 
-            })
+        })
             .catch(function (response) {
                 if (theMarker != undefined) {
                     map.removeLayer(theMarker);
