@@ -198,4 +198,22 @@ else
 return res.json({success: true, message: errors});
 });
 
+router.get('/userprofile', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/userprofile", {
+      title: "Profile",
+      userDetails: req.session.user,
+      firstName: req.session.user.userFirstName,
+      lastName: req.session.user.userLastName,
+      email: req.session.user.email,
+      street:req.session.user.userStreet,
+      area:req.session.user.userArea,
+      lat: req.session.user.lat,
+      lon: req.session.user.lon
+  });
+  }
+});
+
 module.exports = router;
