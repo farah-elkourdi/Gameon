@@ -261,7 +261,7 @@ if (!str || typeof str !== 'string' || !str.trim()) return false;
 checkEmail(email)
 {
 return validator.validate(email); 
-}
+},
 
 checkValidationDlArea(areaInput)
 {

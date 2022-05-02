@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
         // }
       //  });
     }
-
+    /*
     try {
         const {
             title,
@@ -94,7 +94,7 @@ router.post('/', async (req, res) => {
         } = createGameEventData;
         const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, area, address, latitude,
             longitude, startTime, endTime, minParticipants, maxParticipants);
-        /* render the individual game page */
+        //render the individual game page 
         if(gameEvent){
             res.redirect('/viewGameEvent/' + gameEvent._id);
         } else{
@@ -109,6 +109,7 @@ router.post('/', async (req, res) => {
             userDetails: req.session.user
         })
     }
+    */
 });
 
 module.exports = router;

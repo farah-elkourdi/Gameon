@@ -3,7 +3,6 @@ const users = mongoCollections.user;
 const { ObjectId } = require('mongodb');
 const validation = require('../task/validation');
 const bcrypt = require('bcrypt');
-const {ObjectId} = require('mongodb');
 const saltRounds = 16;
 
 module.exports = {
