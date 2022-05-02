@@ -37,6 +37,10 @@ router.post("/map", async (req, response) => {
   var lat;
   var lon;
   var status;
+  if (!area || !street)
+  {
+    return response.json({success: true, message: "Error"});
+  }
   if (street.trim() == '' || area.trim() == '')
   { return response.json({success: true, message: "Error"});}
   openGeocoder()
