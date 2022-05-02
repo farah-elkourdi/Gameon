@@ -1,0 +1,75 @@
+<div>
+    <section class = "eventInformation">
+        <h1>{{title}}</h1>
+        <div id="organizer">
+            <a href = '/userEvents/{{event.userId}}'>{{event.organizerName}}</a>
+        </div>
+        <div id="status">
+            {{event.status}}
+        </div>
+        <div id="sportCategory">
+            {{event.sportCategory}}
+        </div>
+        <article id="description">
+            <h1>About:</h1>
+            <p>{{event.description}}</p>
+        </article>
+        <div class="address">
+            {{event.address}}
+        </div>
+        <div class="area">
+            {{event.area}}
+        </div>
+        <div class="startTime">
+            {{event.startTime}}
+        </div>
+        <div class="endTime">
+            {{event.endTime}}
+        </div>
+        <div class="minimumParticipants">
+            {{event.minimumParticipants}}
+        </div>
+        <div class="maximumParticipants">
+            {{event.maximumParticipants}}
+        </div>
+        <div class="currentNumberOfParticipants">
+            {{event.currentNumberOfParticipants}}
+        </div>
+        <div id="participants">
+        <ul>
+            {{#each event.participants}}
+            <li><a href="/user/{{this.id}}">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+        </div>
+        <div id="joinOrLeave">
+            {{#if joined}}
+                <form id="leave-form" action="/viewGameEvent/{{event._id}}/leave" method="POST">
+                <button type="submit" id="leaveButton">Leave Event</button>
+                </form>
+            {{else}}
+                <form action="/viewGameEvent/{{event._id}}" method="POST" id="join-form">
+                <button type="submit" id="joinButton">Join Event</button>
+                </form>
+            {{/if}}
+        </div>
+    </section>
+    {{#if joined}}
+    <section id="commentSection">
+    <div class = "commentForm">
+        <form method="POST" id="comment-form">
+            <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+            <textarea name="comment" id="comment"></textarea>
+            <button type="button" id="submitButton" name="submitButton">Submit</button>
+        </form>
+    </div>
+    <div id = "error" hidden></div>
+    <!-- comment list -->
+    <button type="button"id="viewComments">Open Comments</button>
+    <section id = "showComments" hidden>
+    </section>
+    
+    </section>
+    {{/if}}
+</div>
+<script src="/public/js/viewGameEvent.js"></script>

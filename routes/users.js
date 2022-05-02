@@ -112,17 +112,18 @@ router.post('/Checksignin', async(req, res) => {
   try
   {
     let users = await usersData.checkUser(email, password);
+    let user = users.user;
     if (users.authenticated == true) {
-      let user = {}
-      user.userID = users.user._id.toString();
-      user.userFirstName = users.user.firstName;
-      user.userLastName = users.user.lastName;
-      user.email = users.user.email;
-      user.userArea = users.user.area;
-      user.userStreet = users.user.street;
-      user.lat = users.user.lat;
-      user.lon = users.user.lon;
-      req.session.user = user;
+      req.session.user = {
+      userID : user._id,
+      userFirstName : user.firstName,
+      userLastName : user.lastName,
+      email : user.email,
+      userArea : user.area,
+      userStreet : user.street,
+      lat : users.user.lat,
+      lon : users.user.lon
+      };
     } 
   }
   catch(e)

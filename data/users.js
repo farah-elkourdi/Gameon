@@ -1,12 +1,28 @@
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.user;
- const validation = require("../task/validation");
+const { ObjectId } = require('mongodb');
+const validation = require('../task/validation');
 const bcrypt = require('bcrypt');
-const {ObjectId} = require('mongodb');
 const saltRounds = 16;
 
 module.exports = {
-  async createUser(firstName, lastName, email, street, area, lat, lon) {
+  /* get user by id*/
+
+  async getUser(id){
+    if(arguments.length != 1){ throw "getUser : pass one argument."};
+    if(!id) throw "getUser: must pass userId";
+    let ID = validation.checkId(id);
+    const userCollection = await users();
+    const userFound = await userCollection.findOne({_id: ObjectId(ID)});
+    if(userFound === null){
+        throw "getUser: no user found with this id";
+    }
+    userFound._id = userFound._id.toString();
+    return userFound;
+  },
+
+
+  async createUser(firstName, lastName, email, password, street, area, lat, lon) {
     firstName = firstName.trim().toLowerCase();
     lastName = lastName.trim().toLowerCase();
     street = street.trim().toLowerCase();
@@ -51,6 +67,7 @@ async checkUser(email, password)
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });
+  user._id = user._id.toString();
   if (user == null)
   {throw "Either the username or password is invalid"}
   else
@@ -107,4 +124,4 @@ catch (e)
   }
 },
 
-}
+};
