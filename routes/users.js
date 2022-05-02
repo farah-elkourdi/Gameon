@@ -161,27 +161,29 @@ router.post('/Checkprofile', async(req, res) => {
   const lastName = req.body.lastName;
  // const password = req.body.password;
 // const email = req.body.email;
-  const area = req.body.area;
-  const street = req.body.street;
-  const lat =  req.body.lat;
-  const lon =  req.body.lon;
+ // const area = req.body.area;
+  //const street = req.body.street;
+ // const lat =  req.body.lat;
+  //const lon =  req.body.lon;
 
   var errors = [];
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   // if (!validation.validString(password)) errors.push('Invalid password.');
-  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
+  //if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
   // if (!validation.checkEmail(email)) errors.push('Invalid email.');
-  if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
+ // if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
   if(errors.length == 0 )
   {
   try
   {
-    await usersData.updateUser(firstName,lastName,req.session.user.email,  street, area, lat, lon, req.session.user.userID); 
-    req.session.user.userStreet = street;
-    req.session.user.lat = lat
-    req.session.user.lon = lon
-    req.session.user.userArea = area
+    await usersData.updateUser(firstName,lastName, req.session.user.email, req.session.user.userID); 
+
+    //await usersData.updateUser(firstName,lastName,req.session.user.email,  street, area, lat, lon, req.session.user.userID); 
+    // req.session.user.userStreet = street;
+    // req.session.user.lat = lat
+    // req.session.user.lon = lon
+    // req.session.user.userArea = area
     req.session.user.userFirstName = firstName
     req.session.user.userLastName = lastName
   }
