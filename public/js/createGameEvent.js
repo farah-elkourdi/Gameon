@@ -305,10 +305,18 @@
         //runs with response status code 200
         //Need to render individual game page?
         success: function (response) {
+          if (response.success == false)
+          {errorDiv.empty();
+            errorDiv.show()
+            errorDiv.html(response.message);
+          }
+          else
+          {
           errorDiv.empty();
           errorDiv.hide();
           console.log("SUCCESS ADDING TO Database");
           window.open("/eventList", '_self');
+          }
         }
       }
 
