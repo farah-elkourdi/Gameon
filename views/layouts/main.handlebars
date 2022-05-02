@@ -10,13 +10,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-        </script>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 
-        </script>
+    </script>
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+        integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
 </head>
 
@@ -78,12 +79,41 @@
             {{{body}}}
         </main>
     </div>
+    <div class="loading-image" id="loading-image" name="loading-image" hidden>
+        <div class="loadingio-spinner-spinner-mcwunn449vm">
+            <div class="ldio-o4w64grlpj7">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
             var firstName = '{{userDetails.userFirstName}}';
             var lastName = '{{userDetails.userLastName}}';
             var intials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
             var profileImage = $('#profileImage').text(intials);
+        });
+    </script>
+    <script>
+        $(document).ajaxStart(function() {
+            var loadingImg = document.getElementById('loading-image');
+            loadingImg.hidden = false;
+        });
+        $(document).ajaxComplete(function() {
+            var loadingImg = document.getElementById('loading-image');
+            loadingImg.hidden = true;
         });
     </script>
 </body>

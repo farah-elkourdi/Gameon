@@ -1,6 +1,5 @@
 (function ($) {
     $(document).ready(function () {
-
         
         var element = document.getElementById('map');
         var map = L.map(element);
