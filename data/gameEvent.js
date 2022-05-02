@@ -33,7 +33,19 @@ async function getGameEventbyArea(area) {
     const gameEvent = (await gameEventCollection.find({
         area: area,
         startTime: {$gte : now}
-    })).toArray();
+    }).sort({startTime: 1})).toArray();
+
+    return gameEvent;
+}
+
+async function getGameEventbySearchArea(searchText, area) {
+    const now = new Date(Date.now());
+    const gameEventCollection = await gameEvents();
+    const gameEvent = (await gameEventCollection.find({
+        title: {$regex: ".*" + searchText + ".*", $options : 'i'},
+        area: area,
+        startTime: {$gte : now}
+    }).sort({startTime: 1})).toArray();
 
     return gameEvent;
 }
@@ -44,7 +56,7 @@ async function getGameEventbyAreaLimit(area, limitCount) {
     const eventList = (await gameEventCollection.find({
         area: area,
         startTime: {$gte : now}
-    }).limit(limitCount)).toArray();
+    }).limit(limitCount).sort({startTime: -1})).toArray();
 
     return eventList;
 }
@@ -54,7 +66,7 @@ async function getGameEventLandingPage() {
     const gameEventCollection = await gameEvents();
     const eventList = (await gameEventCollection.find({
         startTime: {$gte : now}
-    }).limit(10)).toArray();
+    }).limit(10).sort({startTime: -1})).toArray();
 
     return eventList;
 }
@@ -133,5 +145,6 @@ module.exports = {
     getGameEvent,
     getGameEventbyArea,
     getGameEventbyAreaLimit,
-    getGameEventLandingPage
+    getGameEventLandingPage,
+    getGameEventbySearchArea
 }
