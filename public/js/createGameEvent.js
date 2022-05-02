@@ -221,7 +221,7 @@
     var title = $('#title').val(),
       sportCategory = $('#sportCategory').val(),
       description = $('#description').val(),
-      area = $('#area').val(),
+     // area = $('#area').val(),
       address = $('#address').val(),
       longitude = $('#longitude').val(),
       latitude = $('#latitude').val(),
@@ -230,14 +230,14 @@
       endTime = $('#endTime').val(),
       minParticipants = $('#minParticipants').val(),
       maxParticipants = $('#maxParticipants').val();
-
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
 
     errorDiv.hide();
     try {
       title = checkString(title, 'title');
       sportCategory = checkString(sportCategory, 'sportCategory');
       description = checkString(description, 'description');
-      area = checkString(area, 'area');
+    //  area = checkString(area, 'area');
       address = checkString(address, 'address');
 
       /* NEED to check validity for address, longitude, and latitude */
@@ -274,7 +274,7 @@
           title: title,
           sportCategory: sportCategory,
           description: description,
-          area: area,
+        //  area: area,
           address: address,
           longitude: longitude,
           latitude: latitude,
@@ -291,8 +291,8 @@
           $('#title').val(title);
           $('#sportCategory').val(sportCategory);
           $('#description').val(description);
-          $('#area').val(area);
-          $('#address').val(address);
+         // $('#area').val(area);
+          //$('#address').val(address);
           $('#longitude').val(longitude);
           $('#latitude').val(latitude);
           $('#date').val(date);
@@ -300,6 +300,8 @@
           $('#endTime').val(endTime);
           $('#minParticipants').val(minParticipants);
           $('#maxParticipants').val(maxParticipants);
+          $('#sportCategory').find('option:eq(0)').prop('selected', true);
+          
         },
 
         //runs with response status code 200
@@ -328,8 +330,8 @@
       $('#title').val(title);
       $('#sportCategory').val(sportCategory);
       $('#description').val(description);
-      $('#area').val(area);
-      $('#address').val(address);
+     // $('#area').val(area);
+    //  $('#address').val(address);
       $('#longitude').val(longitude);
       $('#latitude').val(latitude);
       $('#date').val(date);
@@ -337,6 +339,7 @@
       $('#endTime').val(endTime);
       $('#minParticipants').val(minParticipants);
       $('#maxParticipants').val(maxParticipants);
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
       console.log("Failed ADDING TO Database");
       console.log(e);
     }

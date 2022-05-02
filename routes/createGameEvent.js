@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
     
     res.render('createGameEvent/createGameEvent', {
         minStartDate: nowStrDate, 
-        userDetails: req.session.user
+        userDetails: req.session.user,
+        area: req.session.user.userArea,
     });
 });
 
@@ -38,7 +39,7 @@ router.post('/', async (req, res) => {
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
 
-        createGameEventData.area = check.checkString(createGameEventData.area, 'area');
+       // createGameEventData.area = check.checkString(createGameEventData.area, 'area');
 
         createGameEventData.latitude = createGameEventData.latitude;
         createGameEventData.longitude = createGameEventData.longitude;
@@ -58,7 +59,7 @@ router.post('/', async (req, res) => {
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
      
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
-            createGameEventData.sportCategory, createGameEventData.description, createGameEventData.area,
+            createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
             createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
             createGameEventData.maximumParticipants);
