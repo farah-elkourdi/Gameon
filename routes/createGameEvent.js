@@ -66,13 +66,15 @@ router.post('/', async (req, res) => {
         
         return res.redirect('/eventList');
     } catch (e) {
-        return res.status(400).render('createGameEvent/createGameEvent', {
-            error: e,
-            input: createGameEventData,
-            minStartDate: nowStrDate, 
+        return res.json({success: false, message: e});
+        // return res.status(400).render('createGameEvent/createGameEvent', { "error": {
+        //     error: e,
+        //     input: createGameEventData,
+        //     minStartDate: nowStrDate, 
 
-            userDetails: req.session.user
-        });
+        //     userDetails: req.session.user
+        // }
+      //  });
     }
 
     try {
