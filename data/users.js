@@ -78,18 +78,19 @@ async checkUser(email, password)
     {throw "Either the username or password is invalid"}
   }
 },
-async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
+//async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
+  async updateUser(firstName, lastName, email, id) {
   firstName = firstName.trim().toLowerCase();
   lastName = lastName.trim().toLowerCase();
-  street = street.trim().toLowerCase();
-  area = area.trim().toLowerCase();
+  //street = street.trim().toLowerCase();
+  //area = area.trim().toLowerCase();
   email = email.trim().toLowerCase();
   if (!validation.validString(firstName, "firstName")) throw 'Invalid first name.';
   if (!validation.validString(lastName, "lastName")) throw 'Invalid last name.';
   // if (!validation.validString(password)) throw 'Invalid password.';
-  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) throw 'Invalid area.';
+ // if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) throw 'Invalid area.';
   if (!validation.checkEmail(email)) throw 'Invalid email.';
-  if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
+ // if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });
@@ -97,10 +98,12 @@ async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
     throw "There is no a user with that email.";
   }
   let userObj = {
-    area: area,
-    street: street,
-    lat: lat,
-    lon: lon
+    firstName: firstName,
+    lastName: lastName
+   // area: area,
+   // street: street,
+   // lat: lat,
+    //lon: lon
   };
   if (user != null) {
     try{

@@ -2,11 +2,11 @@
  // $('#osm-map').hide();
   $('#firstName').text("");
   $('#lastName').text("");
-  $('#password').text("");
-  $('#email').text("");
-   $('#street').text("");
-   var selectedvalue = $('#area').attr("selectvalue");
-   document.getElementById('area').value = selectedvalue;
+ // $('#password').text("");
+  //$('#email').text("");
+  // $('#street').text("");
+  // var selectedvalue = $('#area').attr("selectvalue");
+  // document.getElementById('area').value = selectedvalue;
 
 
         $('#saveSubmit').click(function (event) {
@@ -15,17 +15,18 @@
         let lastNameInput = $('#lastName').val();
        // let passwordInput = $('#password').val();
         //let emailInput = $('#email').val();
-        let streetInput = $('#street').val();
-        let areaInput = $('#area').val();
-        let latInput = $('#labelStreet').attr('lat');
-        let lonInput = $('#labelStreet').attr('lon');
+      //  let streetInput = $('#street').val();
+      //  let areaInput = $('#area').val();
+      //  let latInput = $('#labelStreet').attr('lat');
+     //   let lonInput = $('#labelStreet').attr('lon');
         $('#error').empty();
         $('#error').hide();
         var requestConfig = {
             method: 'POST',
             url: '/user/Checkprofile',
             contentType: 'application/json',
-            data: JSON.stringify({ lon:lonInput , lat: latInput , firstName: firstNameInput, lastName: lastNameInput, street:streetInput ,  area:areaInput  }),
+         //   data: JSON.stringify({ lon:lonInput , lat: latInput , firstName: firstNameInput, lastName: lastNameInput, street:streetInput ,  area:areaInput  }),
+         data: JSON.stringify({ firstName: firstNameInput, lastName: lastNameInput }),
             cache: false
           }
           $.ajax(requestConfig).then(function (responseMessage) {
