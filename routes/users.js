@@ -216,4 +216,74 @@ router.get('/userprofile', async (req, res) => {
   }
 });
 
+router.get('/changepass', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/changepass", {
+      title: "Change password"
+  });
+  }
+});
+
+router.post('/Checkpass', async(req, res) => {
+  var errors = [];
+  const password = req.body.password;
+  if (!validation.validString(password)) errors.push('Invalid password.');
+  if(errors.length == 0 )
+{
+try
+{
+  await usersData.updatePass(password, req.session.user.email); 
+}
+catch(e)
+{
+  errors.push('Error can not update password.');
+return res.json({success: true, message: errors});
+}
+return res.json({success: true, message: errors});
+}
+else
+return res.json({success: true, message: errors});
+});
+
+
+router.get('/forgetpass', async (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/forgetpass", {
+      title: "Forget password"
+  });
+  }
+});
+
+router.post('/temppass', async(req, res) => {
+  var errors = [];
+  const email = req.body.email;
+  if (!validation.checkEmail(email)) errors.push('Invalid email.');
+  if(errors.length == 0 )
+{
+try
+{
+  await usersData.forgetPass( email  ); 
+}
+catch(e)
+{
+  errors.push('Error email does not exist.');
+return res.json({success: true, message: errors});
+}
+return res.json({success: true, message: errors});
+}
+else
+return res.json({success: true, message: errors});
+});
+
+
+
 module.exports = router;
+
+
+
+
+
