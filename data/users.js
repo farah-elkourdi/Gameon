@@ -3,7 +3,20 @@ const users = mongoCollections.user;
 const { ObjectId } = require('mongodb');
 const validation = require('../task/validation');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const hbs = require('nodemailer-handlebars');
+require('dotenv').config();
+const contactUs = require('../data/contactus');
 const saltRounds = 16;
+
+function getRandomString(length) {
+  const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i += 1) {
+    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+  }
+  return result;
+}
 
 module.exports = {
   /* get user by id*/
@@ -126,5 +139,48 @@ catch (e)
 }
   }
 },
+
+
+async updatePass(pass, email) {
+  if (!validation.validString(pass)) throw 'Invalid password.';
+  password = await bcrypt.hash(pass, saltRounds);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ email: email });
+  if (user == null) {
+    throw "There is no a user with that email.";
+  }
+
+  let userObj = {
+    password: password
+  };
+
+  if (user != null) {
+    try{
+    let id = user._id
+  var updateUser = await userCollection.updateOne({_id: ObjectId(id)}, {$set: userObj});
+  }
+
+catch (e)
+{ if (updateUser.modifiedCount === 0) {
+  throw 'could not update user successfully';
+}}}}, 
+
+
+
+async forgetPass(email) {
+  if (!validation.checkEmail(email)) throw 'Invalid password or email.';
+  const userCollection = await users();
+  const user = await userCollection.findOne({ email: email });
+  if (user == null) {
+    throw "There is no a user with that email.";
+  }
+
+  if (user != null) {
+    var temppass = getRandomString(8)
+    await contactUs.emailSetuppass(email, temppass, user.firstName); 
+}}, 
+
+
+
 
 };
