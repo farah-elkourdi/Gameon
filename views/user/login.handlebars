@@ -1,21 +1,42 @@
-<header>
-    <h1>
-        Login page
-    </h1>
-</header>
+<div class="container h-100 login-divider">
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                    <img src="/public/img/logo.png" class="brand_logo" alt="Logo">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                <form method="POST" id="login-form">
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input class="form-control input_user" id="email" type="text" placeholder="Enter Email"
+                            name="email" value="{{email}}" />
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        <input class="form-control input_pass" id="password" type="password"
+                            placeholder="Enter password" name="password" value="{{password}}" />
+                    </div>
+                    <div class="d-flex justify-content-center mt-3 login_container">
+                        <button id="btnlogin" type="button" name="button" class="btn login_btn">Login</button>
+                    </div>
+                </form>
+                <ul id="error">
+                </ul>
+            </div>
 
-<form method="POST" id="login-form">
-
-    <label id="labelEmail" for="email"> Enter Email: </label>
-    <input id="email" type="text" placeholder="Enter Email" name="email" value="{{email}}" />
-
-    <label id="labelPassword" for="password"> Enter a password: </label>
-    <input id="password" type="password" placeholder="Enter password" name="password" value="{{password}}" />
-
-    <button id="btnlogin">Login</button>
-</form>
-<ul id="error">
-</ul>
-<a href="/user/signup">Need to register? Click here to sign-up</a>
+            <div class="mt-4">
+                <div class="d-flex justify-content-center links">
+                    Don't have an account? <a href="/user/signup" class="ml-2">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="/public/js/signin.js"></script>

@@ -263,5 +263,10 @@ checkEmail(email)
 return validator.validate(email); 
 }
 
+checkValidationDlArea(areaInput)
+{
+  const area = ["hoboken" , "jersey city" , "union city" , "kearny"]
+  return area.includes(areaInput);
+},
 
 };

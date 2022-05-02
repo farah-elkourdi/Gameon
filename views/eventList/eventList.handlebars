@@ -9,10 +9,19 @@
                     <div class="d-flex w-100 align-items-center justify-content-between">
                         <strong class="mb-1">{{title}}</strong>
                         <small>{{startTime}}</small>
+                        <small><strong>TO</strong></small>
+                        <small>{{endTime}}</small>
                     </div>
                     <div class="col-10 mb-1 small">
                         {{description}}
                     </div>
+                    <div>Sport: {{sportCategory}}</div>
+                    <div>Area: {{area}}</div>
+                    <div>Location: {{address}}</div>
+                    <div>Max: {{maximumParticipants}}</div>
+                    <div>Min: {{minimumParticipants}}</div>
+                    <div>Spots remaining: {{spots}}</div>
+                    {{!-- sport, end time, address, area, no of spots remaining (max-min) --}}
                 </li>
                 {{/each}}
             </ul>

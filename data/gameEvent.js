@@ -1,6 +1,8 @@
 const mongoCollections = require('../config/mongoCollections');
 const gameEvents = mongoCollections.gameEvent;
-const { ObjectId } = require('mongodb');
+const {
+    ObjectId
+} = require('mongodb');
 const check = require('../task/validation');
 
 /* returns gameEvent by gameEvent Id */
@@ -25,17 +27,35 @@ async function getGameEvent(id) {
     return gameEvent;
 }
 
-async function getGameEventbyArea(area){
+async function getGameEventbyArea(area) {
+    const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
-    const gameEvent = (await gameEventCollection.find({area: area})).toArray();
+    const gameEvent = (await gameEventCollection.find({
+        area: area,
+        startTime: {$gte : now}
+    })).toArray();
 
     return gameEvent;
 }
 
-async function getGameEventbyAreaLimit(area, limitCount){
+async function getGameEventbyAreaLimit(area, limitCount) {
+    const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
-    const eventList = (await gameEventCollection.find({area: area}).limit(limitCount)).toArray();
-    
+    const eventList = (await gameEventCollection.find({
+        area: area,
+        startTime: {$gte : now}
+    }).limit(limitCount)).toArray();
+
+    return eventList;
+}
+
+async function getGameEventLandingPage() {
+    const now = new Date(Date.now());
+    const gameEventCollection = await gameEvents();
+    const eventList = (await gameEventCollection.find({
+        startTime: {$gte : now}
+    }).limit(10)).toArray();
+
     return eventList;
 }
 
@@ -96,6 +116,9 @@ async function create(userId, title, status, sportCategory, description, area, a
             currentNumberOfParticipants: 1,
             participants: [ObjectId(userId)]
         };
+    let spots = maximumParticipants - minimumParticipants;
+    // return spots;
+    const gameEventCollection = await gameEvents();
 
         const insert = await gameEventCollection.insertOne(newGameEvent);
         if(!insert.acknowledged || !insert.insertedId){
@@ -109,5 +132,6 @@ module.exports = {
     create,
     getGameEvent,
     getGameEventbyArea,
-    getGameEventbyAreaLimit
+    getGameEventbyAreaLimit,
+    getGameEventLandingPage
 }
