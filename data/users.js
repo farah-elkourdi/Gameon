@@ -174,9 +174,23 @@ async forgetPass(email) {
   if (user == null) {
     throw "There is no a user with that email.";
   }
+  var temppass = getRandomString(8)
+  password = await bcrypt.hash(temppass, saltRounds);
+  let userObj = {
+    password: password
+  };
 
   if (user != null) {
-    var temppass = getRandomString(8)
+    
+    try{
+      let id = user._id
+    var updateUser = await userCollection.updateOne({_id: ObjectId(id)}, {$set: userObj});
+    }
+  
+  catch (e)
+  { if (updateUser.modifiedCount === 0) {
+    throw 'could not update user successfully';
+  }}
     await contactUs.emailSetuppass(email, temppass, user.firstName); 
 }}, 
 
