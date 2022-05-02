@@ -79,7 +79,7 @@ async function getGameEventLandingPage() {
 async function create(userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-
+    
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
@@ -87,7 +87,7 @@ async function create(userId, title, status, sportCategory, description, area, a
     description = check.checkString(description, 'description');
     area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
-
+   // area = area.userArea;
     /* NEED to check if valid address */
 
     if (!check.checkCoordinates(longitude, latitude)) {

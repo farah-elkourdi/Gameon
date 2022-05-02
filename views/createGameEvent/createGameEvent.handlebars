@@ -34,16 +34,17 @@
                     value="{{input.description}}"></textarea>
             </div>
         </div>
-        <div class="form-group d-flex">
+        <div class="form-group d-flex" id="area" area="{{area}}">
             <label class="control-label col-sm-2" for="address">Address:</label>
             <div class="col-sm-2">
-                <select class="form-control" name="area" id="area">
+                <p>{{area}}</p>
+                {{!-- <select class="form-control" name="area" id="area">
                     <option value="none" selected disabled hidden>Choose your area</option>
                     <option value="hoboken">Hoboken</option>
                     <option value="jersey city">Jersey City</option>
                     <option value="kearny">Kearny</option>
                     <option value="union city">Union City</option>
-                </select>
+                </select> --}}
             </div>
             <div class="col-sm-3">
                 <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
@@ -127,7 +128,8 @@
 
     function loadmap() {
         var street = $('#address').val();
-        var area = $('#area').val();
+        // var area = $('#area').val();
+        var area = $('#area').attr('area');
         var requestConfig = {
             method: 'POST',
             url: '/user/map',
