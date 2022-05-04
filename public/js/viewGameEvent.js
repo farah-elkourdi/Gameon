@@ -66,6 +66,43 @@ const onFormClick = async function (event) {
 
     $('#submitButton').click(onFormClick);
 
-    $('#comments').ready(getCommentList($('#gameEventId').val())); 
+    $('#comments').ready(getCommentList($('#gameEventId').val()));
+    
+    $(document).ready(function () {
+
+        var event_participants = document.getElementById('event_participants').getElementsByTagName('li');
+        for (let i = 0; i <= event_participants.length - 1; i++) {
+            let div = event_participants[i].getElementsByTagName('div');
+            let fullName = div['profileImageName'].innerText;
+            let profileImage = div['profileImage'];
+
+            const allNames = fullName.trim().split(' ');
+            const initials = allNames.reduce((acc, curr, index) => {
+                if (index === 0 || index === allNames.length - 1) {
+                    acc = `${acc}${curr.charAt(0).toUpperCase()}`;
+                }
+                return acc;
+            }, '');
+            profileImage.textContent = initials;
+
+        }
+
+        var event_comments = document.getElementById('comments').getElementsByClassName('media');
+        for (let i = 0; i <= event_comments.length - 1; i++) {
+            let div = event_comments[i].getElementsByTagName('div');
+            let fullName = event_comments[i].getElementsByTagName('h4')[0].textContent;
+            let profileImage = div['userCommentProfileImage'];
+
+            const allNames = fullName.trim().split(' ');
+            const initials = allNames.reduce((acc, curr, index) => {
+                if (index === 0 || index === allNames.length - 1) {
+                    acc = `${acc}${curr.charAt(0).toUpperCase()}`;
+                }
+                return acc;
+            }, '');
+            profileImage.textContent = initials;
+
+        }
+    });
 
 })(window.jQuery);
