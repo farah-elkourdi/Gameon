@@ -107,25 +107,13 @@
                     </div>
                 </fieldset>
             </form>
+            <div id="error"></div>
         </div>
     </div>
-    <h3>{{comments.length}} Comments</h3>
-    {{#each comments}}
-    <div class="media">
-        <div class="row pl-3">
-            <div class="float-left">
-                <div class="comment-profileImage" name="userCommentProfileImage"></div>
-            </div>
-            <div class="media-body pl-4">
-                <h4 class="media-heading text-capitalize">{{this.name}}</h4>
-                <p>{{this.comment}}</p>
-                <ul class="list-unstyled list-inline media-detail float-left">
-                    <li><i class="fa fa-calendar"></i>{{this.timestamp}}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    {{/each}}
+    <h3>Comments</h3>
+    <section id="showComments">
+        <!-- comments list goes here -->
+    </section>
 </div>
 {{/if}}
 
