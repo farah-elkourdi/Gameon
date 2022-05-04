@@ -79,7 +79,7 @@ async function getGameEventLandingPage() {
 async function create(userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-
+    
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
@@ -87,7 +87,7 @@ async function create(userId, title, status, sportCategory, description, area, a
     description = check.checkString(description, 'description');
     area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
-
+   // area = area.userArea;
     /* NEED to check if valid address */
 
     if (!check.checkCoordinates(longitude, latitude)) {
@@ -113,36 +113,31 @@ async function create(userId, title, status, sportCategory, description, area, a
         throw "Error: minimum participants is greater than maximum participants"
     }
 
+        let newGameEvent = {
+            userId: userId, 
+            title: title,
+            status: status,
+            sportCategory: sportCategory,
+            description: description,
+            area: area,
+            address: address,
+            startTime: startTime, 
+            endTime: endTime, 
+            minimumParticipants: minimumParticipants,
+            maximumParticipants: maximumParticipants,
+            currentNumberOfParticipants: 1,
+            participants: [ObjectId(userId)]
+        };
     let spots = maximumParticipants - minimumParticipants;
     // return spots;
     const gameEventCollection = await gameEvents();
 
-    let newGameEvent = {
-        userId: userId,
-        title: title,
-        status: status,
-        sportCategory: sportCategory,
-        description: description,
-        area: area,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-        startTime: startTime,
-        endTime: endTime,
-        minimumParticipants: minimumParticipants,
-        maximumParticipants: maximumParticipants,
-        currentNumberOfParticipants: 1,
-        participants: [ObjectId(userId)]
-    };
-
-    const insert = await gameEventCollection.insertOne(newGameEvent);
-    if (!insert.acknowledged || !insert.insertedId) {
-        throw "Error: could not add gameEvent";
-    }
-
-    return {
-        gameEventCreated: true
-    };
+        const insert = await gameEventCollection.insertOne(newGameEvent);
+        if(!insert.acknowledged || !insert.insertedId){
+            throw "Error: could not add gameEvent";
+        }
+        newGameEvent._id = insert.insertedId;
+        return newGameEvent;
 }
 
 module.exports = {

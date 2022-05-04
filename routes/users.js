@@ -37,6 +37,10 @@ router.post("/map", async (req, response) => {
   var lat;
   var lon;
   var status;
+  if (!area || !street)
+  {
+    return response.json({success: true, message: "Error"});
+  }
   if (street.trim() == '' || area.trim() == '')
   { return response.json({success: true, message: "Error"});}
   openGeocoder()
@@ -112,17 +116,18 @@ router.post('/Checksignin', async(req, res) => {
   try
   {
     let users = await usersData.checkUser(email, password);
+    let user = users.user;
     if (users.authenticated == true) {
-      let user = {}
-      user.userID = users.user._id.toString();
-      user.userFirstName = users.user.firstName;
-      user.userLastName = users.user.lastName;
-      user.email = users.user.email;
-      user.userArea = users.user.area;
-      user.userStreet = users.user.street;
-      user.lat = users.user.lat;
-      user.lon = users.user.lon;
-      req.session.user = user;
+      req.session.user = {
+      userID : user._id,
+      userFirstName : user.firstName,
+      userLastName : user.lastName,
+      email : user.email,
+      userArea : user.area,
+      userStreet : user.street,
+      lat : users.user.lat,
+      lon : users.user.lon
+      };
     } 
   }
   catch(e)
@@ -156,27 +161,29 @@ router.post('/Checkprofile', async(req, res) => {
   const lastName = req.body.lastName;
  // const password = req.body.password;
 // const email = req.body.email;
-  const area = req.body.area;
-  const street = req.body.street;
-  const lat =  req.body.lat;
-  const lon =  req.body.lon;
+ // const area = req.body.area;
+  //const street = req.body.street;
+ // const lat =  req.body.lat;
+  //const lon =  req.body.lon;
 
   var errors = [];
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   // if (!validation.validString(password)) errors.push('Invalid password.');
-  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
+  //if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) errors.push('Invalid area.');
   // if (!validation.checkEmail(email)) errors.push('Invalid email.');
-  if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
+ // if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) errors.push('Invalid address');
   if(errors.length == 0 )
   {
   try
   {
-    await usersData.updateUser(firstName,lastName,req.session.user.email,  street, area, lat, lon, req.session.user.userID); 
-    req.session.user.userStreet = street;
-    req.session.user.lat = lat
-    req.session.user.lon = lon
-    req.session.user.userArea = area
+    await usersData.updateUser(firstName,lastName, req.session.user.email, req.session.user.userID); 
+
+    //await usersData.updateUser(firstName,lastName,req.session.user.email,  street, area, lat, lon, req.session.user.userID); 
+    // req.session.user.userStreet = street;
+    // req.session.user.lat = lat
+    // req.session.user.lon = lon
+    // req.session.user.userArea = area
     req.session.user.userFirstName = firstName
     req.session.user.userLastName = lastName
   }
@@ -191,4 +198,92 @@ else
 return res.json({success: true, message: errors});
 });
 
+router.get('/userprofile', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/userprofile", {
+      title: "Profile",
+      userDetails: req.session.user,
+      firstName: req.session.user.userFirstName,
+      lastName: req.session.user.userLastName,
+      email: req.session.user.email,
+      street:req.session.user.userStreet,
+      area:req.session.user.userArea,
+      lat: req.session.user.lat,
+      lon: req.session.user.lon
+  });
+  }
+});
+
+router.get('/changepass', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/changepass", {
+      title: "Change password"
+  });
+  }
+});
+
+router.post('/Checkpass', async(req, res) => {
+  var errors = [];
+  const password = req.body.password;
+  if (!validation.validString(password)) errors.push('Invalid password.');
+  if(errors.length == 0 )
+{
+try
+{
+  await usersData.updatePass(password, req.session.user.email); 
+}
+catch(e)
+{
+  errors.push('Error can not update password.');
+return res.json({success: true, message: errors});
+}
+return res.json({success: true, message: errors});
+}
+else
+return res.json({success: true, message: errors});
+});
+
+
+router.get('/forgetpass', async (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("user/forgetpass", {
+      title: "Forget password"
+  });
+  }
+});
+
+router.post('/temppass', async(req, res) => {
+  var errors = [];
+  const email = req.body.email;
+  if (!validation.checkEmail(email)) errors.push('Invalid email.');
+  if(errors.length == 0 )
+{
+try
+{
+  await usersData.forgetPass( email  ); 
+}
+catch(e)
+{
+  errors.push('Error email does not exist.');
+return res.json({success: true, message: errors});
+}
+return res.json({success: true, message: errors});
+}
+else
+return res.json({success: true, message: errors});
+});
+
+
+
 module.exports = router;
+
+
+
+
+

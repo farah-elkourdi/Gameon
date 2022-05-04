@@ -1,6 +1,6 @@
 <header>
     <h1>
-        profile page
+        Profile page - Edit profile name
     </h1>
 </header>
 
@@ -12,7 +12,7 @@
     <label id="labellastname" for="lastName"> last name: </label>
     <input id="lastName" type="text" placeholder="Enter last name" name="lastName" value="{{lastName}}" />
 
-    <label id="labelAddress"> Addrress: </label>
+    {{!-- <label id="labelAddress"> Addrress: </label>
     <label id="labelStreet" for="street" lat="{{lat}}" lon="{{lon}}"> street: </label>
     <input id="street" type="text" placeholder="Enter street" name="street" value="{{street}}" />
 
@@ -21,7 +21,7 @@
         <option value="jersey city">Jersey City</option>
         <option value="kearny" selected="selected">Kearny</option>
         <option value="union city">Union City</option>
-    </select>
+    </select> --}}
 
 
     <button class="btnsave" id="saveSubmit">Save</button>
@@ -30,9 +30,10 @@
 <ul id="error">
 </ul>
 
-<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+{{!--
+<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" /> --}}
 <script src="/public/js/userprofile.js"></script>
-<div id="osm-map"></div>
+{{!-- <div id="osm-map"></div>
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script>
@@ -111,4 +112,4 @@
                 };
             });
     }
-</script>
+</script> --}}

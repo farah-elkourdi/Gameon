@@ -1,12 +1,41 @@
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.user;
- const validation = require("../task/validation");
+const { ObjectId } = require('mongodb');
+const validation = require('../task/validation');
 const bcrypt = require('bcrypt');
-const {ObjectId} = require('mongodb');
+const nodemailer = require('nodemailer');
+const hbs = require('nodemailer-handlebars');
+require('dotenv').config();
+const contactUs = require('../data/contactus');
 const saltRounds = 16;
 
+function getRandomString(length) {
+  const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i += 1) {
+    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+  }
+  return result;
+}
+
 module.exports = {
-  async createUser(firstName, lastName, email, street, area, lat, lon) {
+  /* get user by id*/
+
+  async getUser(id){
+    if(arguments.length != 1){ throw "getUser : pass one argument."};
+    if(!id) throw "getUser: must pass userId";
+    let ID = validation.checkId(id);
+    const userCollection = await users();
+    const userFound = await userCollection.findOne({_id: ObjectId(ID)});
+    if(userFound === null){
+        throw "getUser: no user found with this id";
+    }
+    userFound._id = userFound._id.toString();
+    return userFound;
+  },
+
+
+  async createUser(firstName, lastName, email, password, street, area, lat, lon) {
     firstName = firstName.trim().toLowerCase();
     lastName = lastName.trim().toLowerCase();
     street = street.trim().toLowerCase();
@@ -51,6 +80,7 @@ async checkUser(email, password)
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });
+  user._id = user._id.toString();
   if (user == null)
   {throw "Either the username or password is invalid"}
   else
@@ -61,18 +91,19 @@ async checkUser(email, password)
     {throw "Either the username or password is invalid"}
   }
 },
-async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
+//async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
+  async updateUser(firstName, lastName, email, id) {
   firstName = firstName.trim().toLowerCase();
   lastName = lastName.trim().toLowerCase();
-  street = street.trim().toLowerCase();
-  area = area.trim().toLowerCase();
+  //street = street.trim().toLowerCase();
+  //area = area.trim().toLowerCase();
   email = email.trim().toLowerCase();
   if (!validation.validString(firstName, "firstName")) throw 'Invalid first name.';
   if (!validation.validString(lastName, "lastName")) throw 'Invalid last name.';
   // if (!validation.validString(password)) throw 'Invalid password.';
-  if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) throw 'Invalid area.';
+ // if (!validation.validString(area) || !validation.checkValidationDlArea(area) ) throw 'Invalid area.';
   if (!validation.checkEmail(email)) throw 'Invalid email.';
-  if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
+ // if (!validation.checkCoordinates(lon,lat) || !validation.validString(street)) throw 'Invalid address';
 
   const userCollection = await users();
   const user = await userCollection.findOne({ email: email });
@@ -80,10 +111,12 @@ async updateUser(firstName, lastName, email, street, area, lat, lon, id) {
     throw "There is no a user with that email.";
   }
   let userObj = {
-    area: area,
-    street: street,
-    lat: lat,
-    lon: lon
+    firstName: firstName,
+    lastName: lastName
+   // area: area,
+   // street: street,
+   // lat: lat,
+    //lon: lon
   };
   if (user != null) {
     try{
@@ -107,4 +140,61 @@ catch (e)
   }
 },
 
-}
+
+async updatePass(pass, email) {
+  if (!validation.validString(pass)) throw 'Invalid password.';
+  password = await bcrypt.hash(pass, saltRounds);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ email: email });
+  if (user == null) {
+    throw "There is no a user with that email.";
+  }
+
+  let userObj = {
+    password: password
+  };
+
+  if (user != null) {
+    try{
+    let id = user._id
+  var updateUser = await userCollection.updateOne({_id: ObjectId(id)}, {$set: userObj});
+  }
+
+catch (e)
+{ if (updateUser.modifiedCount === 0) {
+  throw 'could not update user successfully';
+}}}}, 
+
+
+
+async forgetPass(email) {
+  if (!validation.checkEmail(email)) throw 'Invalid password or email.';
+  const userCollection = await users();
+  const user = await userCollection.findOne({ email: email });
+  if (user == null) {
+    throw "There is no a user with that email.";
+  }
+  var temppass = getRandomString(8)
+  password = await bcrypt.hash(temppass, saltRounds);
+  let userObj = {
+    password: password
+  };
+
+  if (user != null) {
+    
+    try{
+      let id = user._id
+    var updateUser = await userCollection.updateOne({_id: ObjectId(id)}, {$set: userObj});
+    }
+  
+  catch (e)
+  { if (updateUser.modifiedCount === 0) {
+    throw 'could not update user successfully';
+  }}
+    await contactUs.emailSetuppass(email, temppass, user.firstName); 
+}}, 
+
+
+
+
+};

@@ -18,7 +18,8 @@ router.get('/', async (req, res) => {
     
     res.render('createGameEvent/createGameEvent', {
         minStartDate: nowStrDate, 
-        userDetails: req.session.user
+        userDetails: req.session.user,
+        area: req.session.user.userArea,
     });
 });
 
@@ -38,7 +39,7 @@ router.post('/', async (req, res) => {
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
 
-        createGameEventData.area = check.checkString(createGameEventData.area, 'area');
+       // createGameEventData.area = check.checkString(createGameEventData.area, 'area');
 
         createGameEventData.latitude = createGameEventData.latitude;
         createGameEventData.longitude = createGameEventData.longitude;
@@ -58,7 +59,7 @@ router.post('/', async (req, res) => {
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
      
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
-            createGameEventData.sportCategory, createGameEventData.description, createGameEventData.area,
+            createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
             createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
             createGameEventData.maximumParticipants);
@@ -76,7 +77,7 @@ router.post('/', async (req, res) => {
         // }
       //  });
     }
-
+    /*
     try {
         const {
             title,
@@ -94,15 +95,11 @@ router.post('/', async (req, res) => {
         } = createGameEventData;
         const gameEvent = await data.gameEvent.create(userId, title, status, sportCategory, description, area, address, latitude,
             longitude, startTime, endTime, minParticipants, maxParticipants);
-        /* render the individual game page */
-        if (gameEvent.gameEventCreated) {
-            res.status(200).json({
-                status: "success"
-            });
-        } else {
-            res.status(404).json({
-                status: "failure"
-            });
+        //render the individual game page 
+        if(gameEvent){
+            res.redirect('/viewGameEvent/' + gameEvent._id);
+        } else{
+            res.status(404).json({status: "failure"});
         }
     } catch (e) {
         res.status(500).render('createGameEvent/createGameEvent', {
@@ -113,6 +110,7 @@ router.post('/', async (req, res) => {
             userDetails: req.session.user
         })
     }
+    */
 });
 
 module.exports = router;
