@@ -1,5 +1,6 @@
 const mongoCollections = require('../config/mongoCollections');
 const gameEvents = mongoCollections.gameEvent;
+const users = mongoCollections.user;
 const {
     ObjectId
 } = require('mongodb');
@@ -46,7 +47,8 @@ async function getGameEventbySearchArea(searchText, area) {
         area: area,
         startTime: {$gte : now}
     }).sort({startTime: 1})).toArray();
-
+   // let allEvents = await getGameEventbyArea(area);
+  //  allEvents = allEvents.filter(event => !gameEvent.includes(event))
     return gameEvent;
 }
 
@@ -140,11 +142,39 @@ async function create(userId, title, status, sportCategory, description, area, a
         return newGameEvent;
 }
 
+async function getEventOwnerFirstName(id) 
+{
+    const gameEventCollection = await gameEvents();
+    const event = await gameEventCollection.findOne({_id: ObjectId(id)});
+    if (event === null) throw 'No event with that id';
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: ObjectId(event.userId)});
+  if (user == null) {
+    throw "There is no a user with that Id.";
+  }
+    return user.firstName;
+}
+
+async function getEventOwnerLastName(id) 
+{
+    const gameEventCollection = await gameEvents();
+    const event = await gameEventCollection.findOne({_id: ObjectId(id)});
+    if (event === null) throw 'No event with that id';
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: ObjectId(event.userId)});
+  if (user == null) {
+    throw "There is no a user with that Id.";
+  }
+    return  user.lastName ;
+}
+
 module.exports = {
     create,
     getGameEvent,
     getGameEventbyArea,
     getGameEventbyAreaLimit,
     getGameEventLandingPage,
-    getGameEventbySearchArea
+    getGameEventbySearchArea,
+    getEventOwnerFirstName,
+    getEventOwnerLastName
 }
