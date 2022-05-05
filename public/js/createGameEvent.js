@@ -254,7 +254,7 @@
       minParticipants = checkNum(minParticipants, 'minParticipants');
       maxParticipants = checkNum(maxParticipants, 'maxParticipants');
       if (!areValidTimes(startTime_date, endTime_date)) {
-        throw "Error: endTime must be at last an hour after startTime";
+        throw "Error: endTime must be at least an hour after startTime";
       }
       if (!validMinParticipantLimit(sportCategory, minParticipants)) {
         throw `Error: invalid minParticipants for ${sportCategory}`;
