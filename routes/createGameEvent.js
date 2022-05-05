@@ -24,10 +24,6 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    
-    let nowStrDate =  new Date().toLocaleDateString('en-CA');
-    
-
     createGameEventData = req.body;
     let userId = req.session.user.userID;
     
