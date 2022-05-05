@@ -1,8 +1,7 @@
  
  <div id={{gameEventId}}>
-    <div class="error" id="errorDivEdit">{{error}}</div>
-    <form method='POST' id='userEventsEdit-partialForm' gameEventId={{gameEventId}} coordinatorId={{coordinatorId}} userId={{userId}}>
-        
+    <div class="partialErrorDivEdit">{{error}}</div>
+    <form method='POST' class='userEventsEdit-partialSubmitForm' gameEventId={{gameEventId}} coordinatorId={{coordinatorId}} userId={{userId}}>
         <label  for="title">Title:</label>
         <input type="text"  id="title" placeholder="Enter title" name="title" value="{{input.title}}">
             
@@ -45,7 +44,8 @@
         <input type="number" id="maxParticipants" name="maxParticipants" placeholder='Maximum' value="{{input.maximumParticipants}}">
         
         <button type="submit" class="submitEditButton" >Submit</button>
-        <button type="submit" class="cancelEditButton" >Cancel</button>
-           
     </form>
+    <form method='GET' class='userEventsEdit-partialCancelForm'>
+        <button type="submit" class="cancelEditButton" >Cancel</button>   
+    </form>    
 </div>

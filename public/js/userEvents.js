@@ -334,15 +334,14 @@
         }
     });
 
-    //
-    function bindEventsToEditButton (editForm){
+    //different results depending on pressing the "submit" or "cancel" button
+    function bindEventsToEditButton (editForm, recoverHTML, coordinatorId, gameEventId){
         editForm.find('.submitEditButton').on('click', function (event){
             event.preventDefault();
             console.log(this);
-            let errorDivEdit = 
-            let gameEventId = $(this).attr('gameEventId');
-            let coordinatorId = $(this).attr('coordinatorId');
-            let usertId = $(this).attr('userId');
+
+            let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
+
             var title = $('#title').val(),
                 sportCategory = $('#sportCategory').val(),
                 description = $('#description').val(),
@@ -357,7 +356,7 @@
                 maxParticipants = $('#maxParticipants').val();
                 $('#sportCategory').find('option:eq(0)').prop('selected', true);
 
-            errorDivEdit.hide();
+            errorDiv.hide();
 
             try {
                 title = checkString(title, 'title');
@@ -394,7 +393,7 @@
                 
                 var requestConfig = {
                     method: 'POST',
-                    url: `/userEvents/${gameEventId}`, 
+                    url: `/userEvents/edit/${gameEventId}`, 
                     contentType: 'application/json',
                     data: JSON.stringify({
                         coordinatorId: coordinatorId,
@@ -410,57 +409,36 @@
                         endTime: endTime,
                         minParticipants: minParticipants,
                         maxParticipants: maxParticipants
-                    }),
-          
-                  //response status code not 200
-                  error: function (responseMessage) {
-                    errorDivEdit.show();
-                    $('#title').val(title);
-                    $('#sportCategory').val(sportCategory);
-                    $('#description').val(description);
-                   // $('#area').val(area);
-                    $('#address').val(address);
-                    // $('#longitude').val(longitude);
-                    // $('#latitude').val(latitude);
-                    $('#date').val(date);
-                    $('#startTime').val(startTime);
-                    $('#endTime').val(endTime);
-                    $('#minParticipants').val(minParticipants);
-                    $('#maxParticipants').val(maxParticipants);
-                    $('#sportCategory').find('option:eq(0)').prop('selected', true);
-                    
-                  },
-          
-                  //runs with response status code 200
-                  //Need to render individual game page?
-                  success: function (response) {
-                    if (response.success == false)
-                    {errorDivEdit.empty();
-                      errorDivEdit.show()
-                      errorDivEdit.html(response.error);
-                    }
-                    else
-                    {
-                    errorDivEdit.empty();
-                    errorDivEdit.hide();
-                    console.log("SUCCESS editing gameEvent in Database");
-                    window.open("/userEvents", '_self');
-                    }
-                  }
+                    })  
                 }
           
-                $.ajax(requestConfig);
+                $.ajax(requestConfig).then(function(response) {
+                    if(response){
+                      if(response.success){
+                        errorDiv.empty();
+                        errorDiv.hide();
+                        console.log("SUCCESS editing gameEvent in Database");
+                        window.open("/userEvents", '_self');
+                      } else if(!response.success){
+                        errorDiv.empty();
+                        errorDiv.show()
+                        console.log("Failed editing gameEvent in Database");
+                        errorDiv.html(response.errorEdit);
+                      }
+                    }
+                });
+
               } catch (e) {
-                errorDivEdit.empty();
-                errorDivEdit.html(e);
-                errorDivEdit.show();
+                errorDiv.empty();
+                errorDiv.html(e);
+                errorDiv.show();
                 $('#title').val(title);
                 $('#sportCategory').val(sportCategory);
                 $('#description').val(description);
-               // $('#area').val(area);
-              //  $('#address').val(address);
-                $('#longitude').val(longitude);
-                $('#latitude').val(latitude);
+                // $('#area').val(area);
+                $('#address').val(address);
+                // $('#longitude').val(longitude);
+                // $('#latitude').val(latitude);
                 $('#date').val(date);
                 $('#startTime').val(startTime);
                 $('#endTime').val(endTime);
@@ -472,10 +450,11 @@
               }
         });
 
-        // // how to implement cancel during editing session
-        // editForm.find('.cancelEditButton').on('click', function (event){
-            
-        // });
+        // how to implement cancel during editing session
+        editForm.find('.cancelEditButton').on('click', function (event){
+          console.log(recoverHTML);
+          $(`#${gameEventId}`).replaceWith(recoverHTML);
+        });
     };
     
     //Edit button on-click events
@@ -511,7 +490,7 @@
 
             $.ajax(requestConfig).then(function (responseMessage) {
                 var editForm = $(responseMessage);
-                bindEventsToEditButton(editForm, prevHtml);
+                bindEventsToEditButton(editForm, prevHtml, coordinatorId, gameEventId);
                 $(`#${gameEventId}`).replaceWith(editForm);
             });
         } catch (e) {

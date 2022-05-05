@@ -163,14 +163,14 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     status = check.checkString(status, 'status');
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
-    area = check.checkString(area, 'area');
+    // area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
 
     /* NEED to check if valid address */
 
-    if(!check.checkCoordinates(longitude, latitude)){
-        throw "Error: coordinates are NOT valid"
-    }
+    // if(!check.checkCoordinates(longitude, latitude)){
+    //     throw "Error: coordinates are NOT valid"
+    // }
 
 
     startTime = check.checkDate(startTime, 'startTime');

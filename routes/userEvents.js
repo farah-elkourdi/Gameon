@@ -36,11 +36,13 @@ router.post('/edit/:id', async(req,res) => {
         coordinatorId = check.checkId(coordinatorId);
         gameEventId = check.checkId(gameEventId);
         editGameEventData.title = check.checkString(editGameEventData.title, 'title');
-        editGameEventData.status = check.checkString(editGameEventData.status, 'status');
+        editGameEventData.status = "Upcoming";
         editGameEventData.sportCategory = check.checkString(editGameEventData.sportCategory, 'sportCategory');
         editGameEventData.description = check.checkString(editGameEventData.description, 'description');
         editGameEventData.address = check.checkString(editGameEventData.address, 'address');   
-        editGameEventData.area =  check.checkString(editGameEventData.area, 'area');
+        // editGameEventData.area =  check.checkString(editGameEventData.area, 'area');
+         /* HOW should we validate/check address, longitude and latitude here in routes?*/
+         /*NEED to validate address */
         editGameEventData.date = check.checkString(editGameEventData.date, 'date');   
         editGameEventData.date = check.dateIsValid(editGameEventData.date, 'date');    
         editGameEventData.startTime = check.checkTime(editGameEventData.startTime, 'startTime');
@@ -55,18 +57,15 @@ router.post('/edit/:id', async(req,res) => {
         editGameEventData.minimumParticipants = check.checkNum(editGameEventData.minParticipants, 'minimumParticipants');
         editGameEventData.maximumParticipants = check.checkNum(editGameEventData.maxParticipants, 'maximumParticipants');
 
-        //Validating address using callback
-        // await geocode.validate(editGameEventData.address, validateAddress);
-
-        /* HOW should we validate/check address, longitude and latitude here in routes?*/
+      
         await  data.userEvents.update(userId, gameEventId, coordinatorId, editGameEventData.title, editGameEventData.status, 
             editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
             editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
 
-        res.redirect('/userEvents');
+        res.json({success: true});
     } catch (e) {
-        return res.json({errorEdit: e, success: false});
+        res.json({errorEdit: e, success: false});
     }
 });
 
