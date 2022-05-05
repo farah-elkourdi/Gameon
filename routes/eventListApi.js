@@ -70,8 +70,6 @@ router.post('/search', async (req, res) => {
             let endTime = new Date(event.endTime);
             event.startTime = startTime.toLocaleDateString("en-US", options);
             event.endTime = endTime.toLocaleDateString("en-US", options);
-            event.firstName =  await gameEvent.getEventOwnerFirstName(event._id);
-            event.lastName =  await gameEvent.getEventOwnerLastName(event._id);
         });
     }
     res.render('eventList/eventList', {
