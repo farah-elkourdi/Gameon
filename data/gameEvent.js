@@ -56,7 +56,7 @@ async function getGameEventbyAreaLimit(area, limitCount) {
     const eventList = (await gameEventCollection.find({
         area: area,
         startTime: {$gte : now}
-    }).limit(limitCount).sort({startTime: -1})).toArray();
+    }).limit(limitCount).sort({startTime: 1})).toArray();
 
     return eventList;
 }
@@ -66,7 +66,7 @@ async function getGameEventLandingPage() {
     const gameEventCollection = await gameEvents();
     const eventList = (await gameEventCollection.find({
         startTime: {$gte : now}
-    }).limit(10).sort({startTime: -1})).toArray();
+    }).limit(10).sort({startTime: 1})).toArray();
 
     return eventList;
 }

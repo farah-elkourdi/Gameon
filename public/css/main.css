@@ -6,6 +6,30 @@
   background-color: beige;
 }
 
+.landing-bg-image{
+  background-image: url('/public/img/Sports.jpg');
+  height: 500px;
+  opacity: 0.85;
+}
+
+.landing-image-text-padding {
+  padding-top: 4.5rem!important;
+}
+
+.ratings{
+  margin-right:10px;
+}
+
+.ratings i{
+  
+  color:#cecece;
+  font-size:20px;
+}
+
+.rating-color{
+  color:#fbc634 !important;
+}
+
 .max-height {
   height: fit-content;
 }
