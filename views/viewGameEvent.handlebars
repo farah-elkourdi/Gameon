@@ -90,8 +90,8 @@
 <div class="container content-item panel pt-4 pb-4" id="comments">
     <div class="row">
         <div class="col-md-8">
-            <form method="POST" id="comment-form">
-                <h3 class="float-left">New Comment</h3>
+            <form class="pl-3" method="POST" id="comment-form">
+                <h2 class="float-left">New Comment</h3>
                 <button type="submit" class="btn btn-primary float-right" id="submitButton"
                     name="submitButton">Submit</button>
                 <fieldset>
@@ -101,31 +101,20 @@
                         </div>
                         <div class="form-group col-xs-12 col-sm-9 col-lg-10">
                             <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+                            <label for="comment">Enter your comment...</label>
                             <textarea class="form-control" name="comment" id="comment" placeholder="Your message"
                                 required=""></textarea>
                         </div>
                     </div>
                 </fieldset>
             </form>
+            <div id="error"></div>
         </div>
     </div>
-    <h3>{{comments.length}} Comments</h3>
-    {{#each comments}}
-    <div class="media">
-        <div class="row pl-3">
-            <div class="float-left">
-                <div class="comment-profileImage" name="userCommentProfileImage"></div>
-            </div>
-            <div class="media-body pl-4">
-                <h4 class="media-heading text-capitalize">{{this.name}}</h4>
-                <p>{{this.comment}}</p>
-                <ul class="list-unstyled list-inline media-detail float-left">
-                    <li><i class="fa fa-calendar"></i>{{this.timestamp}}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    {{/each}}
+    <h3 class="pl-3">Comments</h3>
+    <section class="pl-3" id="showComments">
+        <!-- comments list goes here -->
+    </section>
 </div>
 {{/if}}
 
@@ -153,7 +142,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="participantModalLabel">Participants</h5>
+                <h2 class="modal-title" id="participantModalLabel">Participants</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

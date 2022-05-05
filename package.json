@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/felkourdi/Gameon#readme",
   "dependencies": {
+    "@khanacademy/tota11y": "^0.2.0",
     "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",

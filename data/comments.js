@@ -22,6 +22,15 @@ async getCommentsForEvent(eventId){
     for(let i =0; i<eventComments.length; i++){
         const poster = await users.getUser(eventComments[i].userId);
         eventComments[i].name = poster.firstName + ' ' + poster.lastName;
+        //set initials for display
+        eventComments[i].initials = poster.firstName.charAt(0).toUpperCase() + poster.lastName.charAt(0).toUpperCase(); 
+    }
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    //Update comments
+    for (let i = 0; i < eventComments.length; i++) {
+        let comment = eventComments[i];
+        let timestamp = new Date(comment.timestamp);
+        eventComments[i].timestamp = timestamp.toLocaleDateString("en-US", options);
     }
     return eventComments;
 },
