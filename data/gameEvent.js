@@ -262,6 +262,8 @@ async function create(userId, title, status, sportCategory, description, area, a
         description: description,
         area: area,
         address: address,
+        latitude: latitude,
+        longitude: longitude,
         startTime: startTime,
         endTime: endTime,
         minimumParticipants: minimumParticipants,
