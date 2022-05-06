@@ -91,7 +91,7 @@ router.get('/leave/:id', async(req,res) =>{
         gameEventId = check.checkId(gameEventId);
         userId = check.checkId(userId);
         let retval = await data.userEvents.remove(userId, gameEventId);
-        if(retval.updatedGameEvent == true){
+        if(retval.userRemoved == true){
             res.json({userId: userId, success: true});
         } 
     } catch (e){
