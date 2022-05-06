@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
-
+const xss = require('xss');
 const geocode = require('../public/js/geocode');
 
 // Global variable createGameEventData
@@ -36,7 +36,9 @@ router.post('/edit/:id', async(req,res) => {
         coordinatorId = check.checkId(coordinatorId);
         gameEventId = check.checkId(gameEventId);
         editGameEventData.title = check.checkString(editGameEventData.title, 'title');
-        editGameEventData.status = "Upcoming";
+        if(editGameEventData.status !== "upcoming"){
+            throw "User cannot edit an Old or Canceled gameEvent";
+        }
         editGameEventData.sportCategory = check.checkString(editGameEventData.sportCategory, 'sportCategory');
         editGameEventData.description = check.checkString(editGameEventData.description, 'description');
         editGameEventData.address = check.checkString(editGameEventData.address, 'address');   
@@ -91,7 +93,7 @@ router.get('/leave/:id', async(req,res) =>{
         gameEventId = check.checkId(gameEventId);
         userId = check.checkId(userId);
         let retval = await data.userEvents.remove(userId, gameEventId);
-        if(retval.updatedGameEvent == true){
+        if(retval.userRemoved == true){
             res.json({userId: userId, success: true});
         } 
     } catch (e){

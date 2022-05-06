@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     try {
         userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
-        createGameEventData.status = "Upcoming";
+        createGameEventData.status = "upcoming";
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
@@ -53,7 +53,11 @@ router.post('/', async (req, res) => {
 
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-     
+     if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 )
+     throw `min number of Participants should be 2 and maximum 30 `
+        if (createGameEventData.endTime > "22:00")
+        throw `No event stays after 10 pm `
+
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
