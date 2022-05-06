@@ -157,26 +157,16 @@ async function checkStatus() {
         let dayBefore = new Date(event.startTime - 86400000);
         console.log(dayBefore.toUTCString());
         console.log(event.startTime.toUTCString());
-        if(status === 'Ongoing'){
-            if(event.endTime < now){
-                console.log('setting to finished');
-                newStatus = 'Finished';
-            }
-        }
-        if(status === 'Upcoming'){
+        if(status === 'upcoming'){
             if(event.startTime > now && dayBefore < now){
                 if(curParticipants < minParticipants){
                     console.log('setting event [' + id + '] to canceled');
-                    newStatus = 'Canceled';
+                    newStatus = 'canceled';
                 }
             }
-            if(event.startTime < now && event.endTime > now){
-                console.log('setting event [' + id + '] to ongoing');
-                newStatus = 'Ongoing';
-            }
             if(event.endTime < now){
-                console.log('setting event [' + id + '] to finished');
-                newStatus = 'Finished';
+                console.log('setting event [' + id + '] to old');
+                newStatus = 'old';
             }
         }
         if(newStatus != 'same'){
