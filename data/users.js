@@ -1,5 +1,6 @@
 const mongoCollections = require('../config/mongoCollections');
 const users = mongoCollections.user;
+const gameEvents = mongoCollections.gameEvent;
 const { ObjectId } = require('mongodb');
 const validation = require('../task/validation');
 const bcrypt = require('bcrypt');
@@ -208,6 +209,38 @@ async forgetPass(email) {
     userFound._id = userFound._id.toString();
     return userFound;
   },
+
+  async checkUserConflict(userId, startTime, endTime){
+    
+    /* checking inputs */
+    if(arguments.length != 3){ throw "checkUserConflict : pass three arguments."};
+    if(!userId) throw 'checkUserConflict : supply UserId';
+    if(!startTime) throw 'checkUserConflict : supply start time.';
+    if(!endTime) throw 'checkUserConflict : supply end time.';
+    try{
+      userId = validation.checkId(userId);
+      startTime = validation.checkDate(startTime, 'start time');
+      endTime = validation.checkDate(endTime, 'end time');
+    }
+    catch(e){
+      throw e.toString();
+    }
+    if(endTime <= startTime) throw 'checkUserConflict: end time must be after start time!';
+    const gameEventCollection = await gameEvents();
+    const eventList = await gameEventCollection.find({participants: {$in: [ObjectId(userId)]}, status: 'upcoming'}).toArray();
+    let conflict = false;
+    for(let i = 0; i<eventList.length; i++){
+      let eStart = eventList[i].startTime;
+      let eEnd = eventList[i].endTime;
+      let b = !((startTime < eStart && endTime <= eStart) || (startTime >= eEnd && endTime > eEnd));
+      /* console.log(b); */
+      if( b ){
+        conflict = true;
+        break;
+      }
+    }
+    return {conflicted : conflict};
+  }
 
 
 };

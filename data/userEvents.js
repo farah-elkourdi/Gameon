@@ -135,8 +135,20 @@ async function insert(userId, gameEventId){
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.map(x =>x.toString()).includes(userId)) throw 'Error: you are already registered for this event.'
-    if(status !== 'Upcoming') throw 'Error: gameEvent is not open for registration.';
+    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
     if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
+
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, gameEvent.startTime, gameEvent.endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
 
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants + 1}});
