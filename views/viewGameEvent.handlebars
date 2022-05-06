@@ -74,6 +74,9 @@
                         <button class="btn btn-success" type="submit" id="joinButton">Join Event</button>
                     </form>
                     {{/if}}
+                    {{#if error}}
+                    <div class="join-leave-error">{{error}}</div>
+                    {{/if}}
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 const mongoCollections = require('../config/mongoCollections');
 const gameEvents = mongoCollections.gameEvent;
 const users = mongoCollections.user;
+const userData = require('./users');
 const {
     ObjectId
 } = require('mongodb');
@@ -241,6 +242,18 @@ async function create(userId, title, status, sportCategory, description, area, a
     if (minimumParticipants < 2 || maximumParticipants > 30 )
     throw `min number of Participants should be 2 and maximum 30 `
 
+    //check if the organizer has a time conflict
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, startTime, endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
     let newGameEvent = {
         userId: userId,
         title: title,
@@ -308,15 +321,12 @@ async function checkStatus() {
     for(let i=0; i<eventList.length; i++){
         
         let event = eventList[i];
-        console.log(JSON.stringify(event));
         let id = event._id;
         let status = event.status;
         let newStatus = 'same';
         let minParticipants = event.minimumParticipants;
         let curParticipants = event.currentNumberOfParticipants;
         let dayBefore = new Date(event.startTime - 86400000);
-        console.log(dayBefore.toUTCString());
-        console.log(event.startTime.toUTCString());
         if(status === 'upcoming'){
             if(event.startTime > now && dayBefore < now){
                 if(curParticipants < minParticipants){
