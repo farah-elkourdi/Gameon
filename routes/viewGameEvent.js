@@ -69,6 +69,7 @@ router.route('/:id')
             let pObject = {
                 id: event.participants[i].toString(),
                 name: name,
+                email: participant.email
             };
             event.participants[i] = pObject;
         }

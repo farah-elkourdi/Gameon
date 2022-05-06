@@ -34,18 +34,20 @@ async getCommentsForEvent(eventId){
     }
     return eventComments;
 },
-async postComment(userId, gameEventId, commentStr, timestamp){
+async postComment(userId, gameEventId, commentStr, timestamp, email){
     /* input checking */
-    if(arguments.length != 4) throw "postComment: pass 4 arguments.";
+    if(arguments.length != 5) throw "postComment: pass 5 arguments.";
     if(!userId) throw "postComment: pass userId.";
     if(!gameEventId) throw "postComment: pass gameEventId.";
     if(!commentStr) throw "postComment: pass comment.";
     if(!timestamp) throw "postComment: pass timestamp.";
+    if(!email) throw "postComment: pass email.";
     userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
     commentStr = check.checkString(commentStr, 'comment');
     timestamp = check.checkDate(timestamp, 'timestamp');
-
+    if (! check.checkEmail(email))
+    throw "postComment: pass email.";
     //check if the user is a participant in the event
     let joined;
     try{
@@ -62,7 +64,8 @@ async postComment(userId, gameEventId, commentStr, timestamp){
         userId : userId,
         gameEventId : gameEventId,
         comment : commentStr,
-        timestamp : timestamp
+        timestamp : timestamp,
+        email: email
     };
 
     const insert = await commentCollection.insertOne(newComment);
