@@ -53,7 +53,8 @@ router.post('/', async (req, res) => {
 
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-     
+     if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 )
+     throw `min number of Participants should be 2 and maximum 30 `
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
