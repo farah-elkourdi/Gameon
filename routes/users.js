@@ -23,6 +23,25 @@ router.get('/profile', async (req, res) => {
   }
 });
 
+
+router.get('/publicprofile', async (req, res) => {
+  const email = req.query.email;
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    let user = await usersData.getUserByEmail(email)
+    res.render("user/publicprofile", {
+      firstName: user.firstName ,
+      lastName: user.lastName,
+      email: user.email,
+      street: user.street,
+      area: user.area,
+      lat: user.lat,
+      lon: user.lon
+  });
+  }
+});
+
 router.get('/signup', async (req, res) => {
   if (req.session.user) {
     res.redirect("/");
@@ -279,7 +298,15 @@ else
 return res.json({success: true, message: errors});
 });
 
+// router.post('/clickname/:email', async(req, res) => {
+//   const email = req.params.email;
 
+
+//   res.redirect("user/publicprofile", {
+//       email: email
+//   });
+
+// });
 
 module.exports = router;
 

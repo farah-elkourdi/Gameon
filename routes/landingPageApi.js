@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const data = require('../data');
 const gameEvent = require('../data/gameEvent');
+const rate = require('../data/rate');
 
 // Router configuration
 
@@ -16,11 +16,16 @@ router.get('/', async (req, res) => {
             event.startTime = startTime.toLocaleDateString("en-US", options);
             event.endTime = endTime.toLocaleDateString("en-US", options);
         });
-    }   
+    }
+
+    // Top 5 ratings
+    let ratings = await rate.getTopRatings();
+
     res.render('index/landingPage', {
         title: "Home",
         userDetails: req.session.user,
-        gameEvents: events
+        gameEvents: events,
+        ratings: ratings
     });
 });
 

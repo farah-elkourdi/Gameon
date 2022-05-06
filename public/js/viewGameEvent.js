@@ -1,30 +1,27 @@
 const getCommentList = async function (gameEventId) {
-    window.open("/viewGameEvent/" + gameEventId  , "_self")
-    // let req = {
-    //     method: 'GET',
-    //     url: '/comments/' + gameEventId,
-    //     contentType: 'application/json',
-    //     datatype: 'html',
-    //     params: {
-    //         gameEventId: gameEventId
-    //     },
-    //     cache: false,
-    //     withCredentials: true,
-    //     success: function (res) {
-    //         $('#error').empty();
-    //         $('#error').hide();
-    //         $('#showComments').empty();
-    //         $('#showComments').html(res);
-    //         $('#showComments').show();
-    //     },
-    //     error: function (e) {
-    //         var err = $('<p></p>').text(e.responseText);
-    //         $('#error').empty();
-    //         $('#error').append(err);
-    //         $('#error').show();
-    //     }
-    // };
-    // $.ajax(req);
+    let req = {
+        method: 'GET',
+        url: '/comments/' + gameEventId,
+        contentType: 'application/json',
+        datatype: 'html',
+        params: {
+            gameEventId: gameEventId
+        },
+        cache: false,
+        withCredentials: true,
+        success: function (res) {
+            $('#error').empty();
+            $('#showComments').empty();
+            $('#showComments').html(res);
+        },
+        error: function (e) {
+            var err = $('<p></p>').text(e.responseText);
+            $('#error').empty();
+            $('#error').append(err);
+        }
+    };
+    $.ajax(req);
+    
 };
 
 const onFormClick = async function (event) {
@@ -32,8 +29,7 @@ const onFormClick = async function (event) {
     const gameEventId = $('#gameEventId').val();
     const comment = $('#comment').val();
     $('#error').empty();
-    $('#error').hide();
-    $('#comment').val('');
+    $('#comment').empty();
     let requestConfig = {
         method: 'POST',
         url: '/comments',
@@ -70,6 +66,8 @@ const onFormClick = async function (event) {
 
     $('#submitButton').click(onFormClick);
 
+    $('#comments').ready(getCommentList($('#gameEventId').val()));
+    
     $(document).ready(function () {
 
         var event_participants = document.getElementById('event_participants').getElementsByTagName('li');
