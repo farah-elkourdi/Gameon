@@ -5,6 +5,7 @@ const session = require('express-session');
 const configRoutes = require('./routes');
 const cookieParser = require("cookie-parser");
 const exphbs = require('express-handlebars');
+const gameEvent = require('./data/gameEvent');
 require('dotenv').config();
 
 
@@ -27,7 +28,20 @@ app.use(
 
 configRoutes(app);
 
+/* updating the status of events */
+async function check(){
+  try{
+    await gameEvent.checkStatus();
+  }catch(e){
+    console.log(e.toString());
+  }
+};
+
+check();
+
 app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log('Your routes will be running on http://localhost:3000');
 });
+
+
