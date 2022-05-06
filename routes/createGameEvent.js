@@ -55,6 +55,9 @@ router.post('/', async (req, res) => {
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
      if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 )
      throw `min number of Participants should be 2 and maximum 30 `
+        if (createGameEventData.endTime > "22:00")
+        throw `No event stays after 10 pm `
+
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
