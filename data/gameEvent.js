@@ -235,6 +235,9 @@ async function create(userId, title, status, sportCategory, description, area, a
         throw "Error: minimum participants is greater than maximum participants"
     }
 
+    if (minimumParticipants < 2 || maximumParticipants > 30 )
+    throw `min number of Participants should be 2 and maximum 30 `
+
     let newGameEvent = {
         userId: userId,
         title: title,
