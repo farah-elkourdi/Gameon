@@ -235,6 +235,11 @@
     //Cancel Button on-click Event
     $('.userEventsCancelForm').bind('click',function (event) {
         event.preventDefault(); 
+        
+        let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+        let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+        let userId =  $(this).find('input[class = "userId"]').val();
+        
 
         allEvents.children().each(function(){
           $(`#${this.id} > div.errorDivLeave`).hide();
@@ -242,10 +247,7 @@
           $(`#${this.id} > div.errorDivCancel`).hide();
         });
 
-        console.log(this);
-        let gameEventId = $(this).attr('gameEventId');
-        let coordinatorId = $(this).attr('coordinatorId');
-        let userId =  $(this).attr('userId');
+       
         var requestConfig = {
           method: 'GET',
           url: `/userEvents/cancel/${gameEventId}`
@@ -287,15 +289,15 @@
     $('.userEventsLeaveForm').bind('click',function (event) {
         event.preventDefault(); 
 
+        let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+        let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+        let userId =  $(this).find('input[class = "userId"]').val();
+
         allEvents.children().each(function(){
           $(`#${this.id} > div.errorDivLeave`).hide();
           $(`#${this.id} > div.errorDivEdit`).hide();
           $(`#${this.id} > div.errorDivCancel`).hide();
         })
-
-        let gameEventId = $(this).attr('gameEventId');
-        let coordinatorId = $(this).attr('coordinatorId');
-        let userId = $(this).attr('userId');
 
         var requestConfig = {
             method: 'GET',
@@ -334,145 +336,155 @@
         }
     });
 
+    // Executes when user hits the submit button while editing a gameEvent
+    var editSubmitEventHandler = function (coordinatorId, gameEventId){
+      let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
+
+      var title = $('#title').val(),
+          sportCategory = $('#sportCategory').val(),
+          description = $('#description').val(),
+          // area = $('#area').val(),
+          address = $('#address').val(),
+          // longitude = $('#longitude').val(),
+          // latitude = $('#latitude').val(),
+          date = $('#date').val(),
+          startTime = $('#startTime').val(),
+          endTime = $('#endTime').val(),
+          minParticipants = $('#minParticipants').val(),
+          maxParticipants = $('#maxParticipants').val();
+          $('#sportCategory').find('option:eq(0)').prop('selected', true);
+
+      errorDiv.hide();
+
+      try {
+          title = checkString(title, 'title');
+          sportCategory = checkString(sportCategory, 'sportCategory');
+          description = checkString(description, 'description');
+          //  area = checkString(area, 'area');
+          address = checkString(address, 'address');
+    
+          /* NEED to check validity for address, longitude, and latitude */
+    
+          date = checkString(date, 'date');
+          date = dateIsValid(date, 'date');
+          startTime = checkTime(startTime, 'startTime');
+          endTime = checkTime(endTime, 'endTime');
+          let startTime_date = convertStringToDate(date, startTime);
+          let endTime_date = convertStringToDate(date, endTime);
+          startTime_date = checkDate(startTime, 'startTime');
+          endTime_date = checkDate(endTime, 'endTime');
+    
+          minParticipants = checkNum(minParticipants, 'minParticipants');
+          maxParticipants = checkNum(maxParticipants, 'maxParticipants');
+          if (!areValidTimes(startTime_date, endTime_date)) {
+            throw "Error: endTime must be at least an hour after startTime";
+          }
+          if (!validMinParticipantLimit(sportCategory, minParticipants)) {
+            throw `Error: invalid minParticipants for ${sportCategory}`;
+          }
+          if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
+            throw `Error: invalid maxParticipants for ${sportCategory}`;
+          }
+          if (!validNumParticipants(minParticipants, maxParticipants)) {
+            throw "Error: minParticipants is greater than maxParticipants";
+          }
+          
+          var requestConfig = {
+              method: 'POST',
+              url: `/userEvents/edit/${gameEventId}`, 
+              contentType: 'application/json',
+              data: JSON.stringify({
+                  coordinatorId: coordinatorId,
+                  title: title,
+                  sportCategory: sportCategory,
+                  description: description,
+                  //  area: area,
+                  address: address,
+                  // longitude: longitude,
+                  // latitude: latitude,
+                  date: date,
+                  startTime: startTime,
+                  endTime: endTime,
+                  minParticipants: minParticipants,
+                  maxParticipants: maxParticipants
+              })  
+          }
+    
+          $.ajax(requestConfig).then(function(response) {
+              if(response){
+                if(response.success){
+                  errorDiv.empty();
+                  errorDiv.hide();
+                  console.log("SUCCESS editing gameEvent in Database");
+                  window.open("/userEvents", '_self');
+                } else if(!response.success){
+                  errorDiv.empty();
+                  errorDiv.show()
+                  console.log("Failed editing gameEvent in Database");
+                  errorDiv.html(response.errorEdit);
+                }
+              }
+          });
+
+        } catch (e) {
+          errorDiv.empty();
+          errorDiv.html(e);
+          errorDiv.show();
+          $('#title').val(title);
+          $('#sportCategory').val(sportCategory);
+          $('#description').html(description);
+          // $('#area').val(area);
+          $('#address').val(address);
+          // $('#longitude').val(longitude);
+          // $('#latitude').val(latitude);
+          $('#date').val(date);
+          $('#startTime').val(startTime);
+          $('#endTime').val(endTime);
+          $('#minParticipants').val(minParticipants);
+          $('#maxParticipants').val(maxParticipants);
+          $('#sportCategory').find('option:eq(0)').prop('selected', true);
+          console.log("Failed editing gameEvent in Database");
+          console.log(e);
+        }
+    }
+
+    // executes when user hits the cancel button while editing
+    var editCancelEventHandler = function (recoverHTML, gameEventId){
+      $(`#${gameEventId}`).replaceWith(recoverHTML);
+    }
+
     //different results depending on pressing the "submit" or "cancel" button
     function bindEventsToEditButton (editForm, recoverHTML, coordinatorId, gameEventId){
-        editForm.find('.submitEditButton').on('click', function (event){
-            event.preventDefault();
-            console.log(this);
-
-            let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
-
-            var title = $('#title').val(),
-                sportCategory = $('#sportCategory').val(),
-                description = $('#description').val(),
-                // area = $('#area').val(),
-                address = $('#address').val(),
-                // longitude = $('#longitude').val(),
-                // latitude = $('#latitude').val(),
-                date = $('#date').val(),
-                startTime = $('#startTime').val(),
-                endTime = $('#endTime').val(),
-                minParticipants = $('#minParticipants').val(),
-                maxParticipants = $('#maxParticipants').val();
-                $('#sportCategory').find('option:eq(0)').prop('selected', true);
-
-            errorDiv.hide();
-
-            try {
-                title = checkString(title, 'title');
-                sportCategory = checkString(sportCategory, 'sportCategory');
-                description = checkString(description, 'description');
-                //  area = checkString(area, 'area');
-                address = checkString(address, 'address');
-          
-                /* NEED to check validity for address, longitude, and latitude */
-          
-                date = checkString(date, 'date');
-                date = dateIsValid(date, 'date');
-                startTime = checkTime(startTime, 'startTime');
-                endTime = checkTime(endTime, 'endTime');
-                let startTime_date = convertStringToDate(date, startTime);
-                let endTime_date = convertStringToDate(date, endTime);
-                startTime_date = checkDate(startTime, 'startTime');
-                endTime_date = checkDate(endTime, 'endTime');
-          
-                minParticipants = checkNum(minParticipants, 'minParticipants');
-                maxParticipants = checkNum(maxParticipants, 'maxParticipants');
-                if (!areValidTimes(startTime_date, endTime_date)) {
-                  throw "Error: endTime must be at least an hour after startTime";
-                }
-                if (!validMinParticipantLimit(sportCategory, minParticipants)) {
-                  throw `Error: invalid minParticipants for ${sportCategory}`;
-                }
-                if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
-                  throw `Error: invalid maxParticipants for ${sportCategory}`;
-                }
-                if (!validNumParticipants(minParticipants, maxParticipants)) {
-                  throw "Error: minParticipants is greater than maxParticipants";
-                }
-                
-                var requestConfig = {
-                    method: 'POST',
-                    url: `/userEvents/edit/${gameEventId}`, 
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        coordinatorId: coordinatorId,
-                        title: title,
-                        sportCategory: sportCategory,
-                        description: description,
-                        //  area: area,
-                        address: address,
-                        // longitude: longitude,
-                        // latitude: latitude,
-                        date: date,
-                        startTime: startTime,
-                        endTime: endTime,
-                        minParticipants: minParticipants,
-                        maxParticipants: maxParticipants
-                    })  
-                }
-          
-                $.ajax(requestConfig).then(function(response) {
-                    if(response){
-                      if(response.success){
-                        errorDiv.empty();
-                        errorDiv.hide();
-                        console.log("SUCCESS editing gameEvent in Database");
-                        window.open("/userEvents", '_self');
-                      } else if(!response.success){
-                        errorDiv.empty();
-                        errorDiv.show()
-                        console.log("Failed editing gameEvent in Database");
-                        errorDiv.html(response.errorEdit);
-                      }
-                    }
-                });
-
-              } catch (e) {
-                errorDiv.empty();
-                errorDiv.html(e);
-                errorDiv.show();
-                $('#title').val(title);
-                $('#sportCategory').val(sportCategory);
-                $('#description').val(description);
-                // $('#area').val(area);
-                $('#address').val(address);
-                // $('#longitude').val(longitude);
-                // $('#latitude').val(latitude);
-                $('#date').val(date);
-                $('#startTime').val(startTime);
-                $('#endTime').val(endTime);
-                $('#minParticipants').val(minParticipants);
-                $('#maxParticipants').val(maxParticipants);
-                $('#sportCategory').find('option:eq(0)').prop('selected', true);
-                console.log("Failed editing gameEvent in Database");
-                console.log(e);
-              }
+        editForm.find('.submitEditButton').on('click', function(event){
+          event.preventDefault();
+          editSubmitEventHandler(coordinatorId, gameEventId);
         });
-
-        // how to implement cancel during editing session
-        editForm.find('.cancelEditButton').on('click', function (event){
-          console.log(recoverHTML);
-          $(`#${gameEventId}`).replaceWith(recoverHTML);
+       
+        editForm.find('.cancelEditButton').on('click',  function(event){
+          event.preventDefault();
+          editCancelEventHandler(recoverHTML, gameEventId);
         });
     };
     
     //Edit button on-click events
-    $('.userEventsEditForm').submit(function (event) {
+    $('.userEventsEditForm').on('click', function(event) {
         event.preventDefault(); 
-        let gameEventId = $(this).attr('gameEventId');
-        let coordinatorId = $(this).attr('coordinatorId');
-        let userId = $(this).attr('userId');
+        let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+        let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+        let userId =  $(this).find('input[class = "userId"]').val();
 
+        console.log(gameEventId);
         allEvents.children().each(function(){
-          $(`#${gameEventId} > div.errorDivLeave`).hide();
-          $(`#${gameEventId} > div.errorDivEdit`).hide();
-          $(`#${gameEventId} > div.errorDivCancel`).hide();
+          
+          $(`#${this.id} > div.errorDivLeave`).hide();
+          $(`#${this.id} > div.errorDivEdit`).hide();
+          $(`#${this.id} > div.errorDivCancel`).hide();
         })
         
 
         let errorDiv = $(`#${gameEventId} > div.errorDivEdit`);
-        let prevHtml = $(`#${gameEventId}`).html();
+        let prevHtml =  $('<div>').append($(`#${gameEventId}`).clone()).html();
+        
         try {
             if(!isCoordinator(userId, coordinatorId)){
                 throw "Error: user is NOT the event coordinator!"
