@@ -46,7 +46,8 @@ router.route('/')
 
     let posted;
     try{
-        posted = await comments.postComment(userId, gameEventId, comment, timestamp);
+        let email = req.session.user.email; 
+        posted = await comments.postComment(userId, gameEventId, comment, timestamp, email);
     }
     catch(e){
         return res.json({success : false, error : e.toString()});

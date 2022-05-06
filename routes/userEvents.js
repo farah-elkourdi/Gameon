@@ -8,8 +8,8 @@ const geocode = require('../public/js/geocode');
 // Global variable createGameEventData
 var editGameEventData;
 
+//Traditional (GET) Route
 router.get('/', async (req, res) => {
-    let nowStrDate =  new Date().toLocaleDateString('en-CA');
 
     if (!req.session.user) {
         return res.redirect('/');
@@ -18,15 +18,14 @@ router.get('/', async (req, res) => {
         let userId = req.session.user.userID;
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
-        res.render('userEvents/userEvents', {errorFlagAllEvents: false, gameEventsList: gameEvents, today: nowStrDate});
+        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId});
     } catch (e){
-        res.status(404).render('userEvents/userEvents', {errorFlagAllEvents: true, errorAllEvents: e});
+        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId});
     }
 });
 
-router.post('/:id', async(req,res) => {
-    let nowStrDate =  new Date().toLocaleDateString('en-CA');
-
+// (EDIT) Route: Main EDIT route
+router.post('/edit/:id', async(req,res) => {
     editGameEventData = req.body;
     let userId = req.session.user.userID;
     let coordinatorId = editGameEventData.coordinatorId;
@@ -37,11 +36,13 @@ router.post('/:id', async(req,res) => {
         coordinatorId = check.checkId(coordinatorId);
         gameEventId = check.checkId(gameEventId);
         editGameEventData.title = check.checkString(editGameEventData.title, 'title');
-        editGameEventData.status = check.checkString(editGameEventData.status, 'status');
+        editGameEventData.status = "Upcoming";
         editGameEventData.sportCategory = check.checkString(editGameEventData.sportCategory, 'sportCategory');
         editGameEventData.description = check.checkString(editGameEventData.description, 'description');
         editGameEventData.address = check.checkString(editGameEventData.address, 'address');   
-        editGameEventData.area =  check.checkString(editGameEventData.area, 'area');
+        // editGameEventData.area =  check.checkString(editGameEventData.area, 'area');
+         /* HOW should we validate/check address, longitude and latitude here in routes?*/
+         /*NEED to validate address */
         editGameEventData.date = check.checkString(editGameEventData.date, 'date');   
         editGameEventData.date = check.dateIsValid(editGameEventData.date, 'date');    
         editGameEventData.startTime = check.checkTime(editGameEventData.startTime, 'startTime');
@@ -56,71 +57,63 @@ router.post('/:id', async(req,res) => {
         editGameEventData.minimumParticipants = check.checkNum(editGameEventData.minParticipants, 'minimumParticipants');
         editGameEventData.maximumParticipants = check.checkNum(editGameEventData.maxParticipants, 'maximumParticipants');
 
-        //Validating address using callback
-        await geocode.validate(editGameEventData.address, validateAddress);
+      
+        await  data.userEvents.update(userId, gameEventId, coordinatorId, editGameEventData.title, editGameEventData.status, 
+            editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
+            editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
+            editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
 
-        /* HOW should we validate/check longitude and latitude here in routes?*/
-
+        res.json({success: true});
     } catch (e) {
-        return res.status(400).render('userEvents/userEvents', {
-            error_flag: true,
-            error: e,
-            today: nowStrDate, 
-            input: editGameEventData
-        })
-    }
-
-    try {
-        const {
-            title,
-            status,
-            sportCategory,
-            description,
-            area,
-            address,
-            latitude,
-            longitude,
-            startTime,
-            endTime,
-            minimumParticipants,
-            maximumParticipants
-        } = editGameEventData;
-        const gameEvent = await data.userEvents.update(userId, gameEventId, eventCoordinator, title, status, sportCategory, description, area, address, latitude,
-            longitude, startTime, endTime, minimumParticipants, maximumParticipants);
-
-        /* rerender userEvents Page with updated data */
-        if (gameEvent.gameEventUpdated) {
-            res.status(200).json({
-                status: "success"
-            });
-        } else {
-            res.status(404).json({
-                status: "failure"
-            });
-        }
-    } catch (e) {
-        res.status(500).render('userEvents/userEvents', {
-            error_flag: true,
-            error: e,
-            today: nowStrDate, 
-            input: editGameEventData
-        })
+        res.json({errorEdit: e, success: false});
     }
 });
 
-router.delete('/:id', async(req,res) =>{
+// (EDIT) Route: Partial HTML edit form to inject into div
+router.post('/partialEditForm.html', async(req,res) =>{
+    let userId = req.session.user.userID;
+    let area = req.session.user.userArea;
+    let gameEventId = req.body.gameEventId;
+    let coordinatorId =req.body.coordinatorId;
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
+    res.render('userEvents/partialEditForm', {layout: null, userId: userId, gameEventId: gameEventId, minStartDate: nowStrDate,
+                                              coordinatorId: coordinatorId, area: area});
+});
+
+
+// (LEAVE) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
+// For some reason I couldn't do "DELETE" methods in html forms
+router.get('/leave/:id', async(req,res) =>{
     let gameEventId = req.params.id;
     let userId = req.session.user.userID;
 
     try{
         gameEventId = check.checkId(gameEventId);
         userId = check.checkId(userId);
-        let updatedGameEvents = await data.userEvents.remove(userId, gameEventId);
-        res.status(200).render('userEvents/userEvents', {errorFlagOneEvent: false, gameEventsList: updatedGameEvents, today: nowStrDate});
+        let retval = await data.userEvents.remove(userId, gameEventId);
+        if(retval.updatedGameEvent == true){
+            res.json({userId: userId, success: true});
+        } 
     } catch (e){
-        return res.status(400).render('userEvents/userEvents', {errorFlagOneEvent: true, errorOneEvent: e});
+        return res.json({userId: userId, success: false, errorLeave: e});
     }
 });
 
+// (CANCEL) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
+// For some reason I couldn't do "DELETE" methods in html forms
+router.get('/cancel/:id', async(req,res) =>{
+    let gameEventId = req.params.id;
+    let userId = req.session.user.userID;
+
+    try{
+        gameEventId = check.checkId(gameEventId);
+        userId = check.checkId(userId);
+        let retval = await data.userEvents.cancelEvent(userId, gameEventId);
+        if(retval.canceled === true){
+            res.json({userId: userId, success: true});
+        } 
+    } catch (e){
+        return res.json({userId: userId, success: false, errorCancel: e});
+    }
+});
 module.exports = router;

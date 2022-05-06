@@ -194,7 +194,20 @@ async forgetPass(email) {
     await contactUs.emailSetuppass(email, temppass, user.firstName); 
 }}, 
 
+  /* get user by Email*/
 
+  async getUserByEmail(email){
+    if(arguments.length != 1){ throw "getUser : pass one argument."};
+    if(!email) throw "getUser: must pass userId";
+    if (!validation.checkEmail(email)) throw "Invalid email"
+    const userCollection = await users();
+    const userFound = await userCollection.findOne({email: email});
+    if(userFound === null){
+        throw "getUser: no user found with this id";
+    }
+    userFound._id = userFound._id.toString();
+    return userFound;
+  },
 
 
 };

@@ -6,6 +6,30 @@
   background-color: beige;
 }
 
+.landing-bg-image{
+  background-image: url('/public/img/Sports.png');
+  height: 500px;
+  opacity: 0.85;
+}
+
+.landing-image-text-padding {
+  padding-top: 4.5rem!important;
+}
+
+.ratings{
+  margin-right:10px;
+}
+
+.ratings i{
+  
+  color:#cecece;
+  font-size:20px;
+}
+
+.rating-color{
+  color:#fbc634 !important;
+}
+
 .max-height {
   height: fit-content;
 }
@@ -433,4 +457,30 @@
 
 .event_info {
   height: 350px;
+}
+
+
+/* style changes for tota11y */
+/*
+.navbar-light .navbar-nav .nav-link {
+  color: #727373;
+}
+
+.btn-primary:hover {
+  color: #ffffff;
+  background-color: #013e7f;
+  border-color: #0072ee;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background-color: #0072ec;
+  border-color: #007bff;
+}
+*/
+#comments .media-detail li {
+  color: #767676;
+  font-size: 12px;
+  padding-right: 10px;
+  font-weight: 600;
 }

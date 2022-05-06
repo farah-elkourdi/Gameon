@@ -90,42 +90,31 @@
 <div class="container content-item panel pt-4 pb-4" id="comments">
     <div class="row">
         <div class="col-md-8">
-            <form method="POST" id="comment-form">
-                <h3 class="float-left">New Comment</h3>
-                <button type="submit" class="btn btn-primary float-right" id="submitButton"
-                    name="submitButton">Submit</button>
-                <fieldset>
-                    <div class="row pt-2">
-                        <div class="col-sm-3 col-lg-2 hidden-xs">
-                            <div class="comment-profileImage" id="userProfileImage"></div>
+            <form class="pl-3" method="POST" id="comment-form">
+                <h2 class="float-left">New Comment</h3>
+                    <button type="submit" class="btn btn-primary float-right" id="submitButton"
+                        name="submitButton">Submit</button>
+                    <fieldset>
+                        <div class="row pt-2">
+                            <div class="col-sm-3 col-lg-2 hidden-xs">
+                                <div class="comment-profileImage" id="userProfileImage"></div>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                                <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+                                <label for="comment">Enter your comment...</label>
+                                <textarea class="form-control" name="comment" id="comment" placeholder="Your message"
+                                    required=""></textarea>
+                            </div>
                         </div>
-                        <div class="form-group col-xs-12 col-sm-9 col-lg-10">
-                            <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
-                            <textarea class="form-control" name="comment" id="comment" placeholder="Your message"
-                                required=""></textarea>
-                        </div>
-                    </div>
-                </fieldset>
+                    </fieldset>
             </form>
+            <div id="error"></div>
         </div>
     </div>
-    <h3>{{comments.length}} Comments</h3>
-    {{#each comments}}
-    <div class="media">
-        <div class="row pl-3">
-            <div class="float-left">
-                <div class="comment-profileImage" name="userCommentProfileImage"></div>
-            </div>
-            <div class="media-body pl-4">
-                <h4 class="media-heading text-capitalize">{{this.name}}</h4>
-                <p>{{this.comment}}</p>
-                <ul class="list-unstyled list-inline media-detail float-left">
-                    <li><i class="fa fa-calendar"></i>{{this.timestamp}}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    {{/each}}
+    <h3 class="pl-3">Comments</h3>
+    <section class="pl-3" id="showComments">
+        <!-- comments list goes here -->
+    </section>
 </div>
 {{/if}}
 
@@ -153,10 +142,10 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="participantModalLabel">Participants</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h2 class="modal-title" id="participantModalLabel">Participants</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
             </div>
             <div class="modal-body">
                 <ul class="list-group list-group-flush border-bottom scrollarea" id="event_participants">
@@ -167,7 +156,14 @@
                                 <div class="col-md-1 pl-0">
                                     <div class="profileImage"></div>
                                 </div>
-                                <div class="col-md-7 ml-2 text-capitalize pt-2">{{this.name}}
+                                <div name="profileImageName" class="col-md-7 ml-2 text-capitalize pt-2">
+
+
+                                    <a email="{{this.email}}" class="clickhere">
+
+
+                                        {{this.name}}
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -215,5 +211,13 @@
         var lastName = '{{userDetails.userLastName}}';
         var intials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
         var profileImage = $('#userProfileImage').text(intials);
+    });
+</script>
+
+<script>
+    $('a.clickhere').click(function () {
+        var email = $(this).attr('email');
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/user/publicprofile?email=" + email, '_blank');
     });
 </script>
