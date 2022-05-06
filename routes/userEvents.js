@@ -36,7 +36,9 @@ router.post('/edit/:id', async(req,res) => {
         coordinatorId = check.checkId(coordinatorId);
         gameEventId = check.checkId(gameEventId);
         editGameEventData.title = check.checkString(editGameEventData.title, 'title');
-        editGameEventData.status = "Upcoming";
+        if(editGameEventData.status !== "upcoming"){
+            throw "User cannot edit an Old or Canceled gameEvent";
+        }
         editGameEventData.sportCategory = check.checkString(editGameEventData.sportCategory, 'sportCategory');
         editGameEventData.description = check.checkString(editGameEventData.description, 'description');
         editGameEventData.address = check.checkString(editGameEventData.address, 'address');   

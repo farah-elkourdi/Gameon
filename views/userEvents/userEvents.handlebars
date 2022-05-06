@@ -12,7 +12,7 @@
                             <dt>Title: </dt>
                             <dd>{{this.title}}</dd>
                             <dt>Status: </dt>
-                            <dd class ="status">{{this.status}}</dd>
+                            <dd>{{this.status}}</dd>
                             <dt>Sport: </dt>
                             <dd>{{this.sportCategory}}</dd>
                             <dt>Description: </dt>
@@ -36,18 +36,21 @@
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
                             <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type = "submit" class="leaveButton">Leave Event</button>
                         </form>
                         <form class = 'userEventsCancelForm' >
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
                             <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type = "submit" class="cancelButton">Cancel Event</button>
                         </form>
                         <form  class = 'userEventsEditForm'>
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
                             <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type = "submit" class="editButton"> Edit Event</button>
                         </form>
                     </div>
