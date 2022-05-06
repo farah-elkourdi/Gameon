@@ -239,7 +239,7 @@
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
         let userId =  $(this).find('input[class = "userId"]').val();
-        
+        let status = $(this).find('input[class = "status"]').val();
 
         allEvents.children().each(function(){
           $(`#${this.id} > div.errorDivLeave`).hide();
@@ -259,7 +259,12 @@
           if(!isCoordinator(userId, coordinatorId)){
             throw "User is NOT the event Coordinator"
           }
-          
+          if(status === 'canceled'){
+            throw "Event is already Canceled";
+          }
+          if(status !== 'upcoming'){
+            throw "Error: Events that are NOT 'upcoming' cannot be Canceled";
+          }
           $.ajax(requestConfig).then(function(responseMessage){
             console.log(responseMessage);
             if(responseMessage){
@@ -292,6 +297,7 @@
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
         let userId =  $(this).find('input[class = "userId"]').val();
+        let status = $(this).find('input[class = "status"]').val();
 
         allEvents.children().each(function(){
           $(`#${this.id} > div.errorDivLeave`).hide();
@@ -310,6 +316,9 @@
         try{
           if(isCoordinator(userId, coordinatorId)){
             throw "User cannot leave his/her own event"
+          }
+          if(status !== 'upcoming'){
+            throw "User cannot leave an Old or Canceled gameEvent";
           }
           
           $.ajax(requestConfig).then(function(responseMessage){
@@ -472,6 +481,7 @@
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
         let userId =  $(this).find('input[class = "userId"]').val();
+        let status = $(this).find('input[class = "status"]').val();
 
         console.log(gameEventId);
         allEvents.children().each(function(){
@@ -489,7 +499,9 @@
             if(!isCoordinator(userId, coordinatorId)){
                 throw "Error: user is NOT the event coordinator!"
             }
-
+            if(status !== 'upcoming'){
+              throw "User cannot edit an Old or Canceled gameEvent";
+            }
             var requestConfig = {
                 method: 'POST',
                 url: `/userEvents/partialEditForm.html`, 
