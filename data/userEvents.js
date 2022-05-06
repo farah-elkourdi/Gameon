@@ -29,6 +29,34 @@ async function getAllGameEvents (userId){
     return gameEventList;
 }
 
+/* given a gameEventId, changes status of gameEvent to canceled */
+async function cancelEvent(userId, gameEventId){
+    userId = check.checkId(userId);
+    gameEventId = check.checkId(gameEventId);
+    const gameEvent = await gameEventData.getGameEvent(gameEventId);
+    if(userId !== gameEvent.userId){
+        throw "Error: user is MUST be the event coordinator"
+    }
+    if(gameEvent.status === 'Canceled'){
+        throw "Error: Event is already Canceled"
+    }
+    const gameEventUpdatedInfo = {
+        status: "Canceled"
+    }
+    const gameEventCollection = await gameEvents();
+
+    const updatedInfo = await gameEventCollection.updateOne(
+        {_id: ObjectId(gameEventId)}, 
+        {$set: gameEventUpdatedInfo}
+    );
+
+    if(!updatedInfo.matchedCount && !updatedInfo.modifiedCount){
+        throw "Error: Failed to update status to 'Canceled'"
+    }
+
+    return {canceled: true}
+}   
+
 /* checks if a user is a participant in an event */
 async function checkParticipation(userId, gameEventId){
     userId = check.checkId(userId);
@@ -135,14 +163,14 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     status = check.checkString(status, 'status');
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
-    area = check.checkString(area, 'area');
+    // area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
 
     /* NEED to check if valid address */
 
-    if(!check.checkCoordinates(longitude, latitude)){
-        throw "Error: coordinates are NOT valid"
-    }
+    // if(!check.checkCoordinates(longitude, latitude)){
+    //     throw "Error: coordinates are NOT valid"
+    // }
 
 
     startTime = check.checkDate(startTime, 'startTime');
@@ -153,11 +181,11 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     }
 
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    if(check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
+    if(!check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
         throw "Error: minimum participation limit is not valid"
     }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    if(check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
+    if(!check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
         throw "Error: maximum participation limit is not valid"
     }
 
@@ -199,5 +227,6 @@ module.exports = {
     insert,
     update,
     checkParticipation,
-    checkArea
+    checkArea, 
+    cancelEvent
 }

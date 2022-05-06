@@ -24,12 +24,15 @@ router.get('/', async (req, res) => {
             hour: 'numeric',
             minute: 'numeric'
         };
-        events.forEach(event => {
+
+        events.forEach( async event => {
             event._id = event._id.toString();
             let startTime = new Date(event.startTime);
             let endTime = new Date(event.endTime);
             event.startTime = startTime.toLocaleDateString("en-US", options);
             event.endTime = endTime.toLocaleDateString("en-US", options);
+            event.firstName =  await gameEvent.getEventOwnerFirstName(event._id);
+            event.lastName =  await gameEvent.getEventOwnerLastName(event._id);
         });
     }
     res.render('eventList/eventList', {
@@ -61,7 +64,7 @@ router.post('/search', async (req, res) => {
             hour: 'numeric',
             minute: 'numeric'
         };
-        events.forEach(event => {
+        events.forEach(async event => {
             event._id = event._id.toString();
             let startTime = new Date(event.startTime);
             let endTime = new Date(event.endTime);

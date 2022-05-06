@@ -92,21 +92,21 @@
         <div class="col-md-8">
             <form class="pl-3" method="POST" id="comment-form">
                 <h2 class="float-left">New Comment</h3>
-                <button type="submit" class="btn btn-primary float-right" id="submitButton"
-                    name="submitButton">Submit</button>
-                <fieldset>
-                    <div class="row pt-2">
-                        <div class="col-sm-3 col-lg-2 hidden-xs">
-                            <div class="comment-profileImage" id="userProfileImage"></div>
+                    <button type="submit" class="btn btn-primary float-right" id="submitButton"
+                        name="submitButton">Submit</button>
+                    <fieldset>
+                        <div class="row pt-2">
+                            <div class="col-sm-3 col-lg-2 hidden-xs">
+                                <div class="comment-profileImage" id="userProfileImage"></div>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                                <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+                                <label for="comment">Enter your comment...</label>
+                                <textarea class="form-control" name="comment" id="comment" placeholder="Your message"
+                                    required=""></textarea>
+                            </div>
                         </div>
-                        <div class="form-group col-xs-12 col-sm-9 col-lg-10">
-                            <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
-                            <label for="comment">Enter your comment...</label>
-                            <textarea class="form-control" name="comment" id="comment" placeholder="Your message"
-                                required=""></textarea>
-                        </div>
-                    </div>
-                </fieldset>
+                    </fieldset>
             </form>
             <div id="error"></div>
         </div>
@@ -143,9 +143,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="participantModalLabel">Participants</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
             </div>
             <div class="modal-body">
                 <ul class="list-group list-group-flush border-bottom scrollarea" id="event_participants">
@@ -154,9 +154,16 @@
                         <div class="mb-1">
                             <div class="d-inline-flex col-md-12 pl-0">
                                 <div class="col-md-1 pl-0">
-                                    <div class="profileImage" name="profileImage"></div>
+                                    <div class="profileImage"></div>
                                 </div>
-                                <div name="profileImageName" class="col-md-7 ml-2 text-capitalize pt-2">{{this.name}}
+                                <div name="profileImageName" class="col-md-7 ml-2 text-capitalize pt-2">
+
+
+                                    <a email="{{this.email}}" class="clickhere">
+
+
+                                        {{this.name}}
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -204,5 +211,13 @@
         var lastName = '{{userDetails.userLastName}}';
         var intials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
         var profileImage = $('#userProfileImage').text(intials);
+    });
+</script>
+
+<script>
+    $('a.clickhere').click(function () {
+        var email = $(this).attr('email');
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/user/publicprofile?email=" + email, '_blank');
     });
 </script>

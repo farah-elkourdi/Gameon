@@ -2,27 +2,27 @@
   /** don't know how to put these methods into a separate js file **/
 
   /* May need to edit max and min participants */
-  const max_soccer = 20;
-  const max_football = 20;
-  const max_golf = 20;
-  const max_baseball = 20;
-  const max_basketball = 20;
-  const max_badminton = 20;
-  const max_swimming = 20;
-  const max_archery = 20;
-  const max_dodgeball = 20;
-  const max_frisbee = 20;
+  const max_soccer = 30;
+  const max_football = 30;
+  const max_golf = 30;
+  const max_baseball = 30;
+  const max_basketball = 30;
+  const max_badminton = 30;
+  const max_swimming = 30;
+  const max_archery = 30;
+  const max_dodgeball = 30;
+  const max_frisbee = 30;
 
-  const min_soccer = 1;
-  const min_football = 1;
-  const min_golf = 1;
-  const min_baseball = 1;
-  const min_basketball = 1;
-  const min_badminton = 1;
-  const min_swimming = 1;
-  const min_archery = 1;
-  const min_dodgeball = 1;
-  const min_frisbee = 1;
+  const min_soccer = 2;
+  const min_football = 2;
+  const min_golf = 2;
+  const min_baseball = 2;
+  const min_basketball = 2;
+  const min_badminton = 2;
+  const min_swimming = 2;
+  const min_archery = 2;
+  const min_dodgeball = 2;
+  const min_frisbee = 2;
 
   function checkId(id) {
     if (!id) throw 'Error: You must provide an id to search for';
@@ -231,8 +231,8 @@
       minParticipants = $('#minParticipants').val(),
       maxParticipants = $('#maxParticipants').val();
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
-
     errorDiv.hide();
+// modify here 
     try {
       title = checkString(title, 'title');
       sportCategory = checkString(sportCategory, 'sportCategory');
@@ -265,7 +265,8 @@
       if (!validNumParticipants(minParticipants, maxParticipants)) {
         throw "Error: minParticipants is greater than maxParticipants";
       }
-
+      if (endTime > "22:00")
+      throw `Events should end before 10 pm`
       var requestConfig = {
         method: 'POST',
         url: '/createGameEvent',
@@ -344,5 +345,10 @@
       console.log(e);
     }
   });
+
+  // function checkCurrentTime(startTime, endTime) {
+  //   var time = dt.getHours() + ":" + dt.getMinutes()
+  //   alert(time)
+  // }
 
 })(window.jQuery);

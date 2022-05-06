@@ -6,6 +6,7 @@ const user = require('./users');
 const contactus = require('./contactus');
 const comments =  require('./comments');
 const eventListApi = require('./eventListApi');
+const rate = require('./rate');
 
 const constructorMethod = (app) => {
   app.use('/user', user);
@@ -15,6 +16,7 @@ const constructorMethod = (app) => {
   app.use('/comments', comments);
   app.use('/createGameEvent', createGameEvent);
   app.use('/eventList', eventListApi);
+  app.use('/rate', rate);
   app.use('/', landingPageApi);
 };
 
