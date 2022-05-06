@@ -268,5 +268,10 @@ checkValidationDlArea(areaInput)
   const area = ["hoboken" , "jersey city" , "union city" , "kearny"]
   return area.includes(areaInput);
 },
+validinteger(integer){
+  if(!isNaN(parseInt(integer))) {
+    return true;
+} return false;
+},
 
 };
