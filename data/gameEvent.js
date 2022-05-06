@@ -300,6 +300,48 @@ async function getEventOwnerLastName(id) {
     return user.lastName;
 }
 
+async function checkStatus() {
+    const now = new Date(Date.now());
+    const gameEventCollection = await gameEvents();
+        const eventList = await gameEventCollection.find({}).toArray();
+            /* $nor: [ { status: 'Finished' }, { status: 'Canceled' } ] */
+    for(let i=0; i<eventList.length; i++){
+        
+        let event = eventList[i];
+        console.log(JSON.stringify(event));
+        let id = event._id;
+        let status = event.status;
+        let newStatus = 'same';
+        let minParticipants = event.minimumParticipants;
+        let curParticipants = event.currentNumberOfParticipants;
+        let dayBefore = new Date(event.startTime - 86400000);
+        console.log(dayBefore.toUTCString());
+        console.log(event.startTime.toUTCString());
+        if(status === 'upcoming'){
+            if(event.startTime > now && dayBefore < now){
+                if(curParticipants < minParticipants){
+                    console.log('setting event [' + id + '] to canceled');
+                    newStatus = 'canceled';
+                }
+            }
+            if(event.endTime < now){
+                console.log('setting event [' + id + '] to old');
+                newStatus = 'old';
+            }
+        }
+        if(newStatus != 'same'){
+            let updateInfo;
+            try{
+                updateInfo = await gameEventCollection.updateOne({_id: id}, {$set: {status: newStatus}});
+            }
+            catch(e){
+                throw 'checkStatus: ' + e.toString();
+            }
+            if (updateInfo.modifiedCount === 0) throw 'checkStatus: encountered an error updating event ' + id.toString() + ' status';
+        }
+    }
+}
+
 module.exports = {
     create,
     getGameEvent,
@@ -307,6 +349,7 @@ module.exports = {
     getGameEventbyAreaLimit,
     getGameEventLandingPage,
     getGameEventbySearchArea,
+    checkStatus,
     getEventOwnerFirstName,
     getEventOwnerLastName
 }
