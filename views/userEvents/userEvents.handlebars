@@ -32,14 +32,23 @@
                             <dt>Current Number of Participants</dt>
                             <dd>{{this.currentNumberOfParticipants}}</dd>
                         </dl>
-                        <form  method = 'GET' class = 'userEventsLeaveForm' gameEventId = {{this._id}} coordinatorId = {{this.userId}} userId = {{userId}}>
-                            <button type = "submit" id="leaveButton">Leave Event</button>
+                        <form  class = 'userEventsLeaveForm' >
+                            <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                            <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <button type = "submit" class="leaveButton">Leave Event</button>
                         </form>
-                        <form  method = 'GET' class = 'userEventsCancelForm' gameEventId = {{this._id}} coordinatorId = {{this.userId}} userId = {{userId}}>
-                            <button type = "submit" id="cancelButton">Cancel Event</button>
+                        <form class = 'userEventsCancelForm' >
+                            <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                            <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <button type = "submit" class="cancelButton">Cancel Event</button>
                         </form>
-                        <form  method = 'POST' class = 'userEventsEditForm' gameEventId = {{this._id}} coordinatorId = {{this.userId}} userId = {{userId}}>
-                            <button type = "submit" id="editButton"> Edit Event</button>
+                        <form  class = 'userEventsEditForm'>
+                            <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                            <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                            <button type = "submit" class="editButton"> Edit Event</button>
                         </form>
                     </div>
                 {{/each}}

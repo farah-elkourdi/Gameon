@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
-
+const xss = require('xss');
 const geocode = require('../public/js/geocode');
 
 // Global variable createGameEventData
