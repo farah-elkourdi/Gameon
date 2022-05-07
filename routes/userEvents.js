@@ -18,9 +18,11 @@ router.get('/', async (req, res) => {
         let userId = req.session.user.userID;
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
-        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId});
+        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId,
+            userDetails: req.session.user});
     } catch (e){
-        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId});
+        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId,
+            userDetails: req.session.user});
     }
 });
 

@@ -6,6 +6,7 @@ const validation = require("../task/validation");
 const session = require('express-session');
 const userData = require('../data/users');
 const gameData = require('../data/gameEvent');
+const data = require('../data');
 
 router.get('/', async (req, res) => {
   if (!req.session.user) {
@@ -82,6 +83,23 @@ catch (e)
     return res.json({success: true, message: errors});
   }
 });
+
+
+
+router.get('/ratingpage', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    userId= req.session.user.userID
+let gameEvents = await data.userEvents.getAllGameEventsRating(userId);
+
+res.render('rate/ratingpage', {gameEventsList: gameEvents, 
+  userDetails: req.session.user});
+
+}
+});
+
+
 module.exports = router;
 
 
