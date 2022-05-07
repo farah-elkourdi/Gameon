@@ -317,14 +317,14 @@
           if (response.success == false)
           {errorDiv.empty();
             errorDiv.show()
-            console.log(response.message);
+           // console.log(response.message);
             errorDiv.html(response.message);
           }
           else
           {
           errorDiv.empty();
           errorDiv.hide();
-          console.log("SUCCESS ADDING TO Database");
+        //  console.log("SUCCESS ADDING TO Database");
           window.open("/eventList", '_self');
           }
         }
@@ -348,7 +348,7 @@
       $('#minParticipants').val(minParticipants);
       $('#maxParticipants').val(maxParticipants);
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
-      console.log("Failed ADDING TO Database");
+  //    console.log("Failed ADDING TO Database");
       console.log(e);
     }
   });

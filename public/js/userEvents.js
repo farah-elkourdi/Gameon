@@ -270,13 +270,13 @@
                 if(responseMessage.success){
                     errorDiv.empty();
                     errorDiv.hide();
-                    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
+                //    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
                     window.open("/userEvents", '_self');
                 } else if (!responseMessage.success){
                     errorDiv.empty();
                     errorDiv.html(responseMessage.errorCancel);
                     errorDiv.show();
-                    console.log("Failed changing status to 'Canceled' for gameEvent");
+                  //  console.log("Failed changing status to 'Canceled' for gameEvent");
                 }
             }
           });
@@ -284,7 +284,7 @@
           errorDiv.empty();
           errorDiv.html(e);
           errorDiv.show();
-          console.log("Failed changing status to 'Canceled' for gameEvent");
+        //  console.log("Failed changing status to 'Canceled' for gameEvent");
         }
      
   });
@@ -321,18 +321,18 @@
           }
           
           $.ajax(requestConfig).then(function(responseMessage){
-            console.log(responseMessage);
+          //  console.log(responseMessage);
             if(responseMessage){
                 if(responseMessage.success){
                     errorDiv.empty();
                     errorDiv.hide();
-                    console.log("SUCCESS removing user from gameEvents");
+               //     console.log("SUCCESS removing user from gameEvents");
                     window.open("/userEvents", '_self');
                 } else if (!responseMessage.success){
                     errorDiv.empty();
                     errorDiv.html(responseMessage.errorLeave);
                     errorDiv.show();
-                    console.log("Failed to leave gameEvent");
+                  //  console.log("Failed to leave gameEvent");
                 }
             }
           });
@@ -340,7 +340,7 @@
           errorDiv.empty();
           errorDiv.html(e);
           errorDiv.show();
-          console.log("Failed to leave gameEvent");
+        //  console.log("Failed to leave gameEvent");
         }
     });
 
@@ -431,12 +431,12 @@
                 if(response.success){
                   errorDiv.empty();
                   errorDiv.hide();
-                  console.log("SUCCESS editing gameEvent in Database");
+                 // console.log("SUCCESS editing gameEvent in Database");
                   window.open("/userEvents", '_self');
                 } else if(!response.success){
                   errorDiv.empty();
                   errorDiv.show()
-                  console.log("Failed editing gameEvent in Database");
+               //   console.log("Failed editing gameEvent in Database");
                   errorDiv.html(response.errorEdit);
                 }
               }
@@ -459,8 +459,8 @@
           $('#minParticipants').val(minParticipants);
           $('#maxParticipants').val(maxParticipants);
           $('#sportCategory').find('option:eq(0)').prop('selected', true);
-          console.log("Failed editing gameEvent in Database");
-          console.log(e);
+     //     console.log("Failed editing gameEvent in Database");
+      //    console.log(e);
         }
     }
 
@@ -490,7 +490,7 @@
         let userId =  $(this).find('input[class = "userId"]').val();
         let status = $(this).find('input[class = "status"]').val();
 
-        console.log(gameEventId);
+     //   console.log(gameEventId);
         allEvents.children().each(function(){
           
           $(`#${this.id} > div.errorDivLeave`).hide();

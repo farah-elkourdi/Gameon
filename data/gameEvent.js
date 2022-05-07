@@ -432,12 +432,12 @@ async function checkStatus() {
         if(status === 'upcoming'){
             if(event.startTime > now && dayBefore < now){
                 if(curParticipants < minParticipants){
-                    console.log('setting event [' + id + '] to canceled');
+                 //   console.log('setting event [' + id + '] to canceled');
                     newStatus = 'canceled';
                 }
             }
             if(event.endTime < now){
-                console.log('setting event [' + id + '] to old');
+            //    console.log('setting event [' + id + '] to old');
                 newStatus = 'old';
             }
         }
