@@ -26,8 +26,8 @@
         for (let i = 0; i <= ratings_element.length - 1; i++) {
             let inputs = ratings_element[i].getElementsByTagName('i');
             for (let j = 0; j <= inputs.length - 1; j++) {
-                let rating = +inputs[j].getAttribute('rating');
-                let rat_mark = +inputs[j].getAttribute('rat_map');
+                let rating = +inputs[j].getAttribute('data-rating');
+                let rat_mark = +inputs[j].getAttribute('data-rat_map');
                 if (rating >= rat_mark) {
                     inputs[j].className  += ' rating-color';
                 }

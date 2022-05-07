@@ -6,14 +6,26 @@
   background-color: beige;
 }
 
+/* CSS for different font size */
+.h5 {
+  font-size: 1.25rem;
+}
+
+.h1 {
+  font-size: 2.5rem;
+}
+
 .landing-bg-image{
-  background-image: url('/public/img/Sports.png');
-  height: 500px;
-  opacity: 0.85;
+  background-image: url('/public/img/Sports.jpg');
+  height: 550px;
 }
 
 .landing-image-text-padding {
   padding-top: 4.5rem!important;
+}
+
+.dropdown-menu {
+  left: -50px!important
 }
 
 .ratings{
