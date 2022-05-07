@@ -109,7 +109,7 @@ async function remove(userId, gameEventId){
     if(userId === gameEvent.userId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status !== "Upcoming"){
+    if(gameEvent.status !== "upcoming"){
         throw 'Error: user cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
@@ -254,7 +254,7 @@ async function getAllGameEventsRating (userId){
 
     const gameEventCollection = await gameEvents();
     
-    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)},{status: "old"}).toArray();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."

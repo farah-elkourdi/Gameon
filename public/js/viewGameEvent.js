@@ -101,7 +101,6 @@ const onFormClick = async function (event) {
                 }
                 return acc;
             }, '');
-            console.log(initials);
             profileImage.textContent = initials;
 
         }

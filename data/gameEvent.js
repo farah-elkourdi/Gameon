@@ -68,13 +68,17 @@ async function getGameEventbyArea(area) {
                 endTime: 1,
                 minimumParticipants: 1,
                 maximumParticipants: 1,
-                currentNumberOfParticipants: 1
+                currentNumberOfParticipants: 1,
+                status: 1
             }
         },
         {
             $match: {
                 $and: [{
                         area: area
+                    },
+                    {
+                    status: "upcoming"
                     },
                     {
                         startTime: {
@@ -129,7 +133,8 @@ async function getGameEventbySearchArea(searchText, area) {
                 endTime: 1,
                 minimumParticipants: 1,
                 maximumParticipants: 1,
-                currentNumberOfParticipants: 1
+                currentNumberOfParticipants: 1,
+                status: 1
             }
         },
         {
@@ -152,6 +157,9 @@ async function getGameEventbySearchArea(searchText, area) {
                     {
                         area: area
                     },
+                    {
+                        status: "upcoming"
+                        },
                     {
                         startTime: {
                             $gte: now
@@ -187,7 +195,8 @@ async function getGameEventLandingPage() {
     const eventList = (await gameEventCollection.find({
         startTime: {
             $gte: now
-        }
+        },
+        status: "upcoming"
     }).limit(10).sort({
         startTime: 1
     })).toArray();
