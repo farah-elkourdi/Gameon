@@ -5,6 +5,8 @@ const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 const gameEventData = require('./gameEvent');
 const userData = require('./users');
+const rateData = require('../data/rate');
+const rate = mongoCollections.rate;
 
 /* Given a userId, return all game events associated with that user */
 async function getAllGameEvents (userId){
@@ -247,12 +249,17 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
 
 async function getAllGameEventsRating (userId){
     userId = check.checkId(userId);
+    const rateCollection = await rate();
+    var rating = await rateCollection.find({userId: userId}).toArray();
+
     const gameEventCollection = await gameEvents();
+    
     const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)},{status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."
     }
+    var lstevents = [];
 
     gameEventList.forEach( (gameEvent) => {
         gameEvent._id = gameEvent._id.toString();
@@ -264,9 +271,32 @@ async function getAllGameEventsRating (userId){
         }
     });
 
-    return gameEventList;
-}
+    rating.forEach( (rate) => {
+    gameEventList.forEach( (gameEvent) => {      
+if (rate.gameEventId ==  gameEvent._id )
+lstevents.push(gameEvent);
+        });    
+    });
 
+//     lstevents.forEach( (rate) => {
+
+//         gameEventList.pop(rate);
+            
+//         });
+
+//     
+// }
+if (lstevents)
+{
+
+var filteredArray = gameEventList.filter(item => !lstevents.includes(item))
+return filteredArray;
+}
+else
+{
+    return gameEventList
+}
+}
 
 module.exports = {
     getAllGameEvents, 
