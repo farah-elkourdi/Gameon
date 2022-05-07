@@ -109,7 +109,7 @@ async function remove(userId, gameEventId){
     if(userId === gameEvent.userId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status !== "Upcoming"){
+    if(gameEvent.status !== "upcoming"){
         throw 'Error: user cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
