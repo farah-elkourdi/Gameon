@@ -66,6 +66,12 @@ router.post('/', async (req, res) => {
 // {
 // }
 
+        let conflict = await data.users.checkUserConflict(userId, startTime, endTime);
+
+        if(conflict.conflicted){
+            throw 'You are already registered for an event at this time.';
+        }
+
 
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
