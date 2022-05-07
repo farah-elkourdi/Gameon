@@ -3,6 +3,7 @@ const validation = require("../task/validation");
 const rate = mongoCollections.rate;
 const users = mongoCollections.user;
 const { ObjectId } = require('mongodb');
+const userData = require('../data/users');
 
 /* Given top 5 organizers rating */
 async function getTopRatings() {
@@ -53,11 +54,11 @@ let rateUser =
 
 if(newsize)
 {
-    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / size );
+    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / (newsize + 1) );
 }
 else
 {
-    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / ( size + 1 ));
+    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / ( size ));
 }
 
 if (nerRating > 5)

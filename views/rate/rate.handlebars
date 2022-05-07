@@ -11,7 +11,7 @@
   <label for="4">4</label><br>
   <input type="radio" id="five" name="rate" value="5">
   <label for="5">5</label><br><br>
-  <button type="submit" id="rateSubmit" email="{{email}}" gameId="{{gameId}}">Submit</button>
+  <button type="submit" id="rateSubmit" gameId="{{gameId}}">Submit</button>
 </div>
 
 <div id="errorDiv" class="error">{{error}}</div>
@@ -19,10 +19,10 @@
   $('#rateSubmit').click(function () {
     event.preventDefault();
     var errorDiv = $('#errorDiv');
-    var email = $(this).attr('email');
+    //  var email = $(this).attr('email');
     var gameId = $(this).attr('gameId');
     const val = $('input[name=rate]:checked').val();
-    if (!email || !gameId || !val) {
+    if (!gameId || !val) {
       errorDiv.empty();
       errorDiv.show()
       errorDiv.html("Please choose a rate.");
@@ -34,7 +34,7 @@
         url: '/rate/rateAction',
         contentType: 'application/json',
         data: JSON.stringify({
-          email: email,
+
           gameId: gameId,
           rate: val
         }),

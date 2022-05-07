@@ -29,8 +29,18 @@
                 <dd>{{this.currentNumberOfParticipants}}</dd>
             </dl>
         </div>
-        <button> <a data_id={{this._id}}> Rate</a> </button>
+        <button> <a class="clickhere" data_id="{{this._id}}" data_user="{{this.userId}}"> Rate</a> </button>
         {{/each}}
     </div>
 </div>
 </div>
+
+<script>
+    $('a.clickhere').click(function () {
+        var id = $(this).attr('data_id');
+        var email = $(this).attr('data_user');
+        // alert(email)
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/rate?gameId=" + id + "&user=" + email, '_self');
+    });
+</script>
