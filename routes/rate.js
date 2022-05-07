@@ -6,22 +6,23 @@ const validation = require("../task/validation");
 const session = require('express-session');
 const userData = require('../data/users');
 const gameData = require('../data/gameEvent');
+const data = require('../data');
 
 router.get('/', async (req, res) => {
   if (!req.session.user) {
     res.redirect("/");
   } else {
     var errors = [];
-    let email = req.query.email;
+    let thisuserid = req.query.user;
     let gameId = req.query.gameId;
-    email = "xpxpfarah@gmail.com"
-    gameId= "626cbbc0c97b343f6c4ac409"
+    // email = "xpxpfarah@gmail.com"
+    // gameId= "626cbbc0c97b343f6c4ac409"
     userId= req.session.user.userID
     //rating = req.query.rating
-    if(!email) errors.push( "getUser: must pass email");
+   // if(!userId) errors.push( "getUser: must pass userId");
     if(!gameId) errors.push( "getUser: must pass gameid");
     if(!userId) errors.push( "getUser: must pass userId");
-    if (!validation.checkEmail(email)) errors.push( 'Invalid email.');
+   // if (!validation.checkEmail(email)) errors.push( 'Invalid email.');
     if (!validation.checkId(gameId)) errors.push( 'Invalid gameId.');
     if (!validation.checkId(userId)) errors.push( 'Invalid userId.');
    // if(!rating) errors.push( 'Invalid not an integer.');
@@ -31,7 +32,7 @@ return res.json({success: false, message: errors});
 try
 {
 var game = await gameData.getGameEvent(gameId);
-    var user = await userData.getUserByEmail(email);
+    var user = await userData.getUser(thisuserid);
     var userName = user.firstName + " " + user.lastName;
 }
 catch
@@ -40,10 +41,11 @@ catch
   return res.json({success: false, message: errors});
 }
     res.render("rate/rate", {
-      email: email,
+     // email: email,
       gameId: gameId,
       name: userName,
-      title: game.title
+      title: game.title,
+      userDetails: req.session.user
 
   });
   }
@@ -55,7 +57,7 @@ router.post('/rateAction', async (req, res) => {
     res.redirect("/");
   } else {
     var errors = [];
-    let email = req.body.email;
+    let email = req.session.user.email;
     let gameId = req.body.gameId;
     let rating = req.body.rate;
    let  userId= req.session.user.userID
@@ -82,6 +84,27 @@ catch (e)
     return res.json({success: true, message: errors});
   }
 });
+
+
+
+router.get('/ratingpage', async (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/");
+  } else {
+    let userId= req.session.user.userID
+  var   email= req.session.user.email
+let gameEvents = await data.userEvents.getAllGameEventsRating(userId);
+gameEvents.email = req.session.user.email;
+res.render('rate/ratingpage', 
+{gameEventsList: gameEvents, 
+  userDetails: req.session.user
+});
+
+}
+});
+
+
+
 module.exports = router;
 
 
