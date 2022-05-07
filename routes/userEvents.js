@@ -17,14 +17,15 @@ router.get('/', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/');
     }
+    let userId = req.session.user.userID;
     try{
-        let userId = req.session.user.userID;
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
-        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId,
+        console.log(req.session.user);
+        res.render('userEvents/userEvents', {gameEventsList: gameEvents, error_flag: false,
             userDetails: req.session.user});
     } catch (e){
-        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId,
+        res.render('userEvents/userEvents', {errorAllEvents: e,error_flag: true,
             userDetails: req.session.user});
     }
 });

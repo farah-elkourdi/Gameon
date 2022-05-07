@@ -221,11 +221,10 @@
         }
     }
 
-    var errorDivMain = $('#errorDivUserEvents');
     
     var allEvents = $('#allEvents');
 
-    errorDivMain.hide();
+  
 
     $('div.errorDivLeave:visible').hide();
     $('div.errorDivCancel:visible').hide();
