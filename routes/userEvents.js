@@ -64,7 +64,11 @@ router.post('/edit/:id', async(req,res) => {
         editGameEventData.minimumParticipants = check.checkNum(editGameEventData.minParticipants, 'minimumParticipants');
         editGameEventData.maximumParticipants = check.checkNum(editGameEventData.maxParticipants, 'maximumParticipants');
 
-      
+        let conflict = await data.users.checkUserConflict(userId, startTime, endTime);
+
+        if(conflict.conflicted){
+            throw 'You are already registered for an event at this time.';
+        }s
         await  data.userEvents.update(userId, gameEventId, coordinatorId, editGameEventData.title, editGameEventData.status, 
             editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
