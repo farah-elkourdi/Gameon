@@ -26,8 +26,16 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     createGameEventData = req.body;
+    console.log(req.session.user);
     let userId = req.session.user.userID;
+
+    let now = new Date();
+  
+    now.setHours(now.getHours()+ 1);
+    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
     
+    
+
     try {
         userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
@@ -43,21 +51,27 @@ router.post('/', async (req, res) => {
 
 
         createGameEventData.date = check.checkString(createGameEventData.date, 'date');     
-        createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');   
+        createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');  
+        
+        if (createGameEventData.startTime < startTimeMin){
+            throw `Events can only be created for 1 hour after current time`;
+        }
         createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
+        if (createGameEventData.endTime > "22:00"){
+            throw `No event stays after 10 pm `;
+        }
         createGameEventData.startTime = check.convertStringToDate(createGameEventData.date, createGameEventData.startTime);
-       
+        
         createGameEventData.endTime = check.convertStringToDate(createGameEventData.date, createGameEventData.endTime);
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
-
+        
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
-     if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 )
-     throw `min number of Participants should be 2 and maximum 30 `
-        if (createGameEventData.endTime > "22:00")
-        throw `No event stays after 10 pm `
+        if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 ){
+            throw `min number of Participants should be 2 and maximum 30 `;
+        }
 
 //         let now = moment().format('YYYY-MM-DD');
 //         let current_time = moment().format("HH:mm")
@@ -65,21 +79,15 @@ router.post('/', async (req, res) => {
 // if (now == createGameEventData.date   )
 // {
 // }
+       
 
-        let conflict = await data.users.checkUserConflict(userId, startTime, endTime);
-
-        if(conflict.conflicted){
-            throw 'You are already registered for an event at this time.';
-        }
-
-
+       
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,
             createGameEventData.address, createGameEventData.latitude, createGameEventData.longitude, 
             createGameEventData.startTime, createGameEventData.endTime, createGameEventData.minimumParticipants,
             createGameEventData.maximumParticipants);
 
-        
         return res.redirect('/eventList');
     } catch (e) {
         return res.json({success: false, message: e});

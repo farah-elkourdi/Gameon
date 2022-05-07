@@ -114,12 +114,11 @@
     }
   
     function areValidTimes(startTime, endTime) {
-      let now = new Date();
-      const temp = new Date(startTime);
-      temp.setHours(temp.getHours() + 1);
+      
+      startTime.setHours(startTime.getHours() + 1);
   
-  
-      if (startTime < now || endTime < temp) {
+
+      if (endTime < startTime) {
         return false;
       }
       return true;
@@ -348,6 +347,9 @@
     // Executes when user hits the submit button while editing a gameEvent
     var editSubmitEventHandler = function (coordinatorId, gameEventId){
       let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
+      let now = new Date();
+      now.setHours(now.getHours()+ 1);
+      let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
 
       var title = $('#title').val(),
           sportCategory = $('#sportCategory').val(),
@@ -378,6 +380,11 @@
           date = dateIsValid(date, 'date');
           startTime = checkTime(startTime, 'startTime');
           endTime = checkTime(endTime, 'endTime');
+          if (startTime < startTimeMin){
+            throw `Events can only be created for 1 hour after current time`;
+          }
+          if (endTime > "22:00")
+            throw `Events should end before 10 pm`;
           let startTime_date = convertStringToDate(date, startTime);
           let endTime_date = convertStringToDate(date, endTime);
           startTime_date = checkDate(startTime, 'startTime');
