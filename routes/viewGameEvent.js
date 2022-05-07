@@ -42,7 +42,7 @@ router.route('/:id')
         }
         //check the user's area and the event area align
         if (event.area != req.session.user.userArea) {
-
+            return res.redirect(303, '/');
         }
 
         //check if current user is already registered for the event
@@ -100,8 +100,10 @@ router.route('/:id')
             userDetails: req.session.user
         });
     })
-    .post(
+    .post( 
         async (req, res) => {
+            /* user registering for an event */
+
             //check if the user is signed in...
             console.log(JSON.stringify(req.session.user));
             if (!req.session.user) {
@@ -131,6 +133,24 @@ router.route('/:id')
             //check the user's area and the event area align
             if (event.area != req.session.user.userArea) {
                 return res.redirect(303, '/');
+            }
+
+            //check for existing events that conflict with this event
+
+            let conflict;
+            try{
+                conflict = await users.checkUserConflict(currentUserId, event.startTime, event.endTime);
+            }
+            catch(e){
+                return res.status(404).render('errors/error', {
+                    error: e.toString()
+                });
+            }
+
+            if(conflict.conflicted){
+                return res.status(404).render('errors/error', {
+                    error: 'You are already registered for an event during this time.'
+                });
             }
 
             let inserted;

@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
     try {
         userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
-        createGameEventData.status = "Upcoming";
+        createGameEventData.status = "upcoming";
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
