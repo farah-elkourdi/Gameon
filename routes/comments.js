@@ -31,7 +31,7 @@ router.route('/')
     }catch(e){
         return res.json({success : false, error : e.toString()});
     }
-
+    console.log('checking part');
      //check user is a participant in the event
      let joined;
      try{
@@ -55,6 +55,7 @@ router.route('/')
     if(!posted){
         return res.json({success : false, error : 'error posting comment'});
     }
+    console.log('success');
     return res.json({success : true, error : ''});
 });
 router.route('/:gameEventId')
@@ -96,6 +97,7 @@ router.route('/:gameEventId')
     catch(e){
         return res.status(400).send(e.toString());
     }
+    
     return res.render('commentList', {comments: eventComments, layout:false});
 });
 

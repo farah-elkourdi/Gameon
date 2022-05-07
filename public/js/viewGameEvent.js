@@ -1,4 +1,22 @@
+function checkId(id) {
+    if (!id) throw 'Error: You must provide an id to search for';
+    if (typeof id !== 'string') throw 'Error: id must be a string';
+    id = id.trim();
+    if (id.length === 0)
+      throw 'Error: id cannot be an empty string or just spaces';
+    return id;
+  };
+
+
 const getCommentList = async function (gameEventId) {
+    try{
+        checkId(gameEventId);
+    }
+    catch(e){
+        var err = $('<p></p>').text(e.responseText);
+            $('#error').empty();
+            $('#error').append(err);
+    }
     let req = {
         method: 'GET',
         url: '/comments/' + gameEventId,
@@ -73,7 +91,7 @@ const onFormClick = async function (event) {
         var event_participants = document.getElementById('event_participants').getElementsByTagName('li');
         for (let i = 0; i <= event_participants.length - 1; i++) {
             let div = event_participants[i].getElementsByTagName('div');
-            let fullName = div['profileImageName'].innerText;
+            let fullName = div['profileImageName'].textContent;
             let profileImage = div['profileImage'];
 
             const allNames = fullName.trim().split(' ');

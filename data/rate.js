@@ -1,40 +1,23 @@
 const mongoCollections = require('../config/mongoCollections');
-//const userData = require('../data/users');
 const validation = require("../task/validation");
 const rate = mongoCollections.rate;
 const users = mongoCollections.user;
-const {
-    ObjectId
-} = require('mongodb');
-const userData = require('./users');
+const { ObjectId } = require('mongodb');
+const userData = require('../data/users');
 
 /* Given top 5 organizers rating */
 async function getTopRatings() {
-    const rateCollection = await rate();
-    const avgRatingList = await rateCollection.aggregate([        
-        {
-            $group: {_id: "$organizerId", avgRating: { $avg: "$rating" } }
-        },
+    const userCollection = await users();
+    const avgRatingList = await userCollection.aggregate([
+        { $match: { avgRating: {$gt: 0} } },
         { $sort: { "avgRating": -1 } },
         {$limit: 5}
     ]).toArray();
 
     for (let i = 0; i < avgRatingList.length; i++) {
-        let id = avgRatingList[i]._id.toString();
-        let user;
-        try {
-            user = await userData.getUser(id);
-        }
-        catch {
-            user = null;
-        }
-        
-        let name = 'Default User';
-        if (user) {
-            name = user.firstName + ' ' + user.lastName;
-        }
+        let name = avgRatingList[i].firstName + ' ' + avgRatingList[i].lastName;
         avgRatingList[i].name = name;
-        avgRatingList[i]._id = id;
+        avgRatingList[i]._id = avgRatingList[i]._id.toString();
     }
 
     return avgRatingList;
@@ -71,11 +54,11 @@ let rateUser =
 
 if(newsize)
 {
-    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / size );
+    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / (newsize + 1) );
 }
 else
 {
-    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / ( size + 1 ));
+    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / ( size ));
 }
 
 if (nerRating > 5)

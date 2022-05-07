@@ -30,6 +30,7 @@
     "express-session": "^1.17.2",
     "i": "^0.3.7",
     "is-valid-coordinates": "^1.0.0",
+    "moment": "^2.29.3",
     "mongodb": "^4.4.1",
     "node-open-geocoder": "^4.0.1",
     "nodemailer": "^6.7.4",

@@ -4,6 +4,9 @@ const data = require('../data');
 const check = require('../task/validation');
 const xss = require('xss');
 const geocode = require('../public/js/geocode');
+const contactUs = require('../data/contactus');
+//const data = require('../data');
+const gameEvent = data.gameEvent;
 
 // Global variable createGameEventData
 var editGameEventData;
@@ -18,9 +21,11 @@ router.get('/', async (req, res) => {
         let userId = req.session.user.userID;
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
-        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId});
+        res.render('userEvents/userEvents', {gameEventsList: gameEvents, userId: userId,
+            userDetails: req.session.user});
     } catch (e){
-        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId});
+        res.render('userEvents/userEvents', {errorAllEvents: e, userId: userId,
+            userDetails: req.session.user});
     }
 });
 
@@ -64,7 +69,7 @@ router.post('/edit/:id', async(req,res) => {
             editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
             editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
-
+// send email 
         res.json({success: true});
     } catch (e) {
         res.json({errorEdit: e, success: false});
@@ -102,7 +107,7 @@ router.get('/leave/:id', async(req,res) =>{
 });
 
 // (CANCEL) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
-// For some reason I couldn't do "DELETE" methods in html forms
+
 router.get('/cancel/:id', async(req,res) =>{
     let gameEventId = req.params.id;
     let userId = req.session.user.userID;
@@ -113,6 +118,16 @@ router.get('/cancel/:id', async(req,res) =>{
         let retval = await data.userEvents.cancelEvent(userId, gameEventId);
         if(retval.canceled === true){
             res.json({userId: userId, success: true});
+            // send email
+        //     let usersemail= [];
+        //   let event = await gameEvent.getGameEvent(ID);
+        //   event.participants.forEach( (user) => {
+        //     usersid.push(user);
+      //  });
+    //        var title = event.title
+
+  //  await contactUs.emailSetup2( title, "Cancel" ,);
+            
         } 
     } catch (e){
         return res.json({userId: userId, success: false, errorCancel: e});

@@ -5,6 +5,8 @@ const { ObjectId } = require('mongodb');
 const check = require('../task/validation');
 const gameEventData = require('./gameEvent');
 const userData = require('./users');
+const rateData = require('../data/rate');
+const rate = mongoCollections.rate;
 
 /* Given a userId, return all game events associated with that user */
 async function getAllGameEvents (userId){
@@ -107,7 +109,7 @@ async function remove(userId, gameEventId){
     if(userId === gameEvent.userId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status !== "Upcoming"){
+    if(gameEvent.status !== "upcoming"){
         throw 'Error: user cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
@@ -135,8 +137,20 @@ async function insert(userId, gameEventId){
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.map(x =>x.toString()).includes(userId)) throw 'Error: you are already registered for this event.'
-    if(status !== 'Upcoming') throw 'Error: gameEvent is not open for registration.';
+    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
     if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
+
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, gameEvent.startTime, gameEvent.endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
 
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants + 1}});
@@ -232,6 +246,58 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     return {gameEventUpdated: true};
 }
 
+
+async function getAllGameEventsRating (userId){
+    userId = check.checkId(userId);
+    const rateCollection = await rate();
+    var rating = await rateCollection.find({userId: userId}).toArray();
+
+    const gameEventCollection = await gameEvents();
+    
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
+
+    if(gameEventList.length == 0){
+        throw "No game events found."
+    }
+    var lstevents = [];
+
+    gameEventList.forEach( (gameEvent) => {
+        gameEvent._id = gameEvent._id.toString();
+        gameEvent.userId = gameEvent.userId.toString();
+        if(gameEvent.participants.length !== 0){
+            for (let participant of gameEvent.participants){
+                participant = participant.toString();
+            }
+        }
+    });
+
+    rating.forEach( (rate) => {
+    gameEventList.forEach( (gameEvent) => {      
+if (rate.gameEventId ==  gameEvent._id )
+lstevents.push(gameEvent);
+        });    
+    });
+
+//     lstevents.forEach( (rate) => {
+
+//         gameEventList.pop(rate);
+            
+//         });
+
+//     
+// }
+if (lstevents)
+{
+
+var filteredArray = gameEventList.filter(item => !lstevents.includes(item))
+return filteredArray;
+}
+else
+{
+    return gameEventList
+}
+}
+
 module.exports = {
     getAllGameEvents, 
     remove, 
@@ -239,5 +305,6 @@ module.exports = {
     update,
     checkParticipation,
     checkArea, 
-    cancelEvent
+    cancelEvent,
+    getAllGameEventsRating
 }
