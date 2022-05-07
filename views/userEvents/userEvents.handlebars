@@ -51,7 +51,7 @@
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
                             <input type="hidden" class="userId" name="userId" value="{{userId}}">
                             <input type="hidden" class="status" name="status" value="{{this.status}}">
-                            <button type = "submit" class="editButton"> Edit Event</button>
+                            <button type="button" onclick="document.location.href='/updateGameEvent/{{this._id}}'">Update Event</button>
                         </form>
                     </div>
                 {{/each}}

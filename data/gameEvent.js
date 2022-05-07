@@ -306,7 +306,19 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
     address = check.checkString(address, 'address');
     // area = area.userArea;
     /* NEED to check if valid address */
-
+    
+    /* get maximum participants from existing event, maximum participants cannot be lowered */
+    let existingEvent;
+    try{
+        existingEvent = await getGameEvent(gameEventId);
+    }
+    catch(e){
+        throw e.toString();
+    }
+    if(existingEvent.maximumParticipants < maximumParticipants){
+        maximumParticipants = existingEvent.maximumParticipants;
+    }
+    
     if (!check.checkCoordinates(longitude, latitude)) {
         throw "Error: coordinates are NOT valid"
     }
