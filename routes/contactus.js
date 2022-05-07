@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const validation = require("../task/validation");
 const contactUs = require('../data/contactus');
+const xss = require('xss');
 
 router.get('/' ,async (req,res) => {
   if (!req.session.user) {
@@ -19,9 +20,9 @@ else
 });
 
 router.post('/Checksignup', async(req, res) => {
-  const title = req.body.msgtitle;
-  const description = req.body.description;
-  const email = req.body.email;
+  const title = xss(req.body.msgtitle);
+  const description = xss(req.body.description);
+  const email = xss(req.body.email);
 
   var errors = [];
   if (!validation.validString(title, "title")) errors.push('Invalid title.');

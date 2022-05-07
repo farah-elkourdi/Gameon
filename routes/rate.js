@@ -13,8 +13,8 @@ router.get('/', async (req, res) => {
     res.redirect("/");
   } else {
     var errors = [];
-    let thisuserid = req.query.user;
-    let gameId = req.query.gameId;
+    let thisuserid = validation.validateXSS(req.query.user);
+    let gameId = validation.validateXSS(req.query.gameId);
     // email = "xpxpfarah@gmail.com"
     // gameId= "626cbbc0c97b343f6c4ac409"
     userId= req.session.user.userID
@@ -58,8 +58,8 @@ router.post('/rateAction', async (req, res) => {
   } else {
     var errors = [];
     let email = req.session.user.email;
-    let gameId = req.body.gameId;
-    let rating = req.body.rate;
+    let gameId = validation.validateXSS(req.body.gameId);
+    let rating = validation.validateXSS(req.body.rate);
    let  userId= req.session.user.userID
     //rating = req.query.rating
     if(!email) errors.push( "getUser: must pass email");
