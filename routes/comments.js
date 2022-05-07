@@ -6,99 +6,121 @@ const gameEvent = data.gameEvent;
 const comments = data.comments;
 const users = data.users;
 const userEvents = data.userEvents;
-const { ObjectId } = require('mongodb');
+const {
+    ObjectId
+} = require('mongodb');
 const check = require('../task/validation');
+const xss = require('xss');
 
 router.route('/')
-.post(async (req, res) => {
-    //check if the user is signed in...
-    if(!req.session.user){
-        return res.redirect('/');
-    }
-    
-    //get current user id
-    let body = req.body;
-    let gameEventId, userId, comment, timestamp;
-    /* input checking */
-    try{
-        if(Object.keys(body).length != 2){ throw "post /comments: pass gameEventId & comment in req body."};
-    if(!body.gameEventId) throw 'supply gameEventId';
-    if(!body.comment) throw 'supply comment';
-    gameEventId = check.checkId(body.gameEventId);
-    userId =  req.session.user.userID;
-    comment = check.checkString(body.comment);
-    timestamp = new Date();
-    }catch(e){
-        return res.json({success : false, error : e.toString()});
-    }
-    console.log('checking part');
-     //check user is a participant in the event
-     let joined;
-     try{
-         joined = await userEvents.checkParticipation(userId, gameEventId);
-     }
-     catch(e){
-        return res.json({success : false, error : e.toString()});
-     }
-    if(!joined.participant){
-        return res.json({success : false, error : 'you must be registered for this event to post a comment'});
-    }
+    .post(async (req, res) => {
+        //check if the user is signed in...
+        if (!req.session.user) {
+            return res.redirect('/');
+        }
 
-    let posted;
-    try{
-        let email = req.session.user.email; 
-        posted = await comments.postComment(userId, gameEventId, comment, timestamp, email);
-    }
-    catch(e){
-        return res.json({success : false, error : e.toString()});
-    }
-    if(!posted){
-        return res.json({success : false, error : 'error posting comment'});
-    }
-    console.log('success');
-    return res.json({success : true, error : ''});
-});
+        //get current user id
+        let body = req.body;
+        let gameEventId, userId, comment, timestamp;
+        /* input checking */
+        try {
+            if (Object.keys(body).length != 2) {
+                throw "post /comments: pass gameEventId & comment in req body."
+            };
+            if (!xss(body.gameEventId)) throw 'supply gameEventId';
+            if (!xss(body.comment)) throw 'supply comment';
+            gameEventId = check.checkId(xss(body.gameEventId));
+            userId = req.session.user.userID;
+            comment = check.checkString(xss(body.comment));
+            timestamp = new Date();
+        } catch (e) {
+            return res.json({
+                success: false,
+                error: e.toString()
+            });
+        }
+        //check user is a participant in the event
+        let joined;
+        try {
+            joined = await userEvents.checkParticipation(userId, gameEventId);
+        } catch (e) {
+            return res.json({
+                success: false,
+                error: e.toString()
+            });
+        }
+        if (!joined.participant) {
+            return res.json({
+                success: false,
+                error: 'you must be registered for this event to post a comment'
+            });
+        }
+
+        let posted;
+        try {
+            let email = req.session.user.email;
+            posted = await comments.postComment(userId, gameEventId, comment, timestamp, email);
+        } catch (e) {
+            return res.json({
+                success: false,
+                error: e.toString()
+            });
+        }
+        if (!posted) {
+            return res.json({
+                success: false,
+                error: 'error posting comment'
+            });
+        }
+        return res.json({
+            success: true,
+            error: ''
+        });
+    });
 router.route('/:gameEventId')
-.get(async (req, res) => {
-    //check if the user is signed in...
-    if(!req.session.user){
-        return res.redirect('/');
-    }
-    let userId = req.session.user.userID;
-    //get current user id
-    let params = req.params;
-    let gameEventId
-    /* input checking */
-    try{
-        if(Object.keys(params).length != 1){ throw "get /comments: only pass gameEventId in req body."};
-    if(!params.gameEventId) throw 'supply gameEventId';
-    gameEventId = check.checkId(params.gameEventId);
-    
-    }catch(e){
-        return res.status(400).send(e.toString());
-    }
+    .get(async (req, res) => {
+        //check if the user is signed in...
+        if (!req.session.user) {
+            return res.redirect('/');
+        }
+        let userId = req.session.user.userID;
+        //get current user id
+        let params = req.params;
+        let gameEventId
+        /* input checking */
+        try {
+            if (Object.keys(params).length != 1) {
+                throw "get /comments: only pass gameEventId in req body."
+            };
+            if (!xss(params.gameEventId)) throw 'supply gameEventId';
+            gameEventId = check.checkId(xss(params.gameEventId));
 
-     //check user is a participant in the event
-     let joined;
-     try{
-         joined = await userEvents.checkParticipation(userId, gameEventId);
-     }
-     catch(e){
-        return res.status(400).send(e.toString());
-     }
-    if(!joined.participant){
-        return res.status(403).send("You must be registered for this event to view comments.");
-    }
+        } catch (e) {
+            return res.status(400).send(e.toString());
+        }
 
-    let eventComments;
-    try{
-        eventComments = await comments.getCommentsForEvent(gameEventId);
-    }
-    catch(e){
-        return res.status(400).send(e.toString());
-    }
-    
-    return res.render('commentList', {comments: eventComments, layout:false});
-});
+        //check user is a participant in the event
+        let joined;
+        try {
+            joined = await userEvents.checkParticipation(userId, gameEventId);
+        } catch (e) {
+            return res.status(400).send(e.toString());
+        }
+        if (!joined.participant) {
+            return res.status(403).send("You must be registered for this event to view comments.");
+        }
+
+        let eventComments;
+        try {
+            eventComments = await comments.getCommentsForEvent(gameEventId);
+        } catch (e) {
+            return res.status(400).send(e.toString());
+        }
+
+        return res.render('commentList', {
+            comments: eventComments,
+            layout: false
+        });
+    });
 
 module.exports = router;

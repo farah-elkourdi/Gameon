@@ -292,6 +292,96 @@ async function create(userId, title, status, sportCategory, description, area, a
     newGameEvent._id = insert.insertedId;
     return newGameEvent;
 }
+/* update game event */
+async function update(gameEventId, userId, title, status, sportCategory, description, area, address,
+    latitude, longitude, startTime, endTime, minimumParticipants,
+    maximumParticipants) {
+    gameEventId = check.checkId(gameEventId);
+    userId = check.checkId(userId);
+    title = check.checkString(title, 'title');
+    status = check.checkString(status, 'status');
+    sportCategory = check.checkString(sportCategory, 'sportCategory');
+    description = check.checkString(description, 'description');
+    area = check.checkString(area, 'area');
+    address = check.checkString(address, 'address');
+    // area = area.userArea;
+    /* NEED to check if valid address */
+
+    if (!check.checkCoordinates(longitude, latitude)) {
+        throw "Error: coordinates are NOT valid"
+    }
+
+    startTime = check.checkDate(startTime, 'startTime');
+    endTime = check.checkDate(endTime, 'endTime');
+
+    if (!check.areValidTimes(startTime, endTime)) {
+        throw "Error: endTime must be at least 1 hour after startTime"
+    }
+
+    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
+    if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
+        throw "Error: minimum participation limit is not valid"
+    }
+    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
+    if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
+        throw "Error: maximum participation limit is not valid"
+    }
+    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
+        throw "Error: minimum participants is greater than maximum participants"
+    }
+
+    if (endTime > "22:00")
+    throw `No event stays after 10 pm `
+
+    if (minimumParticipants < 2 || maximumParticipants > 30 )
+    throw `min number of Participants should be 2 and maximum 30 `
+
+    //check if the organizer has a time conflict
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, startTime, endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
+    let spots = maximumParticipants - minimumParticipants;
+    // return spots;
+    const gameEventCollection = await gameEvents();
+    
+    /* update document for update */
+    let eventUpdate = {
+        "$set":
+        {
+        "userId": userId,
+        "title": title,
+        "status": status,
+        "sportCategory": sportCategory,
+        "description": description,
+        "area": area,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
+        "startTime": startTime,
+        "endTime": endTime,
+        "minimumParticipants": minimumParticipants,
+        "maximumParticipants": maximumParticipants
+        }
+    };
+    
+    /*filter for update */
+    const filter = {"_id" : ObjectId(gameEventId)};
+    /* update gameEvent */
+    const update = await gameEventCollection.updateOne(filter, eventUpdate);
+    
+    if(update.matchedCount !== 1 && update.modifiedCount !== 1){
+        throw "There was a problem updating the GameEvent.";
+    }
+    return {updated: true};
+}
 
 async function getEventOwnerFirstName(id) {
     const gameEventCollection = await gameEvents();
@@ -342,12 +432,12 @@ async function checkStatus() {
         if(status === 'upcoming'){
             if(event.startTime > now && dayBefore < now){
                 if(curParticipants < minParticipants){
-                    console.log('setting event [' + id + '] to canceled');
+                 //   console.log('setting event [' + id + '] to canceled');
                     newStatus = 'canceled';
                 }
             }
             if(event.endTime < now){
-                console.log('setting event [' + id + '] to old');
+            //    console.log('setting event [' + id + '] to old');
                 newStatus = 'old';
             }
         }
@@ -364,8 +454,11 @@ async function checkStatus() {
     }
 }
 
+
+
 module.exports = {
     create,
+    update,
     getGameEvent,
     getGameEventbyArea,
     getGameEventbyAreaLimit,

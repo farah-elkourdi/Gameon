@@ -114,12 +114,9 @@
   }
 
   function areValidTimes(startTime, endTime) {
-    let now = new Date();
-    const temp = new Date(startTime);
-    temp.setHours(temp.getHours() + 1);
+    startTime.setHours(startTime.getHours() + 1);
 
-
-    if (startTime < now || endTime < temp) {
+    if ( endTime < startTime) {
       return false;
     }
     return true;
@@ -232,6 +229,11 @@
       maxParticipants = $('#maxParticipants').val();
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
+    
+    let now = new Date();
+    now.setHours(now.getHours()+ 1);
+    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
+
 // modify here 
     try {
       title = checkString(title, 'title');
@@ -246,15 +248,20 @@
       date = dateIsValid(date, 'date');
       startTime = checkTime(startTime, 'startTime');
       endTime = checkTime(endTime, 'endTime');
+      if (startTime < startTimeMin){
+        throw `Events can only be created for 1 hour after current time`;
+      }
+      if (endTime > "22:00")
+        throw `Events should end before 10 pm`;
       let startTime_date = convertStringToDate(date, startTime);
       let endTime_date = convertStringToDate(date, endTime);
-      startTime_date = checkDate(startTime, 'startTime');
-      endTime_date = checkDate(endTime, 'endTime');
+      startTime_date = checkDate(startTime_date, 'startTime');
+      endTime_date = checkDate(endTime_date, 'endTime');
 
       minParticipants = checkNum(minParticipants, 'minParticipants');
       maxParticipants = checkNum(maxParticipants, 'maxParticipants');
       if (!areValidTimes(startTime_date, endTime_date)) {
-        throw "Error: endTime must be at last an hour after startTime";
+        throw "Error: endTime must be at least an hour after startTime";
       }
       if (!validMinParticipantLimit(sportCategory, minParticipants)) {
         throw `Error: invalid minParticipants for ${sportCategory}`;
@@ -265,9 +272,7 @@
       if (!validNumParticipants(minParticipants, maxParticipants)) {
         throw "Error: minParticipants is greater than maxParticipants";
       }
-     // alert(endTime);
-      if (endTime > "22:00")
-      throw `Events should end before 10 pm`
+     
       var requestConfig = {
         method: 'POST',
         url: '/createGameEvent',
@@ -312,13 +317,14 @@
           if (response.success == false)
           {errorDiv.empty();
             errorDiv.show()
+           // console.log(response.message);
             errorDiv.html(response.message);
           }
           else
           {
           errorDiv.empty();
           errorDiv.hide();
-          console.log("SUCCESS ADDING TO Database");
+        //  console.log("SUCCESS ADDING TO Database");
           window.open("/eventList", '_self');
           }
         }
@@ -342,7 +348,7 @@
       $('#minParticipants').val(minParticipants);
       $('#maxParticipants').val(maxParticipants);
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
-      console.log("Failed ADDING TO Database");
+  //    console.log("Failed ADDING TO Database");
       console.log(e);
     }
   });

@@ -114,12 +114,11 @@
     }
   
     function areValidTimes(startTime, endTime) {
-      let now = new Date();
-      const temp = new Date(startTime);
-      temp.setHours(temp.getHours() + 1);
+      
+      startTime.setHours(startTime.getHours() + 1);
   
-  
-      if (startTime < now || endTime < temp) {
+
+      if (endTime < startTime) {
         return false;
       }
       return true;
@@ -271,13 +270,13 @@
                 if(responseMessage.success){
                     errorDiv.empty();
                     errorDiv.hide();
-                    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
+                //    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
                     window.open("/userEvents", '_self');
                 } else if (!responseMessage.success){
                     errorDiv.empty();
                     errorDiv.html(responseMessage.errorCancel);
                     errorDiv.show();
-                    console.log("Failed changing status to 'Canceled' for gameEvent");
+                  //  console.log("Failed changing status to 'Canceled' for gameEvent");
                 }
             }
           });
@@ -285,7 +284,7 @@
           errorDiv.empty();
           errorDiv.html(e);
           errorDiv.show();
-          console.log("Failed changing status to 'Canceled' for gameEvent");
+        //  console.log("Failed changing status to 'Canceled' for gameEvent");
         }
      
   });
@@ -322,18 +321,18 @@
           }
           
           $.ajax(requestConfig).then(function(responseMessage){
-            console.log(responseMessage);
+          //  console.log(responseMessage);
             if(responseMessage){
                 if(responseMessage.success){
                     errorDiv.empty();
                     errorDiv.hide();
-                    console.log("SUCCESS removing user from gameEvents");
+               //     console.log("SUCCESS removing user from gameEvents");
                     window.open("/userEvents", '_self');
                 } else if (!responseMessage.success){
                     errorDiv.empty();
                     errorDiv.html(responseMessage.errorLeave);
                     errorDiv.show();
-                    console.log("Failed to leave gameEvent");
+                  //  console.log("Failed to leave gameEvent");
                 }
             }
           });
@@ -341,13 +340,16 @@
           errorDiv.empty();
           errorDiv.html(e);
           errorDiv.show();
-          console.log("Failed to leave gameEvent");
+        //  console.log("Failed to leave gameEvent");
         }
     });
 
     // Executes when user hits the submit button while editing a gameEvent
     var editSubmitEventHandler = function (coordinatorId, gameEventId){
       let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
+      let now = new Date();
+      now.setHours(now.getHours()+ 1);
+      let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
 
       var title = $('#title').val(),
           sportCategory = $('#sportCategory').val(),
@@ -378,6 +380,11 @@
           date = dateIsValid(date, 'date');
           startTime = checkTime(startTime, 'startTime');
           endTime = checkTime(endTime, 'endTime');
+          if (startTime < startTimeMin){
+            throw `Events can only be created for 1 hour after current time`;
+          }
+          if (endTime > "22:00")
+            throw `Events should end before 10 pm`;
           let startTime_date = convertStringToDate(date, startTime);
           let endTime_date = convertStringToDate(date, endTime);
           startTime_date = checkDate(startTime, 'startTime');
@@ -424,12 +431,12 @@
                 if(response.success){
                   errorDiv.empty();
                   errorDiv.hide();
-                  console.log("SUCCESS editing gameEvent in Database");
+                 // console.log("SUCCESS editing gameEvent in Database");
                   window.open("/userEvents", '_self');
                 } else if(!response.success){
                   errorDiv.empty();
                   errorDiv.show()
-                  console.log("Failed editing gameEvent in Database");
+               //   console.log("Failed editing gameEvent in Database");
                   errorDiv.html(response.errorEdit);
                 }
               }
@@ -452,8 +459,8 @@
           $('#minParticipants').val(minParticipants);
           $('#maxParticipants').val(maxParticipants);
           $('#sportCategory').find('option:eq(0)').prop('selected', true);
-          console.log("Failed editing gameEvent in Database");
-          console.log(e);
+     //     console.log("Failed editing gameEvent in Database");
+      //    console.log(e);
         }
     }
 
@@ -483,7 +490,7 @@
         let userId =  $(this).find('input[class = "userId"]').val();
         let status = $(this).find('input[class = "status"]').val();
 
-        console.log(gameEventId);
+     //   console.log(gameEventId);
         allEvents.children().each(function(){
           
           $(`#${this.id} > div.errorDivLeave`).hide();
