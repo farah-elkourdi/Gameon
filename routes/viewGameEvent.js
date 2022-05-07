@@ -24,7 +24,7 @@ router.route('/:id')
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.id));
         } catch (e) {
             return res.status(400).render('errors/error', {
                 error: e.toString()
@@ -105,7 +105,7 @@ router.route('/:id')
             /* user registering for an event */
 
             //check if the user is signed in...
-            console.log(JSON.stringify(req.session.user));
+         //   console.log(JSON.stringify(req.session.user));
             if (!req.session.user) {
                 return res.redirect(303, '/'); //using code 303 to specify a get request
             }
@@ -115,7 +115,7 @@ router.route('/:id')
             //check id
             let ID;
             try {
-                ID = check.checkId(req.params.id);
+                ID = check.checkId(check.validateXSS(req.params.id));
             } catch (e) {
                 return res.status(400).render('errors/error', {
                     error: e.toString()
@@ -170,8 +170,8 @@ router.route('/:id')
 
 router.route('/:id/leave')
     .post(async (req, res) => {
-        console.log('leaving');
-        console.log(JSON.stringify(req.session.user));
+    //    console.log('leaving');
+     //   console.log(JSON.stringify(req.session.user));
         //check if the user is signed in...
         if (!req.session.user) {
             return res.redirect(303, '/'); //using code 303 to specify a get request
@@ -182,7 +182,7 @@ router.route('/:id/leave')
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.id));
         } catch (e) {
             return res.status(400).render('errors/error', {
                 error: e.toString()

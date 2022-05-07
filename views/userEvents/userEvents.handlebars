@@ -1,12 +1,15 @@
 <div class = "outer_container"></div>
     <h1> Your Events </h1>
     <div class = "container">
+        <p id="userId" class = {{userId}} hidden></p>
+        {{#if error_flag}}
         <div id="errorDivUserEvents"> {{errorAllEvents}}</div>
+        {{/if}}
             <div id="allEvents" class = "scrollable_list">
                 {{#each gameEventsList}}
                     <div id = {{this._id}}>
                         <div class="errorDivLeave">{{errorLeave}}</div>
-                        <div class="errorDivEdit">{{errorCancel}}</div>
+                        <div class="errorDivEdit">{{errorEdit}}</div>
                         <div class="errorDivCancel">{{errorCancel}}</div>
                         <dl>
                             <dt>Title: </dt>
@@ -32,24 +35,24 @@
                             <dt>Current Number of Participants</dt>
                             <dd>{{this.currentNumberOfParticipants}}</dd>
                         </dl>
-                        <form  class = 'userEventsLeaveForm' >
+                        <form  class = 'userEventsLeaveForm'>
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
-                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                           
                             <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type = "submit" class="leaveButton">Leave Event</button>
                         </form>
                         <form class = 'userEventsCancelForm' >
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
-                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                           
                             <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type = "submit" class="cancelButton">Cancel Event</button>
                         </form>
                         <form  class = 'userEventsEditForm'>
                             <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
                             <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
-                            <input type="hidden" class="userId" name="userId" value="{{userId}}">
+                          
                             <input type="hidden" class="status" name="status" value="{{this.status}}">
                             <button type="button" onclick="document.location.href='/updateGameEvent/{{this._id}}'">Update Event</button>
                         </form>
