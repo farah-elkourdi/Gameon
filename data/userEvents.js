@@ -220,7 +220,6 @@ module.exports = {
     getAllGameEvents, 
     remove, 
     insert,
-    update,
     checkParticipation,
     checkArea, 
     cancelEvent,
