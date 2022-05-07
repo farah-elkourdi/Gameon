@@ -120,8 +120,8 @@ module.exports = {
     return date;
   },
   areValidTimes(startTime, endTime){
-    startTime.setHours(startTime.getHours() + 1);
-    if (endTime < startTime){
+    let hourGap = new Date(startTime + 3600);
+    if (endTime < hourGap){
       return false;
     }
     return true;
