@@ -1,15 +1,15 @@
 <div class="welcome">
     <h1 hidden>Home</h1>
-    <div class="jumbotron jumbotron-fluid landing-bg-image">
+    <div class="jumbotron jumbotron-fluid pt-0 landing-bg-image">
         <div class="container text-center">
             <div class="d-flex justify-content-center align-items-center h-100">
-                <div class="text-white landing-image-text-padding">
-                    <h5 class="mb-4">Play your favorite team sport by finding a team</h5>
-                    <h1 class="mb-3">Game on</h1>
-                    <h1 class="mb-3">Find.Connect.Play</h1>
-                    <h5 class="mb-4">Find people around you and easily coordinate game-day information.
+                <div class="landing-image-text-padding">
+                    <span class="mb-4 d-block h5">Play your favorite team sport by finding a team</span>
+                    <span class="mb-3 d-block h1">Game on</span>
+                    <span class="mb-3 d-block h1">Find.Connect.Play</span>
+                    <span class="mb-4 d-block h5">Find people around you and easily coordinate game-day information.
                         The user can create or join a game event. The team is completed, the event time
-                        comes then the Game on!</h5>
+                        comes then the Game on!</span>
                 </div>
             </div>
         </div>
@@ -21,14 +21,14 @@
                     {{#each ratings}}
                     <div class="card m-2" style="width: 13rem;">
                         <div class="card-body">
-                            <h5 class="card-title text-capitalize">{{this.name}}</h5>
-                            <div class="feedback">
+                            <span class="card-title text-capitalize h5">{{this.name}}</span>
+                            <div class="feedback pt-3">
                                 <div class="ratings" id="{{this._id}}">
-                                    <i rating="{{this.avgRating}}" rat_map="1" class="fa fa-star"></i>
-                                    <i rating="{{this.avgRating}}" rat_map="2" class="fa fa-star"></i>
-                                    <i rating="{{this.avgRating}}" rat_map="3" class="fa fa-star"></i>
-                                    <i rating="{{this.avgRating}}" rat_map="4" class="fa fa-star"></i>
-                                    <i rating="{{this.avgRating}}" rat_map="5" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="1" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="2" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="3" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="4" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="5" class="fa fa-star"></i>
                                 </div>
                             </div>
                         </div>
