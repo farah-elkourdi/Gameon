@@ -6,8 +6,8 @@
 
     $('#btnlogin').click(function (event) {
       event.preventDefault();
-      let passwordInput = $('#password').val();
-      let emailInput = $('#email').val();
+      let passwordInput = filterXSS($('#password').val());
+      let emailInput = filterXSS($('#email').val());
       $('#error').empty();
       $("div#errordiv").hide();
       $('#error').hide();

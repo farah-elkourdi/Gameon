@@ -4,6 +4,7 @@ const usersData = require('../data/users');
 const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
 const session = require('express-session');
+const xss = require('xss');
 
 router.get('/profile', async (req, res) => {
   if (!req.session.user) {
@@ -26,7 +27,7 @@ router.get('/profile', async (req, res) => {
 
 router.get('/publicprofile', async (req, res) => {
   let topuser = false;
-  const email = req.query.email;
+  const email = xss(req.query.email);
   if (!req.session.user) {
     res.redirect("/");
   } else {
@@ -64,8 +65,8 @@ router.get('/signup', async (req, res) => {
 });
 
 router.post("/map", async (req, response) => {
-  var street = req.body.street;
-  var area = req.body.area;
+  var street = xss(req.body.street);
+  var area = xss(req.body.area);
   var lat;
   var lon;
   var status;
@@ -111,14 +112,14 @@ router.post("/map", async (req, response) => {
 });
 
 router.post('/Checksignup', async (req, res) => {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const password = req.body.password;
-  const email = req.body.email;
-  const area = req.body.area;
-  const street = req.body.street;
-  const lat = req.body.lat;
-  const lon = req.body.lon;
+  const firstName = xss(req.body.firstName);
+  const lastName = xss(req.body.lastName);
+  const password = xss(req.body.password);
+  const email = xss(req.body.email);
+  const area = xss(req.body.area);
+  const street = xss(req.body.street);
+  const lat = xss(req.body.lat);
+  const lon = xss(req.body.lon);
 
   var errors = [];
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
@@ -157,8 +158,8 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/Checksignin', async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const email = xss(req.body.email);
+  const password = xss(req.body.password);
 
   var errors = [];
   if (!validation.validString(password)) errors.push('Invalid password or email.');
@@ -212,8 +213,8 @@ router.get('/logout', async (req, res) => {
 
 
 router.post('/Checkprofile', async (req, res) => {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+  const firstName = xss(req.body.firstName);
+  const lastName = xss(req.body.lastName);
   // const password = req.body.password;
   // const email = req.body.email;
   // const area = req.body.area;
@@ -298,7 +299,7 @@ router.get('/changepass', async (req, res) => {
 
 router.post('/Checkpass', async (req, res) => {
   var errors = [];
-  const password = req.body.password;
+  const password = xss(req.body.password);
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (errors.length == 0) {
     try {
@@ -334,7 +335,7 @@ router.get('/forgetpass', async (req, res) => {
 
 router.post('/temppass', async (req, res) => {
   var errors = [];
-  const email = req.body.email;
+  const email = xss(req.body.email);
   if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (errors.length == 0) {
     try {

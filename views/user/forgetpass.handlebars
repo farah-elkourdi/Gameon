@@ -1,7 +1,7 @@
-<div class="container bg-white m-0 max-width">
-    <div class="row pt-5">
+<div class="container m-0 max-width">
+    <div class="row pt-5 pb-5">
         <div class="col-md-4"></div>
-        <div class="col-md-4 pt-3 forgot-password">
+        <div class="col-md-4 bg-white pt-3 forgot-password">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="text-center">
@@ -48,7 +48,7 @@
             $('#saveSubmit').click(function (event) {
                 event.preventDefault();
 
-                let emailInput = $('#email').val();
+                let emailInput = filterXSS($('#email').val());
 
                 $('#error').empty();
                 $("div#errordiv").hide();
