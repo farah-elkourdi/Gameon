@@ -187,7 +187,8 @@ async function getGameEventLandingPage() {
     const eventList = (await gameEventCollection.find({
         startTime: {
             $gte: now
-        }
+        },
+        status: "upcoming"
     }).limit(10).sort({
         startTime: 1
     })).toArray();
