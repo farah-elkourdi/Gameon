@@ -18,7 +18,8 @@ router.get('/profile', async (req, res) => {
       street: req.session.user.userStreet,
       area: req.session.user.userArea,
       lat: req.session.user.lat,
-      lon: req.session.user.lon
+      lon: req.session.user.lon,
+      avgRating: req.session.user.avgRating
     });
   }
 });
@@ -48,7 +49,8 @@ router.get('/publicprofile', async (req, res) => {
       area: user.area,
       lat: user.lat,
       lon: user.lon,
-      userDetails: req.session.user
+      userDetails: req.session.user,
+      avgRating: req.session.user.avgRating
   });
   }
 });
@@ -176,7 +178,8 @@ router.post('/Checksignin', async (req, res) => {
           userArea: user.area,
           userStreet: user.street,
           lat: users.user.lat,
-          lon: users.user.lon
+          lon: users.user.lon,
+          avgRating: users.user.avgRating
         };
       }
     } catch (e) {
@@ -279,7 +282,7 @@ let topuser = false;
       street: req.session.user.userStreet,
       area: req.session.user.userArea,
       lat: req.session.user.lat,
-
+      avgRating: req.session.user.avgRating,
       lon: req.session.user.lon, 
       topuser: topuser
   });
