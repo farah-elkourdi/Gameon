@@ -244,6 +244,30 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     return {gameEventUpdated: true};
 }
 
+
+async function getAllGameEventsRating (userId){
+    userId = check.checkId(userId);
+    const gameEventCollection = await gameEvents();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)},{status: "old"}).toArray();
+
+    if(gameEventList.length == 0){
+        throw "No game events found."
+    }
+
+    gameEventList.forEach( (gameEvent) => {
+        gameEvent._id = gameEvent._id.toString();
+        gameEvent.userId = gameEvent.userId.toString();
+        if(gameEvent.participants.length !== 0){
+            for (let participant of gameEvent.participants){
+                participant = participant.toString();
+            }
+        }
+    });
+
+    return gameEventList;
+}
+
+
 module.exports = {
     getAllGameEvents, 
     remove, 
@@ -251,5 +275,6 @@ module.exports = {
     update,
     checkParticipation,
     checkArea, 
-    cancelEvent
+    cancelEvent,
+    getAllGameEventsRating
 }
