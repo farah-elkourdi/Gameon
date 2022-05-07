@@ -1,0 +1,42 @@
+<div class="container pt-1">
+    <h1>Contact us</h1>
+    <div class="alert alert-danger mt-2 form-group" id="errordiv">
+        <ul id="error" class="m-0 text-left">
+        </ul>
+    </div>
+    <div class="row pt-5 pb-5">
+        <div class="col-md-5">
+            <img src="/public/img/Email.png" alt="email">
+        </div>
+        <div class="col-md-7">
+            <form class="form-horizontal" method="POST" id="login-form">
+                <p>If you have any technical issues, please drop us a message explaining the issue.</p>
+                <div class="form-group d-flex">
+                    <label class="control-label col-sm-2" id="labeltitle" for="msgtitle"> Title: </label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="msgtitle" placeholder="Enter title" name="title" />
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="control-label col-sm-2" id="labelEmail" for="email"> Email: </label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="email" placeholder="Enter email" name="email" />
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="control-label col-sm-2" id="labelDescription" for="description"> Description: </label>
+                    <div class="col-md-5">
+                        <textarea class="form-control" id="description" placeholder="Enter description"
+                            name="description"> </textarea>
+                    </div>
+                </div>
+                <div class="form-group d-flex pb-4">
+                    <div class="col-sm-offset-2 col-sm-2">
+                        <button type="submit" id="btnsend" class="btn btn-success">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/public/js/contactus.js"></script>
