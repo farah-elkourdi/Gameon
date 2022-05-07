@@ -265,6 +265,7 @@
       if (!validNumParticipants(minParticipants, maxParticipants)) {
         throw "Error: minParticipants is greater than maxParticipants";
       }
+     // alert(endTime);
       if (endTime > "22:00")
       throw `Events should end before 10 pm`
       var requestConfig = {
