@@ -24,7 +24,7 @@ router.route('/:id')
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.id));
         } catch (e) {
             return res.status(400).render('errors/error', {
                 error: e.toString()
@@ -115,7 +115,7 @@ router.route('/:id')
             //check id
             let ID;
             try {
-                ID = check.checkId(req.params.id);
+                ID = check.checkId(check.validateXSS(req.params.id));
             } catch (e) {
                 return res.status(400).render('errors/error', {
                     error: e.toString()
@@ -182,7 +182,7 @@ router.route('/:id/leave')
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.id));
         } catch (e) {
             return res.status(400).render('errors/error', {
                 error: e.toString()

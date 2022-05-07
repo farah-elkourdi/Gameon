@@ -25,8 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    createGameEventData = req.body;
-    console.log(req.session.user);
+    createGameEventData = check.validateObjectXSS(req.body);
     let userId = req.session.user.userID;
 
     let now = new Date();

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
-const xss = require('xss');
 const geocode = require('../public/js/geocode');
 const contactUs = require('../data/contactus');
 //const data = require('../data');
@@ -31,10 +30,10 @@ router.get('/', async (req, res) => {
 
 // (EDIT) Route: Main EDIT route
 router.post('/edit/:id', async(req,res) => {
-    editGameEventData = req.body;
+    editGameEventData = check.validateObjectXSS(req.body);
     let userId = req.session.user.userID;
     let coordinatorId = editGameEventData.coordinatorId;
-    let gameEventId = req.params.id;
+    let gameEventId = check.validateXSS(req.params.id);
 
     //get min start time
     let now = new Date();
@@ -90,8 +89,8 @@ router.post('/edit/:id', async(req,res) => {
 router.post('/partialEditForm.html', async(req,res) =>{
     let userId = req.session.user.userID;
     let area = req.session.user.userArea;
-    let gameEventId = req.body.gameEventId;
-    let coordinatorId =req.body.coordinatorId;
+    let gameEventId = check.validateXSS(req.body.gameEventId);
+    let coordinatorId = check.validateXSS(req.body.coordinatorId);
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
     res.render('userEvents/partialEditForm', {layout: null, userId: userId, gameEventId: gameEventId, minStartDate: nowStrDate,
                                               coordinatorId: coordinatorId, area: area});
@@ -101,7 +100,7 @@ router.post('/partialEditForm.html', async(req,res) =>{
 // (LEAVE) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
 // For some reason I couldn't do "DELETE" methods in html forms
 router.get('/leave/:id', async(req,res) =>{
-    let gameEventId = req.params.id;
+    let gameEventId = check.validateXSS(req.params.id);
     let userId = req.session.user.userID;
 
     try{
@@ -119,7 +118,7 @@ router.get('/leave/:id', async(req,res) =>{
 // (CANCEL) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
 
 router.get('/cancel/:id', async(req,res) =>{
-    let gameEventId = req.params.id;
+    let gameEventId = check.validateXSS(req.params.id);
     let userId = req.session.user.userID;
 
     try{
