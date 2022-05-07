@@ -1,6 +1,8 @@
 const mongoCollections = require('../config/mongoCollections');
+const moment = require('moment');
 const gameEvents = mongoCollections.gameEvent;
 const users = mongoCollections.user;
+const userData = require('./users');
 const {
     ObjectId
 } = require('mongodb');
@@ -241,6 +243,18 @@ async function create(userId, title, status, sportCategory, description, area, a
     if (minimumParticipants < 2 || maximumParticipants > 30 )
     throw `min number of Participants should be 2 and maximum 30 `
 
+    //check if the organizer has a time conflict
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, startTime, endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
     let newGameEvent = {
         userId: userId,
         title: title,
@@ -249,6 +263,8 @@ async function create(userId, title, status, sportCategory, description, area, a
         description: description,
         area: area,
         address: address,
+        latitude: latitude,
+        longitude: longitude,
         startTime: startTime,
         endTime: endTime,
         minimumParticipants: minimumParticipants,
@@ -300,6 +316,45 @@ async function getEventOwnerLastName(id) {
     return user.lastName;
 }
 
+async function checkStatus() {
+    const now = new Date(Date.now());
+    const gameEventCollection = await gameEvents();
+        const eventList = await gameEventCollection.find({}).toArray();
+            /* $nor: [ { status: 'Finished' }, { status: 'Canceled' } ] */
+    for(let i=0; i<eventList.length; i++){
+        
+        let event = eventList[i];
+        let id = event._id;
+        let status = event.status;
+        let newStatus = 'same';
+        let minParticipants = event.minimumParticipants;
+        let curParticipants = event.currentNumberOfParticipants;
+        let dayBefore = new Date(event.startTime - 86400000);
+        if(status === 'upcoming'){
+            if(event.startTime > now && dayBefore < now){
+                if(curParticipants < minParticipants){
+                    console.log('setting event [' + id + '] to canceled');
+                    newStatus = 'canceled';
+                }
+            }
+            if(event.endTime < now){
+                console.log('setting event [' + id + '] to old');
+                newStatus = 'old';
+            }
+        }
+        if(newStatus != 'same'){
+            let updateInfo;
+            try{
+                updateInfo = await gameEventCollection.updateOne({_id: id}, {$set: {status: newStatus}});
+            }
+            catch(e){
+                throw 'checkStatus: ' + e.toString();
+            }
+            if (updateInfo.modifiedCount === 0) throw 'checkStatus: encountered an error updating event ' + id.toString() + ' status';
+        }
+    }
+}
+
 module.exports = {
     create,
     getGameEvent,
@@ -307,6 +362,7 @@ module.exports = {
     getGameEventbyAreaLimit,
     getGameEventLandingPage,
     getGameEventbySearchArea,
+    checkStatus,
     getEventOwnerFirstName,
     getEventOwnerLastName
 }

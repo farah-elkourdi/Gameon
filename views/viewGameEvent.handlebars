@@ -39,8 +39,14 @@
             </div>
             <div class="mb-1">
                 <div class="d-inline-flex col-md-12 pl-0">
+                    <div class="col-md-3 pl-0">Area:</div>
+                    <div class="col-md-7 ml-2 text-capitalize">{{event.area}}</div>
+                </div>
+            </div>
+            <div class="mb-1">
+                <div class="d-inline-flex col-md-12 pl-0">
                     <div class="col-md-3 pl-0">Address:</div>
-                    <div class="col-md-7 ml-2 text-capitalize">{{event.address}}, {{event.area}}</div>
+                    <div class="col-md-7 ml-2 text-capitalize">{{event.address}}</div>
                 </div>
             </div>
             <div class="mb-1">
@@ -73,6 +79,9 @@
                     <form action="/viewGameEvent/{{event._id}}" method="POST" id="join-form">
                         <button class="btn btn-success" type="submit" id="joinButton">Join Event</button>
                     </form>
+                    {{/if}}
+                    {{#if error}}
+                    <div class="join-leave-error">{{error}}</div>
                     {{/if}}
                 </div>
             </div>

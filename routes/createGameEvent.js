@@ -3,6 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const check = require('../task/validation');
 const gameEvent = require('../data/gameEvent');
+const moment = require('moment');
 
 // Global variable createGameEventData
 var createGameEventData;
@@ -30,7 +31,7 @@ router.post('/', async (req, res) => {
     try {
         userId = check.checkId(userId);
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
-        createGameEventData.status = "Upcoming";
+        createGameEventData.status = "upcoming";
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
@@ -57,6 +58,14 @@ router.post('/', async (req, res) => {
      throw `min number of Participants should be 2 and maximum 30 `
         if (createGameEventData.endTime > "22:00")
         throw `No event stays after 10 pm `
+
+//         let now = moment().format('YYYY-MM-DD');
+//         let current_time = moment().format("HH:mm")
+
+// if (now == createGameEventData.date   )
+// {
+// }
+
 
         await gameEvent.create(userId, createGameEventData.title, createGameEventData.status, 
             createGameEventData.sportCategory, createGameEventData.description, req.session.user.userArea,

@@ -96,6 +96,7 @@ router.route('/:gameEventId')
     catch(e){
         return res.status(400).send(e.toString());
     }
+    
     return res.render('commentList', {comments: eventComments, layout:false});
 });
 

@@ -37,11 +37,14 @@ async function cancelEvent(userId, gameEventId){
     if(userId !== gameEvent.userId){
         throw "Error: user is MUST be the event coordinator"
     }
-    if(gameEvent.status === 'Canceled'){
+    if(gameEvent.status === 'canceled'){
         throw "Error: Event is already Canceled"
     }
+    if(gameEvent.status !== 'upcoming'){
+        throw "Error: Events that are NOT 'upcoming' cannot be Canceled"
+    }
     const gameEventUpdatedInfo = {
-        status: "Canceled"
+        status: "canceled"
     }
     const gameEventCollection = await gameEvents();
 
@@ -104,6 +107,9 @@ async function remove(userId, gameEventId){
     if(userId === gameEvent.userId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
+    if(gameEvent.status !== "Upcoming"){
+        throw 'Error: user cannot leave an Old or Canceled event';
+    }
     let num_participants = gameEvent.currentNumberOfParticipants;
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants -1}});
@@ -129,8 +135,20 @@ async function insert(userId, gameEventId){
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.map(x =>x.toString()).includes(userId)) throw 'Error: you are already registered for this event.'
-    if(status !== 'Upcoming') throw 'Error: gameEvent is not open for registration.';
+    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
     if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
+
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, gameEvent.startTime, gameEvent.endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
+
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
 
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants + 1}});
@@ -161,6 +179,11 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
+
+    if(status !== "upcoming"){
+        throw "User cannot edit an Old or Canceled gameEvent";
+    }
+
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
     // area = check.checkString(area, 'area');
