@@ -109,7 +109,7 @@ async function remove(userId, gameEventId){
     if(userId === gameEvent.userId){
         throw 'Error: event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status !== "Upcoming"){
+    if(gameEvent.status !== "upcoming"){
         throw 'Error: user cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
@@ -165,88 +165,6 @@ async function insert(userId, gameEventId){
     return {userInserted: true};  
 }
 
-/* update a gameEvent */
-async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, area, address, 
-    latitude, longitude, startTime, endTime, minimumParticipants, maximumParticipants){
-
-    userId = check.checkId(userId);
-    gameEventId = check.checkId(gameEventId);
-    const gameEventCollection = await gameEvents();
-    const gameEvent = await gameEventData.getGameEvent(gameEventId);
-    
-    if(userId !== gameEvent.userId){
-        throw 'Error: user is not the event coordinator.'
-    }
-    
-    userId = check.checkId(userId);
-    title = check.checkString(title, 'title');
-    status = check.checkString(status, 'status');
-
-    if(status !== "upcoming"){
-        throw "User cannot edit an Old or Canceled gameEvent";
-    }
-
-    sportCategory = check.checkString(sportCategory, 'sportCategory');
-    description = check.checkString(description, 'description');
-    // area = check.checkString(area, 'area');
-    address = check.checkString(address, 'address');
-
-    /* NEED to check if valid address */
-
-    // if(!check.checkCoordinates(longitude, latitude)){
-    //     throw "Error: coordinates are NOT valid"
-    // }
-
-
-    startTime = check.checkDate(startTime, 'startTime');
-    endTime = check.checkDate(endTime, 'endTime');
-
-    if(!check.areValidTimes(startTime, endTime)){
-        throw "Error: endTime must be at least 1 hour after startTime"
-    }
-
-    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    if(!check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
-        throw "Error: minimum participation limit is not valid"
-    }
-    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    if(!check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
-        throw "Error: maximum participation limit is not valid"
-    }
-
-    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
-        throw "Error: minimum participants is greater than maximum participants"
-    }
-
-    let updatedGameEvent = {
-        userId: eventCoordinator, 
-        title: title,
-        status: status,
-        sportCategory: sportCategory,
-        description: description,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-        startTime: startTime, 
-        endTime: endTime, 
-        minimumParticipants: minimumParticipants,
-        maximumParticipants: maximumParticipants,
-        currentNumberOfParticipants: gameEvent.currentNumberOfParticipants,
-        participants: gameEvent.participants
-    };
-
-    const updatedInfo = await gameEventCollection.updateOne(
-        {_id: ObjectId(gameEventId)}, 
-        {$set: updatedGameEvent}
-    );
-
-    if(updatedInfo.modifiedCount === 0){
-        throw "Error: Failed to update game event";
-    }
-    return {gameEventUpdated: true};
-}
-
-
 async function getAllGameEventsRating (userId){
     userId = check.checkId(userId);
     const rateCollection = await rate();
@@ -254,7 +172,7 @@ async function getAllGameEventsRating (userId){
 
     const gameEventCollection = await gameEvents();
     
-    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)},{status: "old"}).toArray();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."

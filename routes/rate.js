@@ -93,8 +93,17 @@ router.get('/ratingpage', async (req, res) => {
   } else {
     let userId= req.session.user.userID
   var   email= req.session.user.email
-let gameEvents = await data.userEvents.getAllGameEventsRating(userId);
+  var gameEvents = [];
+  try
+  {
+ gameEvents = await data.userEvents.getAllGameEventsRating(userId);
 gameEvents.email = req.session.user.email;
+  }
+catch 
+{
+  gameEvents = [];
+}
+
 res.render('rate/ratingpage', 
 {gameEventsList: gameEvents, 
   userDetails: req.session.user
