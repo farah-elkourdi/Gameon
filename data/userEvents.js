@@ -254,7 +254,7 @@ async function getAllGameEventsRating (userId){
 
     const gameEventCollection = await gameEvents();
     
-    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId)},{status: "old"}).toArray();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."
