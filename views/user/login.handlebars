@@ -12,6 +12,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
+                        <label for="email"></label>
                         <input class="form-control input_user" id="email" type="text" placeholder="Enter Email"
                             name="email" value="{{email}}" />
                     </div>
@@ -19,6 +20,7 @@
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="fas fa-key"></i></span>
                         </div>
+                        <label for="password"></label>
                         <input class="form-control input_pass" id="password" type="password"
                             placeholder="Enter password" name="password" value="{{password}}" />
                     </div>
@@ -26,16 +28,17 @@
                         <button id="btnlogin" type="button" name="button" class="btn login_btn">Login</button>
                     </div>
                 </form>
-                <ul id="error">
+            </div>
+            <div class="alert alert-danger mt-2 mb-2" id="errordiv">
+                <ul id="error" class="m-0">
                 </ul>
             </div>
-
-            <div class="mt-4">
+            <div class="mt-2">
                 <div class="d-flex justify-content-center links">
-                    Don't have an account? <a href="/user/signup" class="ml-2">Sign Up</a>
+                    Don't have an account? <a href="/user/signup" class="ml-2 adjust-contrast">Sign Up</a>
                 </div>
                 <div class="d-flex justify-content-center links">
-                    <a href="/user/forgetpass" class="ml-2">Forget password :(</a>
+                    <a href="/user/forgetpass" class="ml-2 adjust-contrast">Forget password <i class="far fa-frown"></i></a>
                 </div>
             </div>
         </div>

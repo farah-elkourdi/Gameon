@@ -7,12 +7,37 @@
 }
 
 /* CSS for different font size */
+.h1 {
+  font-size: 2.5rem;
+}
+
+.h2 {
+  font-size: 2rem;
+}
+
+.h3 {
+  font-size: 1.75rem;
+}
+
 .h5 {
   font-size: 1.25rem;
 }
 
-.h1 {
-  font-size: 2.5rem;
+a.adjust-contrast {
+  color: #0072ee;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.forgot-password {
+  border: 1px solid;
+  padding: 30px;
+}
+
+.max-width {
+  max-width: 100%;
 }
 
 .landing-bg-image{
