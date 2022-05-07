@@ -221,11 +221,10 @@
         }
     }
 
-    var errorDivMain = $('#errorDivUserEvents');
     
     var allEvents = $('#allEvents');
 
-    errorDivMain.hide();
+  
 
     $('div.errorDivLeave:visible').hide();
     $('div.errorDivCancel:visible').hide();
@@ -237,7 +236,8 @@
         
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-        let userId =  $(this).find('input[class = "userId"]').val();
+        let userId = $('#userId').attr('class');
+        // let userId =  $(this).find('input[class = "userId"]').val();
         let status = $(this).find('input[class = "status"]').val();
 
         allEvents.children().each(function(){
@@ -256,10 +256,10 @@
 
         try{
           if(!isCoordinator(userId, coordinatorId)){
-            throw "User is NOT the event Coordinator"
+            throw "Error: User is NOT the event Coordinator"
           }
           if(status === 'canceled'){
-            throw "Event is already Canceled";
+            throw "Error: Event is already Canceled";
           }
           if(status !== 'upcoming'){
             throw "Error: Events that are NOT 'upcoming' cannot be Canceled";
@@ -295,7 +295,8 @@
 
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-        let userId =  $(this).find('input[class = "userId"]').val();
+        let userId = $('#userId').attr('class');
+        // let userId =  $(this).find('input[class = "userId"]').val();
         let status = $(this).find('input[class = "status"]').val();
 
         allEvents.children().each(function(){
@@ -487,7 +488,9 @@
         event.preventDefault(); 
         let gameEventId = $(this).find('input[class = "gameEventId"]').val();
         let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-        let userId =  $(this).find('input[class = "userId"]').val();
+        let userId = $('#userId').attr('class');
+     
+        // let userId =  $(this).find('input[class = "userId"]').val();
         let status = $(this).find('input[class = "status"]').val();
 
      //   console.log(gameEventId);
