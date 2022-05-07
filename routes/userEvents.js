@@ -36,6 +36,11 @@ router.post('/edit/:id', async(req,res) => {
     let coordinatorId = editGameEventData.coordinatorId;
     let gameEventId = req.params.id;
 
+    //get min start time
+    let now = new Date();
+    now.setHours(now.getHours()+ 1);
+    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
+
     try {
         userId = check.checkId(userId);
         coordinatorId = check.checkId(coordinatorId);
@@ -54,21 +59,22 @@ router.post('/edit/:id', async(req,res) => {
         editGameEventData.date = check.dateIsValid(editGameEventData.date, 'date');    
         editGameEventData.startTime = check.checkTime(editGameEventData.startTime, 'startTime');
         editGameEventData.endTime = check.checkTime(editGameEventData.endTime, 'endTime');
-
+        if (editGameEventData.startTime < startTimeMin){
+            throw `Events can only be created for 1 hour after current time`;
+        }
+        if (editGameEventData.endTime > "22:00"){
+            throw `No event stays after 10 pm `;
+        }
         editGameEventData.startTime = check.convertStringToDate(editGameEventData.date, editGameEventData.startTime);
        
         editGameEventData.endTime = check.convertStringToDate(editGameEventData.date, editGameEventData.endTime);
         editGameEventData.startTime = check.checkDate(editGameEventData.startTime, 'startTime');
         editGameEventData.endTime = check.checkDate(editGameEventData.endTime, 'endTime');
-
+        
         editGameEventData.minimumParticipants = check.checkNum(editGameEventData.minParticipants, 'minimumParticipants');
         editGameEventData.maximumParticipants = check.checkNum(editGameEventData.maxParticipants, 'maximumParticipants');
 
-        let conflict = await data.users.checkUserConflict(userId, startTime, endTime);
-
-        if(conflict.conflicted){
-            throw 'You are already registered for an event at this time.';
-        }
+       
         await  data.userEvents.update(userId, gameEventId, coordinatorId, editGameEventData.title, editGameEventData.status, 
             editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
