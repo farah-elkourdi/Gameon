@@ -217,7 +217,18 @@ async function update (userId, gameEventId, eventCoordinator, title, status, spo
     if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
         throw "Error: minimum participants is greater than maximum participants"
     }
+    
+    let conflict;
+            try{
+                conflict = await userData.checkUserConflict(userId, startTime, endTime);
+            }
+            catch(e){
+                throw e.toString();
+            }
 
+            if(conflict.conflicted){
+                throw 'You are already registered for an event at this time.';
+            }
     let updatedGameEvent = {
         userId: eventCoordinator, 
         title: title,
