@@ -70,9 +70,40 @@ async emailSetuppass( email, code, userName) {
     },
   };
   transporter.sendMail(mailOptions);
-}
+},
 
-
+async emailSetup2( title, action, email) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.UserEmail,
+      pass: process.env.UserPassword,
+    },
+  });
+  transporter.use(
+    'compile',
+    hbs({
+      viewEngine: {
+        extname: '.handlebars',
+        layoutsDir: './views/emails',
+        defaultLayout: 'notification' ,
+      },
+      viewPath: './views/emails',
+    })
+  );
+  const mailOptions = {
+    from: process.env.UserEmail,
+    to: process.env.UserEmail,
+    subject: "Notification",
+    template: 'notification',
+    context: {
+      title,
+      email,
+      action,
+    },
+  };
+  transporter.sendMail(mailOptions);
+},
 
 
 }

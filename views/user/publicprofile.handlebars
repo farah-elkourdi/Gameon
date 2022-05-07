@@ -3,7 +3,9 @@
         Profile page
     </h1>
 </header>
-
+{{#if topuser }}
+<img src="/public/img/badge.png" height="50" width="50" alt="topuser">
+{{/if}}
 <article id="address" lon="{{lon}}" lat="{{lat}}">
     <dl>
         <dt>First name:</dt>
