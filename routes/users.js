@@ -25,20 +25,31 @@ router.get('/profile', async (req, res) => {
 
 
 router.get('/publicprofile', async (req, res) => {
+  let topuser = false;
   const email = req.query.email;
   if (!req.session.user) {
     res.redirect("/");
   } else {
     let user = await usersData.getUserByEmail(email)
+    const userRate = require('../data/rate');
+    let users = await userRate.getTopRatings();
+    users.forEach( (user) => {
+      if (user._id == req.session.user.userID)
+      {
+        topuser = true;
+      }
+    });
     res.render("user/publicprofile", {
-      firstName: user.firstName,
+      topuser: topuser,
+      firstName: user.firstName ,
       lastName: user.lastName,
       email: user.email,
       street: user.street,
       area: user.area,
       lat: user.lat,
-      lon: user.lon
-    });
+      lon: user.lon,
+      userDetails: req.session.user
+  });
   }
 });
 
@@ -250,6 +261,15 @@ router.get('/userprofile', async (req, res) => {
   if (!req.session.user) {
     res.redirect("/");
   } else {
+let topuser = false;
+    const userRate = require('../data/rate');
+    let users = await userRate.getTopRatings();
+    users.forEach( (user) => {
+      if (user._id == req.session.user.userID)
+      {
+        topuser = true;
+  }});
+
     res.render("user/userprofile", {
       title: "Profile",
       userDetails: req.session.user,
@@ -259,8 +279,10 @@ router.get('/userprofile', async (req, res) => {
       street: req.session.user.userStreet,
       area: req.session.user.userArea,
       lat: req.session.user.lat,
-      lon: req.session.user.lon
-    });
+
+      lon: req.session.user.lon, 
+      topuser: topuser
+  });
   }
 });
 
