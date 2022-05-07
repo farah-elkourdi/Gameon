@@ -68,7 +68,7 @@ router.post('/edit/:id', async(req,res) => {
 
         if(conflict.conflicted){
             throw 'You are already registered for an event at this time.';
-        }s
+        }
         await  data.userEvents.update(userId, gameEventId, coordinatorId, editGameEventData.title, editGameEventData.status, 
             editGameEventData.sportCategory,editGameEventData.description, editGameEventData.area, editGameEventData.address,
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
