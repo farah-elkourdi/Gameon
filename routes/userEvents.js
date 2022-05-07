@@ -21,9 +21,9 @@ router.get('/', async (req, res) => {
     try{
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
-        console.log(req.session.user);
+        
         res.render('userEvents/userEvents', {gameEventsList: gameEvents, error_flag: false,
-            userDetails: req.session.user});
+            userDetails: req.session.user, userId: userId});
     } catch (e){
         res.render('userEvents/userEvents', {errorAllEvents: e,error_flag: true,
             userDetails: req.session.user});
