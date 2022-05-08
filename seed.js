@@ -31,7 +31,7 @@ async function main(){
 
     
     
-    let u1 = await userData.createUser(
+    let u1 = await userData.createUserSeed(
             "John",
             "Doe",
             "johndoe@gmail.com",
@@ -41,11 +41,11 @@ async function main(){
             "40.7365224",
             "-74.0311785"
         );
-      //  console.log(u1);
+        //console.log(u1);
         // let u1_userid = u1._id.toHexString();
-        // console.log(u1._id);
+        // //console.log(u1._id);
     
-        u2 = await userData.createUser(
+        u2 = await userData.createUserSeed(
             "Harsh",
             "Singhania",
             "harshs@gmail.com",
@@ -55,11 +55,11 @@ async function main(){
             "40.7457215",
             "-74.0482442"
         );
-      //  console.log(u2);
+        //console.log(u2);
         // let u2_userid = u2._id.toHexString();
     
 
-        u3 = await userData.createUser(
+        u3 = await userData.createUserSeed(
             "avinash",
             "kumar",
             "avinashk@gmail.com",
@@ -69,12 +69,12 @@ async function main(){
             "40.7482695",
             "-74.0509703"
         );
- //       console.log(u3);
+        //console.log(u3);
         // let u3_userid = u3._id.toHexString();
     
         // let u1_userid = u1._id.toHexString();
-        let soccerEvent =  soccerEvent = await eventData.create(
-            u1._id,
+        let soccerEvent =  await eventData.create(
+            u1._id.toString(),
             "Soccer 5v5 event",
             "Upcoming",
             "soccer",
@@ -88,12 +88,12 @@ async function main(){
             10,
             14
         );
-        console.log(soccerEvent);
+        // //console.log(soccerEvent);
     
 
     
         basketballEvent = await eventData.create(
-            u2._id,
+            u2._id.toString(),
             "Basketball 4v4 event",
             "upcoming",
             "basketball",
@@ -107,11 +107,11 @@ async function main(){
             8,
             12
         );
-        // console.log(basketballEvent);
+        //console.log(basketballEvent);
     
 
         frisbeeEvent = await eventData.create(
-            u3._id,
+            u3._id.toString(),
             "Frisbee event",
             "upcoming",
             "frisbee",
@@ -125,60 +125,60 @@ async function main(){
             4,
             8
         );
-        // console.log(frisbeeEvent);
+        //console.log(frisbeeEvent);
     
 
     
         comment1 = await commentData.postComment(
-            u1._id,
-            soccerEvent._id,
+            u1._id.toString(),
+            soccerEvent._id.toString(),
             "Looking forward to play soccer with everyone!",
             "2022-05-08T17:30:25.363+00:00",
             "johndoe@gmail.com"
         );
-        // console.log(comment1);
+        //console.log(comment1);
     
         comment2 = await commentData.postComment(
-            u2._id,
-            basketballEvent._id,
+            u2._id.toString(),
+            basketballEvent._id.toString(),
             "Can't wait to play basketball!",
             "2022-05-08T17:40:25.363+00:00",
             "harshs@gmail.com"
         );
-        // console.log(comment2);
+        //console.log(comment2);
     
 
    
         comment3 = await commentData.postComment(
-            u3._id,
-            frisbeeEvent._id,
+            u3._id.toString(),
+            frisbeeEvent._id.toString(),
             "Does anyone have an extra frisbee disc? If yes, please carry it with you.",
             "2022-05-08T18:30:25.363+00:00",
             "avinashk@gmail.com"
         );
-        // console.log(comment3);
+        //console.log(comment3);
     
 
 
         rating1 = await rateData.rating(
             "avinashk@gmail.com",
-            basketballEvent._id,
-            u3._id,
+            basketballEvent._id.toString(),
+            u3._id.toString(),
             5,
             basketballEvent.userId
         );
-        console.log(rating1);
+        //console.log(rating1);
     
 
 
         rating2 = await rateData.rating(
             "harshs@gmail.com",
-            frisbeeEvent._id,
-            u2._id,
+            frisbeeEvent._id.toString(),
+            u2._id.toString(),
             4,
             frisbeeEvent.userId
         );
-        console.log(rating1);
+        //console.log(rating1);
     
 
     // await db.serverConfig.close();
