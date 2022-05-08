@@ -74,7 +74,7 @@ if (nerRating > 5)
 //   }
 
 const userCollection = await users();
-    var updateUser = await userCollection.updateOne({_id: ObjectId(user._id.toString())}, {$set: userObj})
+    var updateUser = await userCollection.updateOne({_id: ObjectId(organizerID.toString())}, {$set: userObj})
  
     if (updateUser.modifiedCount === 0) {
       throw 'could not update user successfully';
