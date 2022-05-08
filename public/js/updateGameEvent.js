@@ -214,12 +214,11 @@
     }
   }
 
-  var errorDiv = $('#errorDivUpdateGameEvent');
-  errorDiv.hide();
-  $('#updateGameEvent-form').submit(function (event) {
+  $('#updateGameEvent-form').submit(async function (event) {
+    var errorDiv = $('#errorDivUpdateGameEvent');
     event.preventDefault();
-    var title = $('#title').val(),
-      gameEventId = $('#gameEventId').val(),
+    let title = $('#title').val(),
+      gameEventId = $('#gameEventId').text(),
       sportCategory = $('#sportCategory').val(),
       description = $('#description').val(),
      // area = $('#area').val(),
@@ -269,6 +268,25 @@
      // alert(endTime);
       if (endTime > "22:00")
       throw `Events should end before 10 pm`
+    }catch(e){
+      errorDiv.empty();
+      errorDiv.html(e.toString());
+      errorDiv.show();
+      $('#title').val(title);
+      $('#gameEventId').val(gameEventId);
+      $('#sportCategory').val(sportCategory);
+      $('#description').val(description);
+     // $('#area').val(area);
+    //  $('#address').val(address);
+      $('#longitude').val(longitude);
+      $('#latitude').val(latitude);
+      $('#date').val(date);
+      $('#startTime').val(startTime);
+      $('#endTime').val(endTime);
+      $('#minParticipants').val(minParticipants);
+      $('#maxParticipants').val(maxParticipants);
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
+    }
       var requestConfig = {
         method: 'POST',
         url: '/updateGameEvent',
@@ -288,50 +306,15 @@
           minParticipants: minParticipants,
           maxParticipants: maxParticipants
         }),
-        withCredentials: true,
+        withCredentials: true
+      };
 
-        //response status code not 200
-        error: function () {
-          errorDiv.show();
-          $('#title').val(title);
-          $('#gameEventId').val(gameEventId);
-          $('#sportCategory').val(sportCategory);
-          $('#description').val(description);
-         // $('#area').val(area);
-          //$('#address').val(address);
-          $('#longitude').val(longitude);
-          $('#latitude').val(latitude);
-          $('#date').val(date);
-          $('#startTime').val(startTime);
-          $('#endTime').val(endTime);
-          $('#minParticipants').val(minParticipants);
-          $('#maxParticipants').val(maxParticipants);
-          $('#sportCategory').find('option:eq(0)').prop('selected', true);
-          
-        },
-
-        //runs with response status code 200
-        //Need to render individual game page?
-        success: function (response) {
-          if (response.success == false)
-          {errorDiv.empty();
-            errorDiv.show()
-            errorDiv.html(response.message);
-          }
-          else
-          {
-          errorDiv.empty();
-          errorDiv.hide();
-          console.log("SUCCESS ADDING TO Database");
-          window.open("/eventList", '_self');
-          }
-        }
-      }
-
-      $.ajax(requestConfig);
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
+      $.ajax(requestConfig).then(async function (response){
+        if(response){
+          if(!response.success){
+            errorDiv.empty();
+      errorDiv.html(response.message);
+      console.log(response.message);
       errorDiv.show();
       $('#title').val(title);
       $('#gameEventId').val(gameEventId);
@@ -347,9 +330,15 @@
       $('#minParticipants').val(minParticipants);
       $('#maxParticipants').val(maxParticipants);
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
-      console.log("Failed ADDING TO Database");
-      console.log(e);
-    }
+      //console.log("Failed ADDING TO Database");
+      //console.log(e);
+      }
+      else{
+        location.href = '/userEvents';
+      }
+        }
+      })
+    
   });
 
   // function checkCurrentTime(startTime, endTime) {

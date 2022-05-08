@@ -21,22 +21,67 @@ router.get('/:id', async (req, res) => {
             error: e.toString()
         });
     }
+    let event;
+    try{
+        event = await gameEvent.getGameEvent(id);
+    }
+    catch(e){
+        return res.status(400).render('errors/error', {
+            error: e.toString()
+        });
+    }
+    let date = event.startDate;
+    /* https://stackoverflow.com/a/34290167 */
+    var d = new Date(date);
+    date = [
+    d.getFullYear(),
+    ('0' + (d.getMonth() + 1)).slice(-2),
+    ('0' + d.getDate()).slice(-2)
+    ].join('-');
+
+    let hours = d.getHours();
+    if(hours < 10){
+        hours = '0' + hours.toString();
+    }
+    let minutes = d.getMinutes();
+    if(minutes < 10){
+        minutes = '0' + minutes.toString();
+    }
+    let startTime = hours + ':' + minutes;
+
+    date = event.endDate;
+    d = new Date(date);
+    
+        hours = d.getHours();
+        if(hours < 10){
+            hours = '0' + hours.toString();
+        }
+        minutes = d.getMinutes();
+        if(minutes < 10){
+            minutes = '0' + minutes.toString();
+        }
+        let endTime = hours + ':' + minutes;
+
     // let startTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
-    
-    res.render('updateGameEvent/updateGameEvent', {
+    console.log(event.description);
+    res.render('updateGameEvent/updateGameEvent-Init', {
         minStartDate: nowStrDate, 
         userDetails: req.session.user,
         area: req.session.user.userArea,
-        gameEventId: req.params.id
+        gameEventId: req.params.id,
+        event: event,
+        endTime: endTime,
+        startTime: startTime,
+        date: date
     });
 });
 
 router.post('/', async (req, res) => {
     updateGameEventData = req.body;
     let userId = req.session.user.userID;
-    
     try {
+        if(!userId) throw 'no user id';
         userId = check.checkId(userId);
         updateGameEventData.gameEventId = check.checkId(updateGameEventData.gameEventId, 'gameEventId');
         updateGameEventData.title = check.checkString(updateGameEventData.title, 'title');
@@ -75,7 +120,7 @@ router.post('/', async (req, res) => {
 // {
 // }
 
-        let conflict = await data.users.checkUserConflict(userId, startTime, endTime);
+        let conflict = await data.users.checkUserConflict(userId, updateGameEventData.startTime, updateGameEventData.endTime);
 
         if(conflict.conflicted){
             throw 'You are already registered for an event at this time.';
@@ -89,9 +134,9 @@ router.post('/', async (req, res) => {
             updateGameEventData.maximumParticipants);
 
         
-        return res.redirect('/userEvents');
+        return res.json({success: true});
     } catch (e) {
-        return res.json({success: false, message: e});
+        return res.json({success: false, message: e.toString()});
         // return res.status(400).render('createGameEvent/createGameEvent', { "error": {
         //     error: e,
         //     input: updateGameEventData,

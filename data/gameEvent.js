@@ -296,7 +296,8 @@ async function create(userId, title, status, sportCategory, description, area, a
 async function update(gameEventId, userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-    gameEventId = check.checkId(gameEventId);
+    try{
+        gameEventId = check.checkId(gameEventId);
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
@@ -360,6 +361,11 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
             if(conflict.conflicted){
                 throw 'You are already registered for an event at this time.';
             }
+    }
+    catch(e){
+        throw e.toString();
+    }
+    
     let spots = maximumParticipants - minimumParticipants;
     // return spots;
     const gameEventCollection = await gameEvents();
