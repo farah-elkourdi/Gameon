@@ -238,6 +238,7 @@
     let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
     let userId = $('#userId').attr('class');
     // let userId =  $(this).find('input[class = "userId"]').val();
+    
     let status = $(this).find('input[class = "status"]').val();
 
     allEvents.children().each(function () {
