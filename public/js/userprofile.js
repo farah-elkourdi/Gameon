@@ -11,8 +11,8 @@
 
         $('#saveSubmit').click(function (event) {
         event.preventDefault();
-        let firstNameInput = $('#firstName').val();
-        let lastNameInput = $('#lastName').val();
+        let firstNameInput = filterXSS($('#firstName').val());
+        let lastNameInput = filterXSS($('#lastName').val());
        // let passwordInput = $('#password').val();
         //let emailInput = $('#email').val();
       //  let streetInput = $('#street').val();

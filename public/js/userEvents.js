@@ -228,10 +228,10 @@
   //Update button
   $('.userEventsEditForm').bind('click',function (event) {
     event.preventDefault(); 
-    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-      let userId = $('#userId').attr('class');
-      let status = $(this).find('input[class = "status"]').val();
+    let gameEventId = filterXSS($(this).find('input[class = "gameEventId"]').val());
+      let coordinatorId = filterXSS($(this).find('input[class = "coordinatorId"]').val());
+      let userId = filterXSS($('#userId').attr('class'));
+      let status = filterXSS($(this).find('input[class = "status"]').val());
       allEvents.children().each(function(){
         $(`#${this.id} > div.errorDivLeave`).hide();
         $(`#${this.id} > div.errorDivEdit`).hide();
@@ -264,11 +264,11 @@
   $('.userEventsCancelForm').bind('click',function (event) {
       event.preventDefault(); 
       
-      let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-      let userId = $('#userId').attr('class');
+      let gameEventId = filterXSS($(this).find('input[class = "gameEventId"]').val());
+      let coordinatorId = filterXSS($(this).find('input[class = "coordinatorId"]').val());
+      let userId = filterXSS($('#userId').attr('class'));
       // let userId =  $(this).find('input[class = "userId"]').val();
-      let status = $(this).find('input[class = "status"]').val();
+      let status = filterXSS($(this).find('input[class = "status"]').val());
       allEvents.children().each(function(){
         $(`#${this.id} > div.errorDivLeave`).hide();
         $(`#${this.id} > div.errorDivEdit`).hide();
@@ -317,11 +317,11 @@
   //leave button on-click event
   $('.userEventsLeaveForm').bind('click',function (event) {
       event.preventDefault(); 
-      let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-      let userId = $('#userId').attr('class');
+      let gameEventId = filterXSS($(this).find('input[class = "gameEventId"]').val());
+      let coordinatorId = filterXSS($(this).find('input[class = "coordinatorId"]').val());
+      let userId = filterXSS($('#userId').attr('class'));
       // let userId =  $(this).find('input[class = "userId"]').val();
-      let status = $(this).find('input[class = "status"]').val();
+      let status = filterXSS($(this).find('input[class = "status"]').val());
       allEvents.children().each(function(){
         $(`#${this.id} > div.errorDivLeave`).hide();
         $(`#${this.id} > div.errorDivEdit`).hide();
@@ -369,18 +369,18 @@
     let now = new Date();
     now.setHours(now.getHours()+ 1);
     let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
-    var title = $('#title').val(),
-        sportCategory = $('#sportCategory').val(),
-        description = $('#description').val(),
+    var title = filterXSS($('#title').val()),
+        sportCategory = filterXSS($('#sportCategory').val()),
+        description = filterXSS($('#description').val()),
         // area = $('#area').val(),
-        address = $('#address').val(),
+        address = filterXSS($('#address').val()),
         // longitude = $('#longitude').val(),
         // latitude = $('#latitude').val(),
-        date = $('#date').val(),
-        startTime = $('#startTime').val(),
-        endTime = $('#endTime').val(),
-        minParticipants = $('#minParticipants').val(),
-        maxParticipants = $('#maxParticipants').val();
+        date = filterXSS($('#date').val()),
+        startTime = filterXSS($('#startTime').val()),
+        endTime = filterXSS($('#endTime').val()),
+        minParticipants = filterXSS($('#minParticipants').val()),
+        maxParticipants = filterXSS($('#maxParticipants').val());
         $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
     try {

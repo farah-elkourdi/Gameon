@@ -16,17 +16,17 @@ router.get('/:id', async (req, res) => {
     if(!req.session.user){
         return res.redirect('/');
     }
-    if(!req.params){
+    if(!check.validateObjectXSS(req.params)){
         return res.status(400).render('errors/error', {
             error: 'updateGameEvent/:id GET: Missing request parameters'
         }); 
     }
-    if(!req.params.id){
+    if(!check.validateXSS(req.params.id)){
         return res.status(400).render('errors/error', {
             error: 'updateGameEvent/:id GET: No id in parameters'
         }); 
     }
-    let id = xss(req.params.id);
+    let id = check.validateXSS(req.params.id);
     try{
         id = check.checkId(id);
     }
@@ -83,7 +83,7 @@ router.get('/:id', async (req, res) => {
         minStartDate: nowStrDate, 
         userDetails: req.session.user,
         area: req.session.user.userArea,
-        gameEventId: req.params.id,
+        gameEventId: check.validateXSS(req.params.id),
         event: event,
         endTime: endTime,
         startTime: startTime,
@@ -92,34 +92,34 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    updateGameEventData = req.body;
+    updateGameEventData = check.validateObjectXSS(req.body);
     let userId = req.session.user.userID;
     try {
         if(!userId) throw 'updateGameEvent: no user id';
         if(!updateGameEventData) throw 'updateGameEvent: Missing request body';
         userId = check.checkId(userId);
-        updateGameEventData.gameEventId = xss(updateGameEventData.gameEventId);
+        updateGameEventData.gameEventId = check.validateXSS(updateGameEventData.gameEventId);
         if(!updateGameEventData.gameEventId) throw 'updateGameEvent: Missing gameEventId';
         updateGameEventData.gameEventId = check.checkId(updateGameEventData.gameEventId, 'gameEventId');
-        updateGameEventData.title = xss(updateGameEventData.title);
+        updateGameEventData.title = check.validateXSS(updateGameEventData.title);
         if(!updateGameEventData.title) throw 'updateGameEvent: Missing title';
         updateGameEventData.title = check.checkString(updateGameEventData.title, 'title');
         updateGameEventData.status = "upcoming";
-        updateGameEventData.sportCategory = xss(updateGameEventData.sportCategory);
+        updateGameEventData.sportCategory = check.validateXSS(updateGameEventData.sportCategory);
         if(!updateGameEventData.sportCategory) throw 'updateGameEvent: Missing sportCategory';
         updateGameEventData.sportCategory = check.checkString(updateGameEventData.sportCategory, 'sportCategory');
-        updateGameEventData.description = xss(updateGameEventData.description);
+        updateGameEventData.description = check.validateXSS(updateGameEventData.description);
         if(!updateGameEventData.description) throw 'updateGameEvent: Missing description';
         updateGameEventData.description = check.checkString(updateGameEventData.description, 'description');
-        updateGameEventData.address = xss(updateGameEventData.address);
+        updateGameEventData.address = check.validateXSS(updateGameEventData.address);
         if(!updateGameEventData.address) throw 'updateGameEvent: Missing address';
         updateGameEventData.address = check.checkString(updateGameEventData.address, 'address');  
 
        // updateGameEventData.area = check.checkString(updateGameEventData.area, 'area');
-       updateGameEventData.latitude = xss(updateGameEventData.latitude);
+       updateGameEventData.latitude = check.validateXSS(updateGameEventData.latitude);
        if(!updateGameEventData.latitude) throw 'updateGameEvent: Missing latitude';
         updateGameEventData.latitude = updateGameEventData.latitude;
-        updateGameEventData.longitude = xss(updateGameEventData.longitude);
+        updateGameEventData.longitude = check.validateXSS(updateGameEventData.longitude);
         if(!updateGameEventData.longitude) throw 'updateGameEvent: Missing longitude';
         updateGameEventData.longitude = updateGameEventData.longitude;
 
