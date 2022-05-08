@@ -4,7 +4,6 @@ const usersData = require('../data/users');
 const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
 const session = require('express-session');
-const xss = require('xss');
 
 router.get('/profile', async (req, res) => {
   if (!req.session.user) {
@@ -29,17 +28,17 @@ router.get('/profile', async (req, res) => {
 router.get('/publicprofile', async (req, res) => {
   let topuser = false;
   /* checking for existence of inputs */
-  if(!req.query){
+  if(!validation.validateObjectXSS(req.query)){
     return res.status(400).render('errors/error', {
       error: 'Missing request query.'
   });
   }
-  if(!req.query.email){
+  if(!validation.validateXSS(req.query.email)){
     return res.status(400).render('errors/error', {
       error: 'No user email in query'
   });
   }
-  const email = xss(req.query.email);
+  const email = validation.validateXSS(req.query.email);
   if (!req.session.user) {
     res.redirect("/");
   } else {
@@ -88,8 +87,8 @@ router.post("/map", async (req, response) => {
   //     error: 'Missing area in request body.'
   // });
   // }
-  var street = xss(req.body.street);
-  var area = xss(req.body.area);
+  var street = validation.validateXSS(req.body.street);
+  var area = validation.validateXSS(req.body.area);
   var lat;
   var lon;
   var status;
@@ -125,77 +124,77 @@ router.post("/map", async (req, response) => {
 router.post('/Checksignup', async (req, res) => {
   var errors = [];
   /* check for existence of inputs */
-  if(!req.body){
+  if(!validation.validateObjectXSS(req.body)){
     errors.push('Missing request body.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.firstName){
+  if(!validation.validateXSS(req.body.firstName)){
     errors.push('Missing first name.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.lastName){
+  if(!validation.validateXSS(req.body.lastName)){
     errors.push('Missing last name.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.password){
+  if(!validation.validateXSS(req.body.password)){
     errors.push('Missing password.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.email){
+  if(!validation.validateXSS(req.body.email)){
     errors.push('Missing email.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.area){
+  if(!validation.validateXSS(req.body.area)){
     errors.push('Missing area.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.street){
+  if(!validation.validateXSS(req.body.street)){
     errors.push('Missing street.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.lat){
+  if(!validation.validateXSS(req.body.lat)){
     errors.push('Missing latitude.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  if(!req.body.lon){
+  if(!validation.validateXSS(req.body.lon)){
     errors.push('Missing longitude.');
     return res.json({
       success: true,
       message: errors
     });
   }
-  const firstName = xss(req.body.firstName);
-  const lastName = xss(req.body.lastName);
-  const password = xss(req.body.password);
-  const email = xss(req.body.email);
-  const area = xss(req.body.area);
-  const street = xss(req.body.street);
-  const lat = xss(req.body.lat);
-  const lon = xss(req.body.lon);
+  const firstName = validation.validateXSS(req.body.firstName);
+  const lastName = validation.validateXSS(req.body.lastName);
+  const password = validation.validateXSS(req.body.password);
+  const email = validation.validateXSS(req.body.email);
+  const area = validation.validateXSS(req.body.area);
+  const street = validation.validateXSS(req.body.street);
+  const lat = validation.validateXSS(req.body.lat);
+  const lon = validation.validateXSS(req.body.lon);
 
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
@@ -256,8 +255,8 @@ router.post('/Checksignin', async (req, res) => {
       message: errors
     });
   }
-  const email = xss(req.body.email);
-  const password = xss(req.body.password);
+  const email = validation.validateXSS(req.body.email);
+  const password = validation.validateXSS(req.body.password);
   
   if (!validation.validString(password)) errors.push('Invalid password or email.');
   if (!validation.checkEmail(email)) errors.push('Invalid password or email.');
@@ -334,8 +333,8 @@ router.post('/Checkprofile', async (req, res) => {
       message: errors
     });
   }
-  const firstName = xss(req.body.firstName);
-  const lastName = xss(req.body.lastName);
+  const firstName = validation.validateXSS(req.body.firstName);
+  const lastName = validation.validateXSS(req.body.lastName);
   // const password = req.body.password;
   // const email = req.body.email;
   // const area = req.body.area;
@@ -435,7 +434,7 @@ router.post('/Checkpass', async (req, res) => {
       message: errors
     });
   }
-  const password = xss(req.body.password);
+  const password = validation.validateXSS(req.body.password);
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (errors.length == 0) {
     try {
@@ -478,7 +477,7 @@ router.post('/temppass', async (req, res) => {
       message: errors
     });
   }
-  const email = xss(req.body.email);
+  const email = validation.validateXSS(req.body.email);
   if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (errors.length == 0) {
     try {

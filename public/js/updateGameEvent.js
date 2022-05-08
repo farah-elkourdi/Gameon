@@ -217,19 +217,19 @@
   $('#updateGameEvent-form').submit(async function (event) {
     var errorDiv = $('#errorDivUpdateGameEvent');
     event.preventDefault();
-    let title = $('#title').val(),
-      gameEventId = $('#gameEventId').text(),
-      sportCategory = $('#sportCategory').val(),
-      description = $('#description').val(),
+    let title = filterXSS($('#title').val()),
+      gameEventId = filterXSS($('#gameEventId').text()),
+      sportCategory = filterXSS($('#sportCategory').val()),
+      description = filterXSS($('#description').val()),
      // area = $('#area').val(),
-      address = $('#address').val(),
-      longitude = $('#longitude').val(),
-      latitude = $('#latitude').val(),
-      date = $('#date').val(),
-      startTime = $('#startTime').val(),
-      endTime = $('#endTime').val(),
-      minParticipants = $('#minParticipants').val(),
-      maxParticipants = $('#maxParticipants').val();
+      address = filterXSS($('#address').val()),
+      longitude = filterXSS($('#longitude').val()),
+      latitude = filterXSS($('#latitude').val()),
+      date = filterXSS($('#date').val()),
+      startTime = filterXSS($('#startTime').val()),
+      endTime = filterXSS($('#endTime').val()),
+      minParticipants = filterXSS($('#minParticipants').val()),
+      maxParticipants = filterXSS($('#maxParticipants').val());
       $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
 // modify here 
