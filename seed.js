@@ -3,6 +3,7 @@ const data = require("./data");
 const eventData = require("./data/gameEvent");
 const userData = require("./userData");
 const commentData = require("./data/comments");
+const rateData = require("./data/rate");
 
 const { ObjectId } = require("mongodb");
 
@@ -25,6 +26,10 @@ async function main(){
     let comment1 = undefined;
     let comment2 = undefined;
     let comment3 = undefined;
+
+    let rating1 = undefined;
+    let rating2 = undefined;
+    let rating3 = undefined;
 
     try{
         user1 = await userData.createUser(
@@ -149,6 +154,50 @@ async function main(){
     }catch(e){
         console.log(e);
     }
+
+    try{
+        comment2 = await commentData.postComment(
+            user2._id,
+            basketballEvent._id,
+            "Can't wait to play basketball!",
+            "2022-05-08T17:40:25.363+00:00",
+            "harshs@gmail.com"
+        );
+        // console.log(comment2);
+    }catch(e){
+        console.log(e);
+    }
+
+    try{
+        comment3 = await commentData.postComment(
+            user3._id,
+            frisbeeEvent._id,
+            "Does anyone have an extra frisbee disc? If yes, please carry it with you.",
+            "2022-05-08T18:30:25.363+00:00",
+            "avinashk@gmail.com"
+        );
+        // console.log(comment3);
+    }catch(e){
+        console.log(e);
+    }
+
+    try{
+        rating1 = await rateData.rating(
+            "johndoe@gmail.com",
+            soccerEvent._id,
+            user1._id,
+            5,
+            ""
+        );
+        console.log(rating1);
+    }catch(e){
+        console.log(e);
+    }
+
+
+
+
+
 
     await connection.closeConnection();
 }
