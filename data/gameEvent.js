@@ -297,7 +297,8 @@ async function create(userId, title, status, sportCategory, description, area, a
 async function update(gameEventId, userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-    gameEventId = check.checkId(gameEventId);
+    try{
+        gameEventId = check.checkId(gameEventId);
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
@@ -307,7 +308,19 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
     address = check.checkString(address, 'address');
     // area = area.userArea;
     /* NEED to check if valid address */
-
+    
+    /* get maximum participants from existing event, maximum participants cannot be lowered */
+    let existingEvent;
+    try{
+        existingEvent = await getGameEvent(gameEventId);
+    }
+    catch(e){
+        throw e.toString();
+    }
+    if(existingEvent.maximumParticipants < maximumParticipants){
+        maximumParticipants = existingEvent.maximumParticipants;
+    }
+    
     if (!check.checkCoordinates(longitude, latitude)) {
         throw "Error: Coordinates are NOT valid"
     }
@@ -349,6 +362,11 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
             if(conflict.conflicted){
                 throw 'You are already registered for an event at this time.';
             }
+    }
+    catch(e){
+        throw e.toString();
+    }
+    
     let spots = maximumParticipants - minimumParticipants;
     // return spots;
     const gameEventCollection = await gameEvents();

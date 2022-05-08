@@ -36,7 +36,7 @@ router.get('/publicprofile', async (req, res) => {
     const userRate = require('../data/rate');
     let users = await userRate.getTopRatings();
     users.forEach( (user) => {
-      if (user._id == req.session.user.userID)
+      if (user.email == email)
       {
         topuser = true;
       }

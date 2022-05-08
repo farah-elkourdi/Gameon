@@ -25,7 +25,7 @@ async function getTopRatings() {
 
 async function rating(email, gameId, userId, rating, organizerID) {
     let nerRating = 0
-   let user =  await userData.getUserByEmail(email);
+   let user =  await userData.getUser(organizerID);
    if(!email) throw "getUser: must pass email";
    if(!gameId) throw "getUser: must pass gameid";
    if(!userId) throw "getUser: must pass userId";
@@ -35,6 +35,11 @@ async function rating(email, gameId, userId, rating, organizerID) {
    if(!rating) throw 'Invalid not an integer.';
    if(! validation.validinteger(rating)) throw 'Invalid not an integer.';
    const rateCollection = await rate();
+
+   let newsize =   await rateCollection.find({
+    organizerId: organizerID,
+}).toArray()
+
 let rateUser = 
 {
     userId: userId,
@@ -48,13 +53,9 @@ let rateUser =
 
    let size = 1
 
- let newsize =   (await rateCollection.find({
-    gameEventId: gameId,
-}).toArray().length);
-
-if(newsize)
+if(newsize.length > 0)
 {
-    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / (newsize + 1) );
+    nerRating = user.avgRating + (( Number(rating) - user.avgRating) / (newsize.length + 1) );
 }
 else
 {
@@ -74,7 +75,7 @@ if (nerRating > 5)
 //   }
 
 const userCollection = await users();
-    var updateUser = await userCollection.updateOne({_id: ObjectId(user._id.toString())}, {$set: userObj})
+    var updateUser = await userCollection.updateOne({_id: ObjectId(organizerID.toString())}, {$set: userObj})
  
     if (updateUser.modifiedCount === 0) {
       throw 'could not update user successfully';
