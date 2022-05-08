@@ -1,32 +1,34 @@
-<header>
+<div class="container pt-2 pb-5">
     <h1>
         Profile page
     </h1>
-</header>
-{{#if topuser }}
-<img src="/public/img/badge.png" height="50" width="50" alt="topuser">
-{{/if}}
-<article id="address" lon="{{lon}}" lat="{{lat}}">
-    <dl>
-        <dt>First name:</dt>
-        <dd>{{firstName}}</dd>
-        <dt>Last name:</dt>
-        <dd>{{lastName}}</dd>
-        <dt>
-            Email:
-        </dt>
-        <dd>{{email}}</dd>
-        <dt>Street</dt>
-        <dd>{{street}}</dd>
-        <dt>Area:</dt>
-        <dd>{{area}}</dd>
-        <dt>Average rating:</dt>
-        <dd>{{avgRating}}</dd>
-    </dl>
+    {{#if topuser }}
+    <img src="/public/img/badge.png" height="50" width="50" alt="topuser">
+    {{/if}}
+    <div class="pt-3" id="address" data-lon="{{lon}}" data-lat="{{lat}}">
+        <dl>
+            <dt>First name:</dt>
+            <dd class="text-capitalize">{{firstName}}</dd>
+            <dt>Last name:</dt>
+            <dd class="text-capitalize">{{lastName}}</dd>
+            <dt>
+                Email:
+            </dt>
+            <dd>{{email}}</dd>
+            <dt>Street</dt>
+            <dd class="text-capitalize">{{street}}</dd>
+            <dt>Area:</dt>
+            <dd class="text-capitalize">{{area}}</dd>
+            <dt>Average rating:</dt>
+            <dd class="text-capitalize">{{avgRating}}</dd>
+        </dl>
 
-</article>
+    </div>
+    <div id="map"></div>
+</div>
+
 <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
-<div id="map"></div>
+
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 
@@ -36,8 +38,8 @@
     (function ($) {
         $(document).ready(function () {
 
-            var lat = $('#address').attr('lat');
-            var lon = $('#address').attr('lon');
+            var lat = $('#address').attr('data-lat');
+            var lon = $('#address').attr('data-lon');
             var element = document.getElementById('map');
             var map = L.map(element);
             L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {

@@ -295,7 +295,8 @@ router.get('/changepass', async (req, res) => {
     res.redirect("/");
   } else {
     res.render("user/changepass", {
-      title: "Change password"
+      title: "Change password",
+      userDetails: req.session.user
     });
   }
 });
