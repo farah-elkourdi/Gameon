@@ -61,6 +61,11 @@ a.adjust-contrast1 {
   margin-right:10px;
 }
 
+.btn.btn-primary {
+  background-color: #0072ee;
+  border-color: #0072ee;
+}
+
 .ratings i{
   
   color:#cecece;
