@@ -78,7 +78,7 @@ async function getGameEventbyArea(area) {
                         area: area
                     },
                     {
-                    status: "upcoming"
+                        status: /^upcoming$/i
                     },
                     {
                         startTime: {
@@ -158,8 +158,8 @@ async function getGameEventbySearchArea(searchText, area) {
                         area: area
                     },
                     {
-                        status: "upcoming"
-                        },
+                        status: /^upcoming$/i
+                    },
                     {
                         startTime: {
                             $gte: now
@@ -181,7 +181,8 @@ async function getGameEventbyAreaLimit(area, limitCount) {
         area: area,
         startTime: {
             $gte: now
-        }
+        },
+        status: /^upcoming$/i
     }).limit(limitCount).sort({
         startTime: 1
     })).toArray();
@@ -196,7 +197,7 @@ async function getGameEventLandingPage() {
         startTime: {
             $gte: now
         },
-        status: "upcoming"
+        status: /^upcoming$/i
     }).limit(10).sort({
         startTime: 1
     })).toArray();
