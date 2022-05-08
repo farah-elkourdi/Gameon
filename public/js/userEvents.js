@@ -224,6 +224,42 @@
   $('div.errorDivLeave:visible').hide();
   $('div.errorDivCancel:visible').hide();
   $('div.errorDivEdit:visible').hide();
+
+  //Update button
+  $('.userEventsEditForm').bind('click',function (event) {
+    event.preventDefault(); 
+    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+      let userId = $('#userId').attr('class');
+      let status = $(this).find('input[class = "status"]').val();
+      allEvents.children().each(function(){
+        $(`#${this.id} > div.errorDivLeave`).hide();
+        $(`#${this.id} > div.errorDivEdit`).hide();
+        $(`#${this.id} > div.errorDivCancel`).hide();
+      });
+      let errorDiv = $(`#${gameEventId} > div.errorDivCancel`);
+      try {
+        if(!isCoordinator(userId, coordinatorId)){
+          throw "Error: User is NOT the event Coordinator"
+        }
+        if(status.toLowerCase() === 'canceled'.toLowerCase()){
+          throw "Error: Cannot update canceled event";
+        }
+        if(status.toLowerCase() !== 'upcoming'.toLowerCase()){
+          throw "Error: Events that are NOT 'upcoming' cannot be updated";
+        }
+  
+        window.open(`/updateGameEvent/${gameEventId}`, '_self')
+      }
+      catch(e) {
+        errorDiv.empty();
+        errorDiv.html(e);
+        errorDiv.show();
+      }
+      
+  });
+
+
   //Cancel Button on-click Event
   $('.userEventsCancelForm').bind('click',function (event) {
       event.preventDefault(); 
