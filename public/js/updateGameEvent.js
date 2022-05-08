@@ -314,7 +314,6 @@
           if(!response.success){
             errorDiv.empty();
       errorDiv.html(response.message);
-      console.log(response.message);
       errorDiv.show();
       $('#title').val(title);
       $('#gameEventId').val(gameEventId);
