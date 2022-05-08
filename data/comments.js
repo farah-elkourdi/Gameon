@@ -7,7 +7,7 @@ const users = require('./users');
 
 /* Find comments associated with the given event id*/
 module.exports = {
-async getCommentsForEvent(eventId){
+    async getCommentsForEvent(eventId){
     if(arguments.length != 1){ throw "getCommentsForEvent : pass one argument."};
     if(!eventId) throw "getCommentsForEvent: must pass eventId";
     let ID = check.checkId(eventId);
@@ -42,12 +42,16 @@ async postComment(userId, gameEventId, commentStr, timestamp, email){
     if(!commentStr) throw "postComment: pass comment.";
     if(!timestamp) throw "postComment: pass timestamp.";
     if(!email) throw "postComment: pass email.";
-    userId = check.checkId(userId);
+    try{
+        userId = check.checkId(userId);
     gameEventId = check.checkId(gameEventId);
     commentStr = check.checkString(commentStr, 'comment');
     timestamp = check.checkDate(timestamp, 'timestamp');
+    }catch(e){
+        throw 'postComment: ' + e.toString();
+    }
     if (! check.checkEmail(email))
-    throw "postComment: pass email.";
+    throw "postComment: badly formatted email.";
     //check if the user is a participant in the event
     let joined;
     try{
