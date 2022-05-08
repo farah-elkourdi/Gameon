@@ -4,7 +4,8 @@ const data = require('../data');
 const check = require('../task/validation');
 const gameEvent = require('../data/gameEvent');
 const moment = require('moment');
-
+const usersData = require('../data/users');
+const contactUs = require('../data/contactus');
 // Global variable updateGameEventData
 var updateGameEventData;
 
@@ -126,6 +127,20 @@ router.post('/', async (req, res) => {
             throw 'You are already registered for an event at this time.';
         }
 
+        let usersid= [];
+let event = await gameEvent.getGameEvent(updateGameEventData.gameEventId);
+event.participants.forEach( (user) => {
+  usersid.push(user.toString())
+});
+var title = event.title
+var emails = [];
+
+await usersid.forEach( async (users) => {
+     let x = await usersData.getUser(users);
+    // emails.push(x.email);
+     await contactUs.emailSetup2( title, "edit", x.email );
+});
+
 
         await gameEvent.update(updateGameEventData.gameEventId, userId, updateGameEventData.title, updateGameEventData.status, 
             updateGameEventData.sportCategory, updateGameEventData.description, req.session.user.userArea,
@@ -133,7 +148,6 @@ router.post('/', async (req, res) => {
             updateGameEventData.startTime, updateGameEventData.endTime, updateGameEventData.minimumParticipants,
             updateGameEventData.maximumParticipants);
 
-        
         return res.json({success: true});
     } catch (e) {
         return res.json({success: false, message: e.toString()});
