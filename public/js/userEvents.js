@@ -483,6 +483,7 @@
         });
     };
     
+    /*
     //Edit button on-click events
     $('.userEventsEditForm').on('click', function(event) {
         event.preventDefault(); 
@@ -513,8 +514,8 @@
               throw "User cannot edit an Old or Canceled gameEvent";
             }
             var requestConfig = {
-                method: 'POST',
-                url: `/userEvents/partialEditForm.html`, 
+                method: 'get',
+                url: '/updateGameEvent', 
                 contentType: 'application/json',
                 data: JSON.stringify({
                     gameEventId: gameEventId,
@@ -536,5 +537,6 @@
 
        
     });
+    */
 
 })(window.jQuery);
