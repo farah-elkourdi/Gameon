@@ -10,7 +10,6 @@ const {
     ObjectId
 } = require('mongodb');
 const check = require('../task/validation');
-const xss = require('xss');
 
 router.route('/')
     .post(async (req, res) => {
@@ -20,18 +19,18 @@ router.route('/')
         }
 
         //get current user id
-        let body = req.body;
+        let body = check.validateObjectXSS(req.body);
         let gameEventId, userId, comment, timestamp;
         /* input checking */
         try {
             if (Object.keys(body).length != 2) {
                 throw "post /comments: pass gameEventId & comment in req body."
             };
-            if (!xss(body.gameEventId)) throw 'supply gameEventId';
-            if (!xss(body.comment)) throw 'supply comment';
-            gameEventId = check.checkId(xss(body.gameEventId));
+            if (!check.validateXSS(body.gameEventId)) throw 'supply gameEventId';
+            if (!check.validateXSS(body.comment)) throw 'supply comment';
+            gameEventId = check.checkId(check.validateXSS(body.gameEventId));
             userId = req.session.user.userID;
-            comment = check.checkString(xss(body.comment));
+            comment = check.checkString(check.validateXSS(body.comment));
             timestamp = new Date();
         } catch (e) {
             return res.json({
@@ -85,15 +84,15 @@ router.route('/:gameEventId')
         }
         let userId = req.session.user.userID;
         //get current user id
-        let params = req.params;
+        let params = check.validateObjectXSS(req.params);
         let gameEventId
         /* input checking */
         try {
             if (Object.keys(params).length != 1) {
                 throw "get /comments: only pass gameEventId in req body."
             };
-            if (!xss(params.gameEventId)) throw 'supply gameEventId';
-            gameEventId = check.checkId(xss(params.gameEventId));
+            if (!check.validateXSS(params.gameEventId)) throw 'supply gameEventId';
+            gameEventId = check.checkId(check.validateXSS(params.gameEventId));
 
         } catch (e) {
             return res.status(400).send(e.toString());

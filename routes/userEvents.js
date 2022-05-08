@@ -135,7 +135,7 @@ router.get('/leave/:id', async(req,res) =>{
 // (CANCEL) Route: get all remaining gameEvents that user is a part of after removing user from current gameEvent 
 
 router.get('/cancel/:id', async(req,res) =>{
-    if(!req.params.id){
+    if(!check.validateXSS(req.params.id)){
         return res.status(400).render('errors/error', {
             error: 'userEvents/cancel/:id GET: No id url parameters.'
         });
