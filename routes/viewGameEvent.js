@@ -21,10 +21,20 @@ router.route('/:id')
 
         //get current user id
         let currentUserId = req.session.user.userID;
+        if(!currentUserId){
+            return res.status(500).render('errors/error', {
+                error: 'No user id in session'
+            });
+        }
+        if(!req.params.id){
+            return res.status(400).render('errors/error', {
+                error: 'No game event id url parameters.'
+            });
+        } 
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.id));
         } catch (e) {
             return res.status(400).render('errors/error', {
                 error: e.toString()
@@ -99,36 +109,43 @@ router.route('/:id')
             joined: joined,
             userDetails: req.session.user
         });
-    })
-    .post( 
-        async (req, res) => {
+    });
+
+router.route('/:id')
+    .post(async (req, res) => {
             /* user registering for an event */
 
             //check if the user is signed in...
-            console.log(JSON.stringify(req.session.user));
+         //   console.log(JSON.stringify(req.session.user));
             if (!req.session.user) {
                 return res.redirect(303, '/'); //using code 303 to specify a get request
             }
 
             //get current user id
             let currentUserId = req.session.user.userID;
+            if(!currentUserId){
+                return res.status(500).render('errors/error', {
+                    error: 'No user id in session'
+                });
+            }
+            if(!req.params.id){
+                return res.status(400).render('errors/error', {
+                    error: 'No game event id url parameters.'
+                });
+            } 
             //check id
             let ID;
             try {
-                ID = check.checkId(req.params.id);
+                ID = check.checkId(check.validateXSS(req.params.id));
             } catch (e) {
-                return res.status(400).render('errors/error', {
-                    error: e.toString()
-                });
+                return res.json({success: false, message: e});
             }
             //get event
             let event;
             try {
                 event = await gameEvent.getGameEvent(ID);
             } catch (e) {
-                return res.status(404).render('errors/error', {
-                    error: e.toString()
-                });
+                return res.json({success: false, message: e});
             }
             //check the user's area and the event area align
             if (event.area != req.session.user.userArea) {
@@ -142,36 +159,28 @@ router.route('/:id')
                 conflict = await users.checkUserConflict(currentUserId, event.startTime, event.endTime);
             }
             catch(e){
-                return res.status(404).render('errors/error', {
-                    error: e.toString()
-                });
+                return res.json({success: false, message: e});
             }
 
             if(conflict.conflicted){
-                return res.status(404).render('errors/error', {
-                    error: 'You are already registered for an event during this time.'
-                });
+                return res.json({success: false, message: 'You are already registered for an event during this time.'});
             }
 
             let inserted;
             try {
                 inserted = await userEvents.insert(currentUserId, ID);
             } catch (e) {
-                return res.status(500).render('errors/error', {
-                    error: e.toString()
-                });
+                return res.json({success: false, message: e});
             }
-            if (!inserted.userInserted) return res.status(400).render('errors/error', {
-                error: "An unknown error occured during registration. Please try again."
-            });
+            if (!inserted.userInserted) {
+                return res.json({success: false, message: "An unknown error occured during registration. Please try again."});
+            }
 
-            return res.redirect(303, '/viewGameEvent/' + ID);
+            return res.json({success: true, message: "Success"});
         });
 
-router.route('/:id/leave')
+router.route('/leave/:eventId')
     .post(async (req, res) => {
-        console.log('leaving');
-        console.log(JSON.stringify(req.session.user));
         //check if the user is signed in...
         if (!req.session.user) {
             return res.redirect(303, '/'); //using code 303 to specify a get request
@@ -179,14 +188,22 @@ router.route('/:id/leave')
 
         //get current user id
         let currentUserId = req.session.user.userID;
+        if(!currentUserId){
+            return res.status(500).render('errors/error', {
+                error: 'No user id in session'
+            });
+        }
+        if(!req.params.id){
+            return res.status(400).render('errors/error', {
+                error: 'No game event id url parameters.'
+            });
+        } 
         //check id
         let ID;
         try {
-            ID = check.checkId(req.params.id);
+            ID = check.checkId(check.validateXSS(req.params.eventId));
         } catch (e) {
-            return res.status(400).render('errors/error', {
-                error: e.toString()
-            });
+            return res.json({success: false, message: e});
         }
 
         //get event
@@ -194,9 +211,7 @@ router.route('/:id/leave')
         try {
             event = await gameEvent.getGameEvent(ID);
         } catch (e) {
-            return res.status(404).render('errors/error', {
-                error: e.toString()
-            });
+            return res.json({success: false, message: e});
         }
         //check the user's area and the event area align
         if (event.area != req.session.user.userArea) {
@@ -207,14 +222,13 @@ router.route('/:id/leave')
         try {
             removed = await userEvents.remove(currentUserId, ID);
         } catch (e) {
-            return res.status(400).render('errors/error', {
-                error: e.toString()
-            });
+            return res.json({success: false, message: e});
         }
-        if (!removed.userRemoved) return res.status(400).render('errors/error', {
-            error: "An unknown error occured during deregistration. Please try again."
-        });
+        if (!removed.userRemoved) {
+            return res.json({success: false, message: "An unknown error occured during deregistration. Please try again."});
+        }
 
-        return res.redirect(303, '/viewGameEvent/' + ID);
-    })
+        return res.json({success: true, message: "Success"});
+    });
+
 module.exports = router;

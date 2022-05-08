@@ -27,6 +27,10 @@ a.adjust-contrast {
   color: #0072ee;
 }
 
+a.adjust-contrast1 {
+  color: #006be1;
+}
+
 .bg-white {
   background-color: #fff;
 }
@@ -55,6 +59,26 @@ a.adjust-contrast {
 
 .ratings{
   margin-right:10px;
+}
+
+.btn.btn-primary {
+  background-color: #0072ee;
+  border-color: #0072ee;
+}
+
+.bg-light {
+  background-color: #f8f9fa !important;
+  color: #727373 !important;
+}
+
+.bg-light .nav-link {
+  color: #727373 !important;
+}
+
+.btn.btn-secondary {
+  background-color: #858c92;
+  border-color: #858c92;
+  color: #212529;
 }
 
 .ratings i{
@@ -261,10 +285,6 @@ a.adjust-contrast {
 
 .event-maps {
   padding: 15px;
-}
-
-.error {
-  color: red;
 }
 
 /* Login Page CSS */
@@ -493,9 +513,16 @@ a.adjust-contrast {
 }
 
 .event_info {
-  height: 350px;
+  height: 450px;
 }
 
+.event-list-noevent {
+  font-size: 35px;
+}
+
+.container {
+  min-height: 500px !important;
+}
 
 /* style changes for tota11y */
 /*

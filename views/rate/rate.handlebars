@@ -11,7 +11,7 @@
   <label for="4">4</label><br>
   <input type="radio" id="five" name="rate" value="5">
   <label for="5">5</label><br><br>
-  <button type="submit" id="rateSubmit" gameId="{{gameId}}">Submit</button>
+  <button type="submit" id="rateSubmit" data-gameId="{{gameId}}" data_thisuserid="{{thisuserid}}">Submit</button>
 </div>
 
 <div id="errorDiv" class="error">{{error}}</div>
@@ -20,7 +20,8 @@
     event.preventDefault();
     var errorDiv = $('#errorDiv');
     //  var email = $(this).attr('email');
-    var gameId = $(this).attr('gameId');
+    var data_thisuserid = $(this).attr('data_thisuserid');
+    var gameId = $(this).attr('data-gameId');
     const val = $('input[name=rate]:checked').val();
     if (!gameId || !val) {
       errorDiv.empty();
@@ -36,7 +37,8 @@
         data: JSON.stringify({
 
           gameId: gameId,
-          rate: val
+          rate: val,
+          userid: data_thisuserid
         }),
 
 
@@ -49,7 +51,7 @@
           else {
             errorDiv.empty();
             errorDiv.hide();
-            console.log("SUCCESS ADDING TO Database");
+            //  console.log("SUCCESS ADDING TO Database");
             alert("SUCCESS ADDING TO Database")
             window.open("/", '_self');
           }

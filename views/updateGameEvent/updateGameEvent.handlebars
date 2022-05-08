@@ -1,7 +1,7 @@
-<div class="container pt-1 pb-4">
-    <h1> Create Event </h1>
+<div class="container">
+    <h1> Update Event </h1>
 
-    <form class="form-horizontal pt-2 pb-3" action='/createGameEvent' method='POST' id='createGameEvent-form'>
+    <form class="form-horizontal" action='/updateGameEvent' method='POST' id='updateGameEvent-form'>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="title">Title:</label>
             <div class="col-sm-5">
@@ -31,17 +31,13 @@
             <label class="control-label col-sm-2" for="description">Description:</label>
             <div class="col-sm-5">
                 <textarea class="form-control" id="description" placeholder="Enter description" name="description"
-                    required></textarea>
+                    value="{{input.description}}" required></textarea>
             </div>
         </div>
-        <div class="form-group d-flex" id="area" data-area="{{area}}">
+        <div class="form-group d-flex" id="area" area="{{area}}">
             <label class="control-label col-sm-2" for="address">Address:</label>
-            <div class="col-sm-3 pr-0">
-                <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
-                    value="{{input.address}}" required>
-            </div>
-            <div class="col-sm-2 pt-1">
-                <p class="text-capitalize">, {{area}}</p>
+            <div class="col-sm-2">
+                <p>{{area}}</p>
                 {{!-- <select class="form-control" name="area" id="area">
                     <option value="none" selected disabled hidden>Choose your area</option>
                     <option value="hoboken">Hoboken</option>
@@ -49,6 +45,10 @@
                     <option value="kearny">Kearny</option>
                     <option value="union city">Union City</option>
                 </select> --}}
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
+                    value="{{input.address}}" required>
             </div>
         </div>
         <div class="event-maps row">
@@ -85,110 +85,94 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="minParticipants">Minimum number of Participants:</label>
             <div class="col-sm-3">
-                <input type="number" class="form-control" id="minParticipants" name="minParticipants" min="2"
+                <input type="number" class="form-control" id="minParticipants" name="minParticipants"
                     placeholder='Minimum' value="{{input.minimumParticipants}}" required>
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2" for="maxParticipants">Maximum number of Participants:</label>
             <div class="col-sm-3">
-                <input type="number" class="form-control" id="maxParticipants" name="maxParticipants" min="3"
+                <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"
                     placeholder='Maximum' value="{{input.maximumParticipants}}" required>
             </div>
         </div>
         <div class="form-group d-flex">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" id="createEvent" class="btn btn-primary">Create Event</button>
+                <button type="submit" class="btn btn-default">Update Event</button>
             </div>
         </div>
     </form>
-    <div class="alert alert-danger mt-2 form-group" id="errorDivCreateGameEvent">
-        {{error}}
-    </div>
+    <p id="gameEventId" hidden>{{gameEventId}}</p>
 </div>
-
+<div class="error" id="errorDivUpdateGameEvent">{{error}}</div>
 {{!-- Script section --}}
 <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script>
-    $(document).ready(function () {
-        var element = document.getElementById('map');
-        var map = L.map(element);
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        var target = L.latLng('40.7447411', '-74.0464602');
-        map.setView(target, 15);
+    var element = document.getElementById('map');
+    var map = L.map(element);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    var target = L.latLng('40.7447411', '-74.0464602');
+    map.setView(target, 15);
+</script>
 
-        $('#minParticipants').on("blur", function () {
-            var minParticipants = +$('#minParticipants').val();
-            if (minParticipants < 2) {
-                $('#minParticipants').val(2);
-            }
-        });
-        $('#maxParticipants').on("blur", function () {
-            var maxParticipants = +$('#maxParticipants').val();
-            if (maxParticipants < 3) {
-                $('#maxParticipants').val(3);
-            }
-        });
+<script>
+    var theMarker = {};
+    //$('#street').on("keyup", function () {
+    $('#address').on("keydown , keyup , change", function () {
+        loadmap();
+    });
+    $("#area").change(function (e) {
+        loadmap();
+    });
 
-        var theMarker = {};
-        //$('#street').on("keyup", function () {
-        $('#address').on("keydown , keyup , change", function () {
-            loadmap();
-        });
-        $("#area").change(function (e) {
-            loadmap();
-        });
+    function loadmap() {
+        var street = $('#address').val();
+        // var area = $('#area').val();
+        var area = $('#area').attr('area');
+        var requestConfig = {
+            method: 'POST',
+            url: '/user/map',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                street: street,
+                area: area
+            }),
+            cache: false
+        };
 
-        function loadmap() {
-            var street = $('#address').val();
-            var area = $('#area').attr('data-area');
-            var requestConfig = {
-                method: 'POST',
-                url: '/user/map',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    street: street,
-                    area: area
-                }),
-                cache: false
-            };
-
-            $.ajax(requestConfig).then(function (responseMessage) {
-                    if (responseMessage.message != "Error") {
-                        $("#createEvent").prop("disabled", false);
-                        if (street.trim() == "") {
-                            if (theMarker != undefined) {
-                                map.removeLayer(theMarker);
-                            };
-                        } else {
-                            if (theMarker != undefined) {
-                                map.removeLayer(theMarker);
-                            };
-                            var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
-                            map.setView(target, 14);
-                            theMarker = L.marker(target).addTo(map);
-                            $('#labelStreet').attr('lat', responseMessage.message.lat);
-                            $('#labelStreet').attr('lon', responseMessage.message.lon);
-                            document.getElementById("latitude").value = responseMessage.message.lat;
-                            document.getElementById("longitude").value = responseMessage.message.lon;
-                        }
-                    } else {
-                        $("#createEvent").prop("disabled", true);
-                        if (theMarker != undefined) {
-                            map.removeLayer(theMarker);
-                        };
-                    }
-
-                })
-                .catch(function (response) {
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.message != "Error") {
+                if (street.trim() == "") {
                     if (theMarker != undefined) {
                         map.removeLayer(theMarker);
                     };
-                });
-        }
-    });
+                } else {
+                    if (theMarker != undefined) {
+                        map.removeLayer(theMarker);
+                    };
+                    var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
+                    map.setView(target, 14);
+                    theMarker = L.marker(target).addTo(map);
+                    $('#labelStreet').attr('lat', responseMessage.message.lat);
+                    $('#labelStreet').attr('lon', responseMessage.message.lon);
+                    document.getElementById("latitude").value = responseMessage.message.lat;
+                    document.getElementById("longitude").value = responseMessage.message.lon;
+                }
+            } else {
+                if (theMarker != undefined) {
+                    map.removeLayer(theMarker);
+                };
+            }
+
+        })
+            .catch(function (response) {
+                if (theMarker != undefined) {
+                    map.removeLayer(theMarker);
+                };
+            });
+    }
 </script>
-<script src="/public/js/createGameEvent.js"></script>
+<script src="/public/js/updateGameEvent.js"></script>

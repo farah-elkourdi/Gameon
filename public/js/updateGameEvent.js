@@ -114,11 +114,12 @@
   }
 
   function areValidTimes(startTime, endTime) {
-    //  startTime.setHours(startTime.getHours() + 1);
-    let temp = new Date(startTime);
-    temp.setHours(startTime.getHours() + 1);
-    //  if ( endTime < startTime) {
-    if (endTime < temp) {
+    let now = new Date();
+    const temp = new Date(startTime);
+    temp.setHours(temp.getHours() + 1);
+
+
+    if (startTime < now || endTime < temp) {
       return false;
     }
     return true;
@@ -172,34 +173,34 @@
   }
 
   function validMaxParticipantLimit(sport, numParticipants) {
-    if (sport.toLowerCase() === 'Soccer'.toLowerCase() && numParticipants > max_soccer) {
+    if (sport === 'Soccer' && numParticipants > max_soccer) {
       return false;
     }
-    if (sport.toLowerCase() === 'Football'.toLowerCase() && numParticipants > max_football) {
+    if (sport === 'Football' && numParticipants > max_football) {
       return false;
     }
-    if (sport.toLowerCase() === 'Golf'.toLowerCase() && numParticipants > max_golf) {
+    if (sport === 'Golf' && numParticipants > max_golf) {
       return false;
     }
-    if (sport.toLowerCase() === 'Baseball'.toLowerCase() && numParticipants > max_baseball) {
+    if (sport === 'Baseball' && numParticipants > max_baseball) {
       return false;
     }
-    if (sport.toLowerCase() === 'Basketball'.toLowerCase() && numParticipants > max_basketball) {
+    if (sport === 'Basketball' && numParticipants > max_basketball) {
       return false;
     }
-    if (sport.toLowerCase() === 'Badminton'.toLowerCase() && numParticipants > max_badminton) {
+    if (sport === 'Badminton' && numParticipants > max_badminton) {
       return false;
     }
-    if (sport.toLowerCase() === 'Swimming'.toLowerCase() && numParticipants > max_swimming) {
+    if (sport === 'Swimming' && numParticipants > max_swimming) {
       return false;
     }
-    if (sport.toLowerCase() === 'Archery'.toLowerCase() && numParticipants > max_archery) {
+    if (sport === 'Archery' && numParticipants > max_archery) {
       return false;
     }
-    if (sport.toLowerCase() === 'Dodgeball'.toLowerCase() && numParticipants > max_dodgeball) {
+    if (sport === 'Dodgeball' && numParticipants > max_dodgeball) {
       return false;
     }
-    if (sport.toLowerCase() === 'Frisbee'.toLowerCase() && numParticipants > max_frisbee) {
+    if (sport === 'Frisbee' && numParticipants > max_frisbee) {
       return false;
     }
     return true;
@@ -213,37 +214,30 @@
     }
   }
 
-  var errorDiv = $('#errorDivCreateGameEvent');
-  errorDiv.hide();
-  $('#createGameEvent-form').submit(function (event) {
+  $('#updateGameEvent-form').submit(async function (event) {
+    var errorDiv = $('#errorDivUpdateGameEvent');
     event.preventDefault();
-    var title = filterXSS($('#title').val()),
-      sportCategory = filterXSS($('#sportCategory').val()),
-      description = filterXSS($('#description').val()),
-      // area = $('#area').val(),
-      address = filterXSS($('#address').val()),
-      longitude = filterXSS($('#longitude').val()),
-      latitude = filterXSS($('#latitude').val()),
-      date = filterXSS($('#date').val()),
-      startTime = filterXSS($('#startTime').val()),
-      endTime = filterXSS($('#endTime').val()),
-      minParticipants = filterXSS($('#minParticipants').val()),
-      maxParticipants = filterXSS($('#maxParticipants').val());
-    $('#sportCategory').find('option:eq(0)').prop('selected', true);
+    let title = $('#title').val(),
+      gameEventId = $('#gameEventId').text(),
+      sportCategory = $('#sportCategory').val(),
+      description = $('#description').val(),
+     // area = $('#area').val(),
+      address = $('#address').val(),
+      longitude = $('#longitude').val(),
+      latitude = $('#latitude').val(),
+      date = $('#date').val(),
+      startTime = $('#startTime').val(),
+      endTime = $('#endTime').val(),
+      minParticipants = $('#minParticipants').val(),
+      maxParticipants = $('#maxParticipants').val();
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
-    
-    let now = new Date();
-    
-    // now.setHours(now.getHours()+ 1);
-    // let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
-    let startTimeMin = new Date(now + 3600);
-
-    // modify here 
+// modify here 
     try {
       title = checkString(title, 'title');
       sportCategory = checkString(sportCategory, 'sportCategory');
       description = checkString(description, 'description');
-      //  area = checkString(area, 'area');
+    //  area = checkString(area, 'area');
       address = checkString(address, 'address');
 
       /* NEED to check validity for address, longitude, and latitude */
@@ -252,52 +246,57 @@
       date = dateIsValid(date, 'date');
       startTime = checkTime(startTime, 'startTime');
       endTime = checkTime(endTime, 'endTime');
-      // if (startTime < startTimeMin){
-      //   throw `Events can only be created for 1 hour after current time`;
-      // }
-      if (endTime > "22:00")
-        throw `Events should end before 10 pm`;
       let startTime_date = convertStringToDate(date, startTime);
       let endTime_date = convertStringToDate(date, endTime);
-      startTime_date = checkDate(startTime_date, 'startTime');
-      endTime_date = checkDate(endTime_date, 'endTime');
-      /* check if start is over 1 hour in the future */
-      if (startTime_date < startTimeMin){
-        throw `Events can only be created for 1 hour after current time`;
-      }
-
-      /* check if start is over 1 hour in the future */
-      if (startTime_date < startTimeMin) {
-        throw `Events can only be created for 1 hour after current time`;
-      }
+      startTime_date = checkDate(startTime, 'startTime');
+      endTime_date = checkDate(endTime, 'endTime');
 
       minParticipants = checkNum(minParticipants, 'minParticipants');
       maxParticipants = checkNum(maxParticipants, 'maxParticipants');
       if (!areValidTimes(startTime_date, endTime_date)) {
-        throw "Error: EndTime must be at least an hour after startTime";
+        throw "Error: endTime must be at last an hour after startTime";
       }
       if (!validMinParticipantLimit(sportCategory, minParticipants)) {
-        throw `Error: Invalid min participants for ${sportCategory}`;
+        throw `Error: invalid minParticipants for ${sportCategory}`;
       }
       if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
-        throw `Error: Invalid max participants for ${sportCategory}`;
+        throw `Error: invalid maxParticipants for ${sportCategory}`;
       }
       if (!validNumParticipants(minParticipants, maxParticipants)) {
-        throw "Error: Min participants is greater than max participants";
+        throw "Error: minParticipants is greater than maxParticipants";
       }
-      if (minParticipants === maxParticipants) {
-        throw "Error: Min participants cannot be same as max participants";
-      }
-
+     // alert(endTime);
+      if (endTime > "22:00")
+      throw `Events should end before 10 pm`
+    }catch(e){
+      errorDiv.empty();
+      errorDiv.html(e.toString());
+      errorDiv.show();
+      $('#title').val(title);
+      $('#gameEventId').val(gameEventId);
+      $('#sportCategory').val(sportCategory);
+      $('#description').val(description);
+     // $('#area').val(area);
+    //  $('#address').val(address);
+      $('#longitude').val(longitude);
+      $('#latitude').val(latitude);
+      $('#date').val(date);
+      $('#startTime').val(startTime);
+      $('#endTime').val(endTime);
+      $('#minParticipants').val(minParticipants);
+      $('#maxParticipants').val(maxParticipants);
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
+    }
       var requestConfig = {
         method: 'POST',
-        url: '/createGameEvent',
+        url: '/updateGameEvent',
         contentType: 'application/json',
         data: JSON.stringify({
           title: title,
+          gameEventId: gameEventId,
           sportCategory: sportCategory,
           description: description,
-          //  area: area,
+        //  area: area,
           address: address,
           longitude: longitude,
           latitude: latitude,
@@ -307,66 +306,21 @@
           minParticipants: minParticipants,
           maxParticipants: maxParticipants
         }),
+        withCredentials: true
+      };
 
-        //response status code not 200
-        error: function () {
-          errorDiv.show();
-          $('#title').val(title);
-          $('#sportCategory').val(sportCategory);
-          $('#description').val(description);
-          $('#longitude').val(longitude);
-          $('#latitude').val(latitude);
-          $('#date').val(date);
-          $('#startTime').val(startTime);
-          $('#endTime').val(endTime);
-          $('#minParticipants').val(minParticipants);
-          $('#maxParticipants').val(maxParticipants);
-          $('html, body').animate({
-            scrollTop: $("#errorDivCreateGameEvent").offset().top
-          }, 2000);
-
-        },
-
-        //runs with response status code 200
-        //Need to render individual game page?
-        success: function (response) {
-          if (response.success == false) {
+      $.ajax(requestConfig).then(async function (response){
+        if(response){
+          if(!response.success){
             errorDiv.empty();
-            errorDiv.show()
-            errorDiv.html(response.message);
-            $('#title').val(title);
-            $('#sportCategory').val(sportCategory);
-            $('#description').val(description);
-            // $('#area').val(area);
-            //  $('#address').val(address);
-            $('#longitude').val(longitude);
-            $('#latitude').val(latitude);
-            $('#date').val(date);
-            $('#startTime').val(startTime);
-            $('#endTime').val(endTime);
-            $('#minParticipants').val(minParticipants);
-            $('#maxParticipants').val(maxParticipants);
-            $('html, body').animate({
-              scrollTop: $("#errorDivCreateGameEvent").offset().top
-            }, 2000);
-          } else {
-            errorDiv.empty();
-            errorDiv.hide();
-            window.open("/eventList", '_self');
-          }
-        }
-      }
-
-      $.ajax(requestConfig);
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
+      errorDiv.html(response.message);
       errorDiv.show();
       $('#title').val(title);
+      $('#gameEventId').val(gameEventId);
       $('#sportCategory').val(sportCategory);
       $('#description').val(description);
-      // $('#area').val(area);
-      //  $('#address').val(address);
+     // $('#area').val(area);
+    //  $('#address').val(address);
       $('#longitude').val(longitude);
       $('#latitude').val(latitude);
       $('#date').val(date);
@@ -374,10 +328,16 @@
       $('#endTime').val(endTime);
       $('#minParticipants').val(minParticipants);
       $('#maxParticipants').val(maxParticipants);
-      $('html, body').animate({
-        scrollTop: $("#errorDivCreateGameEvent").offset().top
-      }, 2000);
-    }
+      $('#sportCategory').find('option:eq(0)').prop('selected', true);
+      //console.log("Failed ADDING TO Database");
+      //console.log(e);
+      }
+      else{
+        location.href = '/userEvents';
+      }
+        }
+      })
+    
   });
 
   // function checkCurrentTime(startTime, endTime) {

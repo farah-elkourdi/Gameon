@@ -4,6 +4,7 @@ const usersData = require('../data/users');
 const openGeocoder = require('node-open-geocoder')
 const validation = require("../task/validation");
 const session = require('express-session');
+const xss = require('xss');
 
 router.get('/profile', async (req, res) => {
   if (!req.session.user) {
@@ -18,7 +19,8 @@ router.get('/profile', async (req, res) => {
       street: req.session.user.userStreet,
       area: req.session.user.userArea,
       lat: req.session.user.lat,
-      lon: req.session.user.lon
+      lon: req.session.user.lon,
+      avgRating: req.session.user.avgRating
     });
   }
 });
@@ -26,7 +28,18 @@ router.get('/profile', async (req, res) => {
 
 router.get('/publicprofile', async (req, res) => {
   let topuser = false;
-  const email = req.query.email;
+  /* checking for existence of inputs */
+  if(!req.query){
+    return res.status(400).render('errors/error', {
+      error: 'Missing request query.'
+  });
+  }
+  if(!req.query.email){
+    return res.status(400).render('errors/error', {
+      error: 'No user email in query'
+  });
+  }
+  const email = xss(req.query.email);
   if (!req.session.user) {
     res.redirect("/");
   } else {
@@ -34,7 +47,7 @@ router.get('/publicprofile', async (req, res) => {
     const userRate = require('../data/rate');
     let users = await userRate.getTopRatings();
     users.forEach( (user) => {
-      if (user._id == req.session.user.userID)
+      if (user.email == email)
       {
         topuser = true;
       }
@@ -48,7 +61,8 @@ router.get('/publicprofile', async (req, res) => {
       area: user.area,
       lat: user.lat,
       lon: user.lon,
-      userDetails: req.session.user
+      userDetails: req.session.user,
+      avgRating: req.session.user.avgRating
   });
   }
 });
@@ -64,8 +78,18 @@ router.get('/signup', async (req, res) => {
 });
 
 router.post("/map", async (req, response) => {
-  var street = req.body.street;
-  var area = req.body.area;
+  if(!req.body.street){
+    return res.status(400).render('errors/error', {
+      error: 'Missing street in request body.'
+  });
+  }
+  if(!req.body.area){
+    return res.status(400).render('errors/error', {
+      error: 'Missing area in request body.'
+  });
+  }
+  var street = xss(req.body.street);
+  var area = xss(req.body.area);
   var lat;
   var lon;
   var status;
@@ -111,16 +135,80 @@ router.post("/map", async (req, response) => {
 });
 
 router.post('/Checksignup', async (req, res) => {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const password = req.body.password;
-  const email = req.body.email;
-  const area = req.body.area;
-  const street = req.body.street;
-  const lat = req.body.lat;
-  const lon = req.body.lon;
-
   var errors = [];
+  /* check for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.firstName){
+    errors.push('Missing first name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lastName){
+    errors.push('Missing last name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.email){
+    errors.push('Missing email.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.area){
+    errors.push('Missing area.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.street){
+    errors.push('Missing street.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lat){
+    errors.push('Missing latitude.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lon){
+    errors.push('Missing longitude.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  const firstName = xss(req.body.firstName);
+  const lastName = xss(req.body.lastName);
+  const password = xss(req.body.password);
+  const email = xss(req.body.email);
+  const area = xss(req.body.area);
+  const street = xss(req.body.street);
+  const lat = xss(req.body.lat);
+  const lon = xss(req.body.lon);
+
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   if (!validation.validString(password)) errors.push('Invalid password.');
@@ -157,10 +245,32 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/Checksignin', async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
   var errors = [];
+  /* checking for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.email){
+    errors.push('Missing email in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  const email = xss(req.body.email);
+  const password = xss(req.body.password);
+  
   if (!validation.validString(password)) errors.push('Invalid password or email.');
   if (!validation.checkEmail(email)) errors.push('Invalid password or email.');
   if (errors.length == 0) {
@@ -176,7 +286,8 @@ router.post('/Checksignin', async (req, res) => {
           userArea: user.area,
           userStreet: user.street,
           lat: users.user.lat,
-          lon: users.user.lon
+          lon: users.user.lon,
+          avgRating: users.user.avgRating
         };
       }
     } catch (e) {
@@ -212,8 +323,31 @@ router.get('/logout', async (req, res) => {
 
 
 router.post('/Checkprofile', async (req, res) => {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+  var errors = [];
+  /* checking for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.firstName){
+    errors.push('Missing first name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lastName){
+    errors.push('Missing last name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  const firstName = xss(req.body.firstName);
+  const lastName = xss(req.body.lastName);
   // const password = req.body.password;
   // const email = req.body.email;
   // const area = req.body.area;
@@ -221,7 +355,7 @@ router.post('/Checkprofile', async (req, res) => {
   // const lat =  req.body.lat;
   //const lon =  req.body.lon;
 
-  var errors = [];
+
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   // if (!validation.validString(password)) errors.push('Invalid password.');
@@ -279,7 +413,7 @@ let topuser = false;
       street: req.session.user.userStreet,
       area: req.session.user.userArea,
       lat: req.session.user.lat,
-
+      avgRating: req.session.user.avgRating,
       lon: req.session.user.lon, 
       topuser: topuser
   });
@@ -291,14 +425,29 @@ router.get('/changepass', async (req, res) => {
     res.redirect("/");
   } else {
     res.render("user/changepass", {
-      title: "Change password"
+      title: "Change password",
+      userDetails: req.session.user
     });
   }
 });
 
 router.post('/Checkpass', async (req, res) => {
   var errors = [];
-  const password = req.body.password;
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  const password = xss(req.body.password);
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (errors.length == 0) {
     try {
@@ -334,7 +483,14 @@ router.get('/forgetpass', async (req, res) => {
 
 router.post('/temppass', async (req, res) => {
   var errors = [];
-  const email = req.body.email;
+  if(!req.body.email){
+    errors.push('Missing email.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  const email = xss(req.body.email);
   if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (errors.length == 0) {
     try {

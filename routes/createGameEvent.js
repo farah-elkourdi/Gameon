@@ -25,37 +25,50 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    createGameEventData = req.body;
-    console.log(req.session.user);
+    createGameEventData = check.validateObjectXSS(req.body);
     let userId = req.session.user.userID;
 
     let now = new Date();
   
-    now.setHours(now.getHours()+ 1);
-    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
+    // now.setHours(now.getHours()+ 1);
+    // let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
     
-    
+    let startTimeMin = new Date(now+3600);
+
 
     try {
         userId = check.checkId(userId);
+        if(!userId) throw 'no user id';
+        if(!createGameEventData) throw 'Missing request body';
+        createGameEventData.title = xss(createGameEventData.title);
+        if(!createGameEventData.title) throw 'Missing title';
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
         createGameEventData.status = "upcoming";
+        createGameEventData.sportCategory = xss(createGameEventData.sportCategory);
+        if(!createGameEventData.sportCategory) throw 'Missing sportCategory';
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
+        createGameEventData.description = xss(createGameEventData.description);
+        if(!createGameEventData.description) throw 'Missing description';
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
+        createGameEventData.address = xss(createGameEventData.address);
+        if(!createGameEventData.address) throw 'updateGameEvent: Missing address';
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
 
        // createGameEventData.area = check.checkString(createGameEventData.area, 'area');
-
+       createGameEventData.latitude = xss(createGameEventData.latitude);
+       if(!createGameEventData.latitude) throw 'updateGameEvent: Missing latitude';
         createGameEventData.latitude = createGameEventData.latitude;
+        createGameEventData.longitude = xss(createGameEventData.longitude);
+        if(!createGameEventData.longitude) throw 'updateGameEvent: Missing longitude';
         createGameEventData.longitude = createGameEventData.longitude;
 
 
         createGameEventData.date = check.checkString(createGameEventData.date, 'date');     
         createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');  
         
-        if (createGameEventData.startTime < startTimeMin){
-            throw `Events can only be created for 1 hour after current time`;
-        }
+        // if (createGameEventData.startTime < startTimeMin){
+        //     throw `Events can only be created for 1 hour after current time`;
+        // }
         createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkTime(createGameEventData.endTime, 'endTime');
         if (createGameEventData.endTime > "22:00"){
@@ -67,10 +80,16 @@ router.post('/', async (req, res) => {
         createGameEventData.startTime = check.checkDate(createGameEventData.startTime, 'startTime');
         createGameEventData.endTime = check.checkDate(createGameEventData.endTime, 'endTime');
         
+        if (createGameEventData.startTime < startTimeMin){
+            throw `Events can only be created for 1 hour after current time`;
+        }
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
         if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 ){
-            throw `min number of Participants should be 2 and maximum 30 `;
+            throw `Min number of Participants should be 2 and maximum 30 `;
+        }
+        if (createGameEventData.minimumParticipants === createGameEventData.maximumParticipants ){
+            throw `Min participants cannot be same as max participants `;
         }
 
 //         let now = moment().format('YYYY-MM-DD');

@@ -39,10 +39,10 @@ async function cancelEvent(userId, gameEventId){
     if(userId !== gameEvent.userId){
         throw "Error: user is MUST be the event coordinator"
     }
-    if(gameEvent.status === 'canceled'){
+    if(gameEvent.status.toLowerCase() === 'canceled'.toLowerCase()){
         throw "Error: Event is already Canceled"
     }
-    if(gameEvent.status !== 'upcoming'){
+    if(gameEvent.status.toLowerCase() !== 'upcoming'.toLowerCase()){
         throw "Error: Events that are NOT 'upcoming' cannot be Canceled"
     }
     const gameEventUpdatedInfo = {
@@ -107,21 +107,21 @@ async function remove(userId, gameEventId){
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
     if(userId === gameEvent.userId){
-        throw 'Error: event coordinator cannot leave gameEvent.';
+        throw 'Error: Event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status !== "upcoming"){
-        throw 'Error: user cannot leave an Old or Canceled event';
+    if(gameEvent.status.toLowerCase() !== "upcoming".toLowerCase()){
+        throw 'Error: User cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants -1}});
     if(updated_info1.modifiedCount === 0){
-        throw "Error: failed to deregister user for gameEvent."
+        throw "Error: Failed to deregister user for gameEvent."
     }
     const updated_info2 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$pull: {participants: ObjectId(userId)}});
     if(updated_info2.modifiedCount === 0){
-        throw "Error: failed to deregister user for gameEvent."
+        throw "Error: Failed to deregister user for gameEvent."
     }
     
     return {userRemoved: true};                    
@@ -137,8 +137,8 @@ async function insert(userId, gameEventId){
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.map(x =>x.toString()).includes(userId)) throw 'Error: you are already registered for this event.'
-    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
-    if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
+    if(status.toLowerCase() !== 'upcoming'.toLowerCase()) throw 'Error: Game Event is not open for registration.';
+    if(num_participants >= max_participants) throw 'Error: Game Event is already full.';
 
     let conflict;
             try{
@@ -165,99 +165,6 @@ async function insert(userId, gameEventId){
     return {userInserted: true};  
 }
 
-/* update a gameEvent */
-async function update (userId, gameEventId, eventCoordinator, title, status, sportCategory, description, area, address, 
-    latitude, longitude, startTime, endTime, minimumParticipants, maximumParticipants){
-
-    userId = check.checkId(userId);
-    gameEventId = check.checkId(gameEventId);
-    const gameEventCollection = await gameEvents();
-    const gameEvent = await gameEventData.getGameEvent(gameEventId);
-    
-    if(userId !== gameEvent.userId){
-        throw 'Error: user is not the event coordinator.'
-    }
-    
-    userId = check.checkId(userId);
-    title = check.checkString(title, 'title');
-    status = check.checkString(status, 'status');
-
-    if(status !== "upcoming"){
-        throw "User cannot edit an Old or Canceled gameEvent";
-    }
-
-    sportCategory = check.checkString(sportCategory, 'sportCategory');
-    description = check.checkString(description, 'description');
-    // area = check.checkString(area, 'area');
-    address = check.checkString(address, 'address');
-
-    /* NEED to check if valid address */
-
-    // if(!check.checkCoordinates(longitude, latitude)){
-    //     throw "Error: coordinates are NOT valid"
-    // }
-
-
-    startTime = check.checkDate(startTime, 'startTime');
-    endTime = check.checkDate(endTime, 'endTime');
-
-    if(!check.areValidTimes(startTime, endTime)){
-        throw "Error: endTime must be at least 1 hour after startTime"
-    }
-
-    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    if(!check.validMinParticipantLimit(sportCategory, minimumParticipants, 'minimumParticipants')){
-        throw "Error: minimum participation limit is not valid"
-    }
-    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    if(!check.validMaxParticipantLimit(sportCategory, maximumParticipants, 'maximumParticipants')){
-        throw "Error: maximum participation limit is not valid"
-    }
-
-    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)){
-        throw "Error: minimum participants is greater than maximum participants"
-    }
-    
-    let conflict;
-            try{
-                conflict = await userData.checkUserConflict(userId, startTime, endTime);
-            }
-            catch(e){
-                throw e.toString();
-            }
-
-            if(conflict.conflicted){
-                throw 'You are already registered for an event at this time.';
-            }
-    let updatedGameEvent = {
-        userId: eventCoordinator, 
-        title: title,
-        status: status,
-        sportCategory: sportCategory,
-        description: description,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-        startTime: startTime, 
-        endTime: endTime, 
-        minimumParticipants: minimumParticipants,
-        maximumParticipants: maximumParticipants,
-        currentNumberOfParticipants: gameEvent.currentNumberOfParticipants,
-        participants: gameEvent.participants
-    };
-
-    const updatedInfo = await gameEventCollection.updateOne(
-        {_id: ObjectId(gameEventId)}, 
-        {$set: updatedGameEvent}
-    );
-
-    if(updatedInfo.modifiedCount === 0){
-        throw "Error: Failed to update game event";
-    }
-    return {gameEventUpdated: true};
-}
-
-
 async function getAllGameEventsRating (userId){
     userId = check.checkId(userId);
     const rateCollection = await rate();
@@ -265,7 +172,7 @@ async function getAllGameEventsRating (userId){
 
     const gameEventCollection = await gameEvents();
     
-    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId), userId: {$ne: userId} ,status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."
@@ -313,7 +220,6 @@ module.exports = {
     getAllGameEvents, 
     remove, 
     insert,
-    update,
     checkParticipation,
     checkArea, 
     cancelEvent,

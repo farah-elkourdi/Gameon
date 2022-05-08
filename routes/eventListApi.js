@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const gameEvent = require('../data/gameEvent');
+const validation = require('../task/validation');
 
 // Router configuration
 
@@ -47,8 +48,12 @@ router.post('/search', async (req, res) => {
         return res.redirect('/');
     }
 
-    let searchText = req.body.searchText;
-
+    let searchText = validation.validateXSS(req.body.searchText);
+    if(!searchText){
+        return res.status(400).render('errors/error', {
+            error: '/eventList POST: Missing search text.'
+        });
+    }
 
     let defaultArea = 'hoboken';
     // TO-DO show list of events near user area

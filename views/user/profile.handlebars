@@ -1,15 +1,13 @@
-<header>
+<div class="container pt-2 pb-5">
     <h1>
         Profile page - Edit profile name
     </h1>
-</header>
+    <form method="POST" id="profile-form">
 
-<form method="POST" id="profile-form">
-
-    <label id="labelfirstname" for="firstName"> first name: </label>
+    <label id="labelfirstname" for="firstName"> First name: </label>
     <input id="firstName" type="text" placeholder="Enter first name" name="firstName" value="{{firstName}}" />
 
-    <label id="labellastname" for="lastName"> last name: </label>
+    <label id="labellastname" for="lastName"> Last name: </label>
     <input id="lastName" type="text" placeholder="Enter last name" name="lastName" value="{{lastName}}" />
 
     {{!-- <label id="labelAddress"> Addrress: </label>
@@ -29,6 +27,9 @@
 
 <ul id="error">
 </ul>
+</div>>
+
+
 
 {{!--
 <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" /> --}}
