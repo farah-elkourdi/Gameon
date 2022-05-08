@@ -66,6 +66,12 @@ a.adjust-contrast1 {
   border-color: #0072ee;
 }
 
+.btn.btn-secondary {
+  background-color: #858c92;
+  border-color: #858c92;
+  color: #212529;
+}
+
 .ratings i{
   
   color:#cecece;
@@ -498,9 +504,16 @@ a.adjust-contrast1 {
 }
 
 .event_info {
-  height: 350px;
+  height: 450px;
 }
 
+.event-list-noevent {
+  font-size: 35px;
+}
+
+.container {
+  min-height: 500px !important;
+}
 
 /* style changes for tota11y */
 /*
