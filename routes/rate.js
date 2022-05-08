@@ -45,7 +45,8 @@ catch
       gameId: gameId,
       name: userName,
       title: game.title,
-      userDetails: req.session.user
+      userDetails: req.session.user,
+      thisuserid: thisuserid 
 
   });
   }
@@ -61,6 +62,7 @@ router.post('/rateAction', async (req, res) => {
     let gameId = validation.validateXSS(req.body.gameId);
     let rating = validation.validateXSS(req.body.rate);
    let  userId= req.session.user.userID
+   let organizerId = validation.validateXSS(req.body.userid);
     //rating = req.query.rating
     if(!email) errors.push( "getUser: must pass email");
     if(!gameId) errors.push( "getUser: must pass gameid");
@@ -74,7 +76,7 @@ if(errors.length != 0)
 return res.json({success: false, message: errors});
 try
 {
-    await rateData.rating(email,gameId,userId, rating );
+    await rateData.rating(email,gameId,userId, rating, organizerId );
 }
 catch (e)
 {
