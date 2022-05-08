@@ -4,6 +4,8 @@ const data = require('../data');
 const check = require('../task/validation');
 const gameEvent = require('../data/gameEvent');
 const moment = require('moment');
+const { deserialize } = require('bson');
+const { description } = require('../public/js/geocode');
 
 // Global variable updateGameEventData
 var updateGameEventData;
@@ -12,9 +14,19 @@ router.get('/:id', async (req, res) => {
     if(!req.session.user){
         return res.redirect('/');
     }
-    let id;
+    if(!req.params){
+        return res.status(400).render('errors/error', {
+            error: 'updateGameEvent/:id GET: Missing request parameters'
+        }); 
+    }
+    if(!req.params.id){
+        return res.status(400).render('errors/error', {
+            error: 'updateGameEvent/:id GET: No id in parameters'
+        }); 
+    }
+    let id = xss(req.params.id);
     try{
-        id = check.checkId(req.params.id);
+        id = check.checkId(id);
     }
     catch(e){
         return res.status(400).render('errors/error', {
@@ -82,17 +94,31 @@ router.post('/', async (req, res) => {
     let userId = req.session.user.userID;
     try {
         if(!userId) throw 'no user id';
+        if(!updateGameEventData) throw 'Missing request body';
         userId = check.checkId(userId);
+        if(!updateGameEventData.gameEventId) throw 'Missing gameEventId';
+        updateGameEventData.gameEventId = xss(updateGameEventData.gameEventId);
         updateGameEventData.gameEventId = check.checkId(updateGameEventData.gameEventId, 'gameEventId');
+        if(!updateGameEventData.title) throw 'Missing title';
+        updateGameEventData.title = xss(updateGameEventData.title);
         updateGameEventData.title = check.checkString(updateGameEventData.title, 'title');
         updateGameEventData.status = "upcoming";
+        if(!updateGameEventData.sportCategory) throw 'Missing sportCategory';
+        updateGameEventData.sportCategory = xss(updateGameEventData.sportCategory);
         updateGameEventData.sportCategory = check.checkString(updateGameEventData.sportCategory, 'sportCategory');
+        if(!updateGameEventData.description) throw 'Missing description';
+        updateGameEventData.description = xss(updateGameEventData.description);
         updateGameEventData.description = check.checkString(updateGameEventData.description, 'description');
+        if(!updateGameEventData.address) throw 'Missing address';
+        updateGameEventData.address = xss(updateGameEventData.address);
         updateGameEventData.address = check.checkString(updateGameEventData.address, 'address');  
 
        // updateGameEventData.area = check.checkString(updateGameEventData.area, 'area');
-
+       if(!updateGameEventData.latitude) throw 'Missing latitude';
+       updateGameEventData.latitude = xss(updateGameEventData.latitude);
         updateGameEventData.latitude = updateGameEventData.latitude;
+        if(!updateGameEventData.longitude) throw 'Missing longitude';
+        updateGameEventData.longitude = xss(updateGameEventData.longitude);
         updateGameEventData.longitude = updateGameEventData.longitude;
 
 

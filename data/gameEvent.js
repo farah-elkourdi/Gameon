@@ -317,6 +317,7 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
     catch(e){
         throw e.toString();
     }
+    if(existingEvent.status != 'upcoming') throw 'Error: can only edit upcoming events';
     if(existingEvent.maximumParticipants < maximumParticipants){
         maximumParticipants = existingEvent.maximumParticipants;
     }

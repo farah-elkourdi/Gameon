@@ -21,6 +21,16 @@ router.route('/:id')
 
         //get current user id
         let currentUserId = req.session.user.userID;
+        if(!currentUserId){
+            return res.status(500).render('errors/error', {
+                error: 'No user id in session'
+            });
+        }
+        if(!req.params.id){
+            return res.status(400).render('errors/error', {
+                error: 'No game event id url parameters.'
+            });
+        } 
         //check id
         let ID;
         try {
@@ -112,6 +122,16 @@ router.route('/:id')
 
             //get current user id
             let currentUserId = req.session.user.userID;
+            if(!currentUserId){
+                return res.status(500).render('errors/error', {
+                    error: 'No user id in session'
+                });
+            }
+            if(!req.params.id){
+                return res.status(400).render('errors/error', {
+                    error: 'No game event id url parameters.'
+                });
+            } 
             //check id
             let ID;
             try {
@@ -179,6 +199,16 @@ router.route('/:id/leave')
 
         //get current user id
         let currentUserId = req.session.user.userID;
+        if(!currentUserId){
+            return res.status(500).render('errors/error', {
+                error: 'No user id in session'
+            });
+        }
+        if(!req.params.id){
+            return res.status(400).render('errors/error', {
+                error: 'No game event id url parameters.'
+            });
+        } 
         //check id
         let ID;
         try {
