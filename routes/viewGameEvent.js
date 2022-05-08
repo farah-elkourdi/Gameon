@@ -193,7 +193,7 @@ router.route('/leave/:eventId')
                 error: 'No user id in session'
             });
         }
-        if(!req.params.id){
+        if(!req.params.eventId){
             return res.status(400).render('errors/error', {
                 error: 'No game event id url parameters.'
             });
