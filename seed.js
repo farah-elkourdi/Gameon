@@ -183,21 +183,29 @@ async function main(){
 
     try{
         rating1 = await rateData.rating(
-            "johndoe@gmail.com",
-            soccerEvent._id,
-            user1._id,
+            "avinashk@gmail.com",
+            basketballEvent._id,
+            user3._id,
             5,
-            ""
+            basketballEvent.userId
         );
         console.log(rating1);
     }catch(e){
         console.log(e);
     }
 
-
-
-
-
+    try{
+        rating2 = await rateData.rating(
+            "harshs@gmail.com",
+            frisbeeEvent._id,
+            user2._id,
+            4,
+            frisbeeEvent.userId
+        );
+        console.log(rating1);
+    }catch(e){
+        console.log(e);
+    }
 
     await connection.closeConnection();
 }
