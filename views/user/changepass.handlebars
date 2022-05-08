@@ -1,17 +1,18 @@
-<header>
+<div class="container pt-2 pb-5">
     <h1>
         Change password
     </h1>
-</header>
+    <form class="pt-4" method="POST" id="profile-form">
+        <label id="labelPassword" for="password"> Password: </label>
+        <input id="password" type="password" placeholder="Enter password" name="password" />
+        <button class="btnsave" id="saveSubmit">Save</button>
+    </form>
 
-<form method="POST" id="profile-form">
-    <label id="labelPassword" for="password"> Password: </label>
-    <input id="password" type="password" placeholder="Enter password" name="password" />
-    <button class="btnsave" id="saveSubmit">Save</button>
-</form>
+    <ul id="error">
+    </ul>
+</div>
 
-<ul id="error">
-</ul>
+
 
 <script>
     (function ($) {
