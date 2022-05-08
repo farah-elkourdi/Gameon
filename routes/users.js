@@ -78,33 +78,21 @@ router.get('/signup', async (req, res) => {
 });
 
 router.post("/map", async (req, response) => {
-  if(!req.body.street){
-    return res.status(400).render('errors/error', {
-      error: 'Missing street in request body.'
-  });
-  }
-  if(!req.body.area){
-    return res.status(400).render('errors/error', {
-      error: 'Missing area in request body.'
-  });
-  }
+  // if(!req.body.street){
+  //   return res.status(400).render('errors/error', {
+  //     error: 'Missing street in request body.'
+  // });
+  // }
+  // if(!req.body.area){
+  //   return res.status(400).render('errors/error', {
+  //     error: 'Missing area in request body.'
+  // });
+  // }
   var street = xss(req.body.street);
   var area = xss(req.body.area);
   var lat;
   var lon;
   var status;
-  if (!area || !street) {
-    return response.json({
-      success: true,
-      message: "Error"
-    });
-  }
-  if (street.trim() == '' || area.trim() == '') {
-    return response.json({
-      success: true,
-      message: "Error"
-    });
-  }
   openGeocoder()
     .geocode(street + ', ' + area)
     //.geocode('106 duncan ave, new jersey')
