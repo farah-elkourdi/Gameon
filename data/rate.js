@@ -23,7 +23,7 @@ async function getTopRatings() {
     return avgRatingList;
 }
 
-async function rating(email, gameId, userId, rating) {
+async function rating(email, gameId, userId, rating, organizerID) {
     let nerRating = 0
    let user =  await userData.getUserByEmail(email);
    if(!email) throw "getUser: must pass email";
@@ -39,7 +39,7 @@ let rateUser =
 {
     userId: userId,
     gameEventId: gameId,
-    organizerId: user._id.toString(),
+    organizerId: organizerID,
     rating: Number(rating)
 }
    const insertedrate = await rateCollection.insertOne(rateUser);
