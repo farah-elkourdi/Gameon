@@ -39,10 +39,10 @@ async function cancelEvent(userId, gameEventId){
     if(userId !== gameEvent.userId){
         throw "Error: user is MUST be the event coordinator"
     }
-    if(gameEvent.status.toLowerCase() === 'canceled'.toLowerCase()){
+    if(gameEvent.status === 'canceled'){
         throw "Error: Event is already Canceled"
     }
-    if(gameEvent.status.toLowerCase() !== 'upcoming'.toLowerCase()){
+    if(gameEvent.status !== 'upcoming'){
         throw "Error: Events that are NOT 'upcoming' cannot be Canceled"
     }
     const gameEventUpdatedInfo = {
@@ -107,21 +107,21 @@ async function remove(userId, gameEventId){
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventData.getGameEvent(gameEventId);
     if(userId === gameEvent.userId){
-        throw 'Error: Event coordinator cannot leave gameEvent.';
+        throw 'Error: event coordinator cannot leave gameEvent.';
     }
-    if(gameEvent.status.toLowerCase() !== "upcoming".toLowerCase()){
-        throw 'Error: User cannot leave an Old or Canceled event';
+    if(gameEvent.status !== "upcoming"){
+        throw 'Error: user cannot leave an Old or Canceled event';
     }
     let num_participants = gameEvent.currentNumberOfParticipants;
     const updated_info1 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$set: {currentNumberOfParticipants: num_participants -1}});
     if(updated_info1.modifiedCount === 0){
-        throw "Error: Failed to deregister user for gameEvent."
+        throw "Error: failed to deregister user for gameEvent."
     }
     const updated_info2 = await gameEventCollection.updateOne({_id: ObjectId(gameEventId)}, 
                         {$pull: {participants: ObjectId(userId)}});
     if(updated_info2.modifiedCount === 0){
-        throw "Error: Failed to deregister user for gameEvent."
+        throw "Error: failed to deregister user for gameEvent."
     }
     
     return {userRemoved: true};                    
@@ -137,8 +137,8 @@ async function insert(userId, gameEventId){
     let num_participants = gameEvent.currentNumberOfParticipants;
     let max_participants = gameEvent.maximumParticipants;
     if(gameEvent.participants.map(x =>x.toString()).includes(userId)) throw 'Error: you are already registered for this event.'
-    if(status.toLowerCase() !== 'upcoming'.toLowerCase()) throw 'Error: Game Event is not open for registration.';
-    if(num_participants >= max_participants) throw 'Error: Game Event is already full.';
+    if(status !== 'upcoming') throw 'Error: gameEvent is not open for registration.';
+    if(num_participants >= max_participants) throw 'Error: gameEvent is already full.';
 
     let conflict;
             try{
@@ -172,7 +172,7 @@ async function getAllGameEventsRating (userId){
 
     const gameEventCollection = await gameEvents();
     
-    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId), userId: {$ne: userId} ,status: "old"}).toArray();
+    const gameEventList = await gameEventCollection.find({participants: ObjectId(userId),status: "old"}).toArray();
 
     if(gameEventList.length == 0){
         throw "No game events found."

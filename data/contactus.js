@@ -93,7 +93,7 @@ async emailSetup2( title, action, email) {
   );
   const mailOptions = {
     from: process.env.UserEmail,
-    to: email,
+    to: process.env.UserEmail,
     subject: "Notification",
     template: 'notification',
     context: {
