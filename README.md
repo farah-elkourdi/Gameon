@@ -35,7 +35,7 @@ Run the application using the following command:
 
 2- Create a branch for each feature.
 
-3- Direct merge to the main branch is disabled.
+3- Do not direct merge to the main branch.
  
 4- Pull request requires one code review before merging. 
 

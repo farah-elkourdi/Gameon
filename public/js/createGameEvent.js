@@ -234,9 +234,9 @@
     
     let now = new Date();
     
-    // now.setHours(now.getHours()+ 1);
-    // let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
-    let startTimeMin = new Date(now + 3600);
+    now.setHours(now.getHours()+ 1);
+    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
+    let startTimeMinDate = new Date(now + 3600);
 
     // modify here 
     try {
@@ -252,9 +252,9 @@
       date = dateIsValid(date, 'date');
       startTime = checkTime(startTime, 'startTime');
       endTime = checkTime(endTime, 'endTime');
-      // if (startTime < startTimeMin){
-      //   throw `Events can only be created for 1 hour after current time`;
-      // }
+      if (startTime < startTimeMinDate){
+        throw `Events can only be created for 1 hour after current time`;
+      }
       if (endTime > "22:00")
         throw `Events should end before 10 pm`;
       let startTime_date = convertStringToDate(date, startTime);
@@ -262,9 +262,9 @@
       startTime_date = checkDate(startTime_date, 'startTime');
       endTime_date = checkDate(endTime_date, 'endTime');
       /* check if start is over 1 hour in the future */
-      if (startTime_date < startTimeMin){
-        throw `Events can only be created for 1 hour after current time`;
-      }
+      // if (startTime_date < startTimeMin){
+      //   throw `Events can only be created for 1 hour after current time`;
+      // }
 
       /* check if start is over 1 hour in the future */
       if (startTime_date < startTimeMin) {
