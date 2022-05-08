@@ -7,6 +7,8 @@ const moment = require('moment');
 const { deserialize } = require('bson');
 const { description } = require('../public/js/geocode');
 
+const usersData = require('../data/users');
+const contactUs = require('../data/contactus');
 // Global variable updateGameEventData
 var updateGameEventData;
 
@@ -93,32 +95,32 @@ router.post('/', async (req, res) => {
     updateGameEventData = req.body;
     let userId = req.session.user.userID;
     try {
-        if(!userId) throw 'no user id';
-        if(!updateGameEventData) throw 'Missing request body';
+        if(!userId) throw 'updateGameEvent: no user id';
+        if(!updateGameEventData) throw 'updateGameEvent: Missing request body';
         userId = check.checkId(userId);
-        if(!updateGameEventData.gameEventId) throw 'Missing gameEventId';
         updateGameEventData.gameEventId = xss(updateGameEventData.gameEventId);
+        if(!updateGameEventData.gameEventId) throw 'updateGameEvent: Missing gameEventId';
         updateGameEventData.gameEventId = check.checkId(updateGameEventData.gameEventId, 'gameEventId');
-        if(!updateGameEventData.title) throw 'Missing title';
         updateGameEventData.title = xss(updateGameEventData.title);
+        if(!updateGameEventData.title) throw 'updateGameEvent: Missing title';
         updateGameEventData.title = check.checkString(updateGameEventData.title, 'title');
         updateGameEventData.status = "upcoming";
-        if(!updateGameEventData.sportCategory) throw 'Missing sportCategory';
         updateGameEventData.sportCategory = xss(updateGameEventData.sportCategory);
+        if(!updateGameEventData.sportCategory) throw 'updateGameEvent: Missing sportCategory';
         updateGameEventData.sportCategory = check.checkString(updateGameEventData.sportCategory, 'sportCategory');
-        if(!updateGameEventData.description) throw 'Missing description';
         updateGameEventData.description = xss(updateGameEventData.description);
+        if(!updateGameEventData.description) throw 'updateGameEvent: Missing description';
         updateGameEventData.description = check.checkString(updateGameEventData.description, 'description');
-        if(!updateGameEventData.address) throw 'Missing address';
         updateGameEventData.address = xss(updateGameEventData.address);
+        if(!updateGameEventData.address) throw 'updateGameEvent: Missing address';
         updateGameEventData.address = check.checkString(updateGameEventData.address, 'address');  
 
        // updateGameEventData.area = check.checkString(updateGameEventData.area, 'area');
-       if(!updateGameEventData.latitude) throw 'Missing latitude';
        updateGameEventData.latitude = xss(updateGameEventData.latitude);
+       if(!updateGameEventData.latitude) throw 'updateGameEvent: Missing latitude';
         updateGameEventData.latitude = updateGameEventData.latitude;
-        if(!updateGameEventData.longitude) throw 'Missing longitude';
         updateGameEventData.longitude = xss(updateGameEventData.longitude);
+        if(!updateGameEventData.longitude) throw 'updateGameEvent: Missing longitude';
         updateGameEventData.longitude = updateGameEventData.longitude;
 
 
@@ -152,6 +154,20 @@ router.post('/', async (req, res) => {
             throw 'You are already registered for an event at this time.';
         }
 
+        let usersid= [];
+let event = await gameEvent.getGameEvent(updateGameEventData.gameEventId);
+event.participants.forEach( (user) => {
+  usersid.push(user.toString())
+});
+var title = event.title
+var emails = [];
+
+await usersid.forEach( async (users) => {
+     let x = await usersData.getUser(users);
+    // emails.push(x.email);
+     await contactUs.emailSetup2( title, "edit", x.email );
+});
+
 
         await gameEvent.update(updateGameEventData.gameEventId, userId, updateGameEventData.title, updateGameEventData.status, 
             updateGameEventData.sportCategory, updateGameEventData.description, req.session.user.userArea,
@@ -159,7 +175,6 @@ router.post('/', async (req, res) => {
             updateGameEventData.startTime, updateGameEventData.endTime, updateGameEventData.minimumParticipants,
             updateGameEventData.maximumParticipants);
 
-        
         return res.json({success: true});
     } catch (e) {
         return res.json({success: false, message: e.toString()});

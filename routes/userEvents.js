@@ -21,6 +21,22 @@ router.get('/', async (req, res) => {
     try{
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
+        if (gameEvents) {
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+            };
+            gameEvents.forEach(async event => {
+                event._id = event._id.toString();
+                let startTime = new Date(event.startTime);
+                let endTime = new Date(event.endTime);
+                event.startTime = startTime.toLocaleDateString("en-US", options);
+                event.endTime = endTime.toLocaleDateString("en-US", options);
+            });
+        }
         
         res.render('userEvents/userEvents', {gameEventsList: gameEvents, error_flag: false,
             userDetails: req.session.user, userId: userId});
@@ -78,6 +94,7 @@ router.post('/edit/:id', async(req,res) => {
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
             editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
 // send email 
+
         res.json({success: true});
     } catch (e) {
         res.json({errorEdit: e, success: false});
