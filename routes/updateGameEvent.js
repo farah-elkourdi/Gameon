@@ -64,7 +64,7 @@ router.get('/:id', async (req, res) => {
 
     // let startTimeMin = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let nowStrDate =  new Date().toLocaleDateString('en-CA');
-    console.log(event.description);
+    //console.log(event.description);
     res.render('updateGameEvent/updateGameEvent-Init', {
         minStartDate: nowStrDate, 
         userDetails: req.session.user,
