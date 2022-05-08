@@ -97,6 +97,7 @@ router.post('/edit/:id', async(req,res) => {
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
             editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
 // send email 
+
         res.json({success: true});
     } catch (e) {
         res.json({errorEdit: e, success: false});

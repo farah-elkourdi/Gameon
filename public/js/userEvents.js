@@ -114,9 +114,8 @@
   }
 
   function areValidTimes(startTime, endTime) {
-
+    
     startTime.setHours(startTime.getHours() + 1);
-
 
     if (endTime < startTime) {
       return false;
@@ -212,340 +211,339 @@
       return true;
     }
   }
-
-  function isCoordinator(userId, coordinatorId) {
-    if (userId === coordinatorId) {
-      return true;
-    } else {
-      return false;
-    }
+  function isCoordinator(userId, coordinatorId){
+      if(userId === coordinatorId){
+          return true;
+      } else {
+          return false;
+      }
   }
-
-
+  
   var allEvents = $('#allEvents');
-
-
 
   $('div.errorDivLeave:visible').hide();
   $('div.errorDivCancel:visible').hide();
   $('div.errorDivEdit:visible').hide();
 
+  //Update button
+  $('.userEventsEditForm').bind('click',function (event) {
+    event.preventDefault(); 
+    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+      let userId = $('#userId').attr('class');
+      let status = $(this).find('input[class = "status"]').val();
+      allEvents.children().each(function(){
+        $(`#${this.id} > div.errorDivLeave`).hide();
+        $(`#${this.id} > div.errorDivEdit`).hide();
+        $(`#${this.id} > div.errorDivCancel`).hide();
+      });
+      let errorDiv = $(`#${gameEventId} > div.errorDivCancel`);
+      try {
+        if(!isCoordinator(userId, coordinatorId)){
+          throw "Error: User is NOT the event Coordinator"
+        }
+        if(status.toLowerCase() === 'canceled'.toLowerCase()){
+          throw "Error: Cannot update canceled event";
+        }
+        if(status.toLowerCase() !== 'upcoming'.toLowerCase()){
+          throw "Error: Events that are NOT 'upcoming' cannot be updated";
+        }
+  
+        window.open(`/updateGameEvent/${gameEventId}`, '_self')
+      }
+      catch(e) {
+        errorDiv.empty();
+        errorDiv.html(e);
+        errorDiv.show();
+      }
+      
+  });
+
+
   //Cancel Button on-click Event
-  $('.userEventsCancelForm').bind('click', function (event) {
-    event.preventDefault();
-
-    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-    let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-    let userId = $('#userId').attr('class');
-    // let userId =  $(this).find('input[class = "userId"]').val();
-    
-    let status = $(this).find('input[class = "status"]').val();
-
-    allEvents.children().each(function () {
-      $(`#${this.id} > div.errorDivLeave`).hide();
-      $(`#${this.id} > div.errorDivEdit`).hide();
-      $(`#${this.id} > div.errorDivCancel`).hide();
-    });
-
-
-    var requestConfig = {
-      method: 'GET',
-      url: `/userEvents/cancel/${gameEventId}`
-    }
-
-    let checkId = $(`#${gameEventId} > div `);
-
-    let errorDiv = $(`#${gameEventId} > div.errorDivCancel`);
-
-    try {
-      if (!isCoordinator(userId, coordinatorId)) {
-        throw "Error: User is NOT the event Coordinator"
-      }
-      if (status === 'canceled') {
-        throw "Error: Event is already Canceled";
-      }
-      if (status !== 'upcoming') {
-        throw "Error: Events that are NOT 'upcoming' cannot be Canceled";
-      }
-      $.ajax(requestConfig).then(function (responseMessage) {
-        console.log(responseMessage);
-        if (responseMessage) {
-          if (responseMessage.success) {
-            errorDiv.empty();
-            errorDiv.hide();
-            //    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
-            window.open("/userEvents", '_self');
-          } else if (!responseMessage.success) {
-            errorDiv.empty();
-            errorDiv.html(responseMessage.errorCancel);
-            errorDiv.show();
-            //  console.log("Failed changing status to 'Canceled' for gameEvent");
-          }
-        }
+  $('.userEventsCancelForm').bind('click',function (event) {
+      event.preventDefault(); 
+      
+      let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+      let userId = $('#userId').attr('class');
+      // let userId =  $(this).find('input[class = "userId"]').val();
+      let status = $(this).find('input[class = "status"]').val();
+      allEvents.children().each(function(){
+        $(`#${this.id} > div.errorDivLeave`).hide();
+        $(`#${this.id} > div.errorDivEdit`).hide();
+        $(`#${this.id} > div.errorDivCancel`).hide();
       });
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
-      errorDiv.show();
+     
+      var requestConfig = {
+        method: 'GET',
+        url: `/userEvents/cancel/${gameEventId}`
+      }
+      let errorDiv = $(`#${gameEventId} > div.errorDivCancel`);
+      try{
+        if(!isCoordinator(userId, coordinatorId)){
+          throw "Error: User is NOT the event Coordinator"
+        }
+        if(status.toLowerCase() === 'canceled'.toLowerCase()){
+          throw "Error: Event is already Canceled";
+        }
+        if(status.toLowerCase() !== 'upcoming'.toLowerCase()){
+          throw "Error: Events that are NOT 'upcoming' cannot be Canceled";
+        }
+        $.ajax(requestConfig).then(function(responseMessage){
+          //console.log(responseMessage);
+          if(responseMessage){
+              if(responseMessage.success){
+                  errorDiv.empty();
+                  errorDiv.hide();
+              //    console.log("SUCCESS changing status to 'Canceled' for gameEvent");
+                  window.open("/userEvents", '_self');
+              } else if (!responseMessage.success){
+                  errorDiv.empty();
+                  errorDiv.html(responseMessage.errorCancel);
+                  errorDiv.show();
+                //  console.log("Failed changing status to 'Canceled' for gameEvent");
+              }
+          }
+        });
+      } catch (e){
+        errorDiv.empty();
+        errorDiv.html(e);
+        errorDiv.show();
       //  console.log("Failed changing status to 'Canceled' for gameEvent");
-    }
-
-  });
-
-  $(document).ready(function () {
-
-  });
-
-
+      }
+   
+});
   //leave button on-click event
-  $('.userEventsLeaveForm').bind('click', function (event) {
-    event.preventDefault();
-
-    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-    let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-    let userId = $('#userId').attr('class');
-    let status = $(this).find('input[class = "status"]').val();
-
-    allEvents.children().each(function () {
-      $(`#${this.id} > div.errorDivLeave`).hide();
-      $(`#${this.id} > div.errorDivEdit`).hide();
-      $(`#${this.id} > div.errorDivCancel`).hide();
-    })
-
-    var requestConfig = {
-      method: 'GET',
-      url: `/userEvents/leave/${gameEventId}`
-    }
-
-    let errorDiv = $(`#${gameEventId} > div.errorDivLeave`);
-
-
-    try {
-      if (isCoordinator(userId, coordinatorId)) {
-        throw "User cannot leave his/her own event"
+  $('.userEventsLeaveForm').bind('click',function (event) {
+      event.preventDefault(); 
+      let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+      let userId = $('#userId').attr('class');
+      // let userId =  $(this).find('input[class = "userId"]').val();
+      let status = $(this).find('input[class = "status"]').val();
+      allEvents.children().each(function(){
+        $(`#${this.id} > div.errorDivLeave`).hide();
+        $(`#${this.id} > div.errorDivEdit`).hide();
+        $(`#${this.id} > div.errorDivCancel`).hide();
+      })
+      var requestConfig = {
+          method: 'GET',
+          url: `/userEvents/leave/${gameEventId}`
       }
-      if (status !== 'upcoming') {
-        throw "User cannot leave an Old or Canceled gameEvent";
-      }
-
-      $.ajax(requestConfig).then(function (responseMessage) {
-        //  console.log(responseMessage);
-        if (responseMessage) {
-          if (responseMessage.success) {
-            errorDiv.empty();
-            errorDiv.hide();
-            //     console.log("SUCCESS removing user from gameEvents");
-            window.open("/userEvents", '_self');
-          } else if (!responseMessage.success) {
-            errorDiv.empty();
-            errorDiv.html(responseMessage.errorLeave);
-            errorDiv.show();
-            //  console.log("Failed to leave gameEvent");
-          }
+      let errorDiv = $(`#${gameEventId} > div.errorDivLeave`);
+      try{
+        if(isCoordinator(userId, coordinatorId)){
+          throw "User cannot leave his/her own event"
         }
-      });
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
-      errorDiv.show();
+        if(status.toLowerCase() !== 'upcoming'.toLowerCase()){
+          throw "User cannot leave an Old or Canceled gameEvent";
+        }
+        
+        $.ajax(requestConfig).then(function(responseMessage){
+        //  console.log(responseMessage);
+          if(responseMessage){
+              if(responseMessage.success){
+                  errorDiv.empty();
+                  errorDiv.hide();
+             //     console.log("SUCCESS removing user from gameEvents");
+                  window.open("/userEvents", '_self');
+              } else if (!responseMessage.success){
+                  errorDiv.empty();
+                  errorDiv.html(responseMessage.errorLeave);
+                  errorDiv.show();
+                //  console.log("Failed to leave gameEvent");
+              }
+          }
+        });
+      } catch (e){
+        errorDiv.empty();
+        errorDiv.html(e);
+        errorDiv.show();
       //  console.log("Failed to leave gameEvent");
-    }
+      }
   });
-
   // Executes when user hits the submit button while editing a gameEvent
-  var editSubmitEventHandler = function (coordinatorId, gameEventId) {
+  var editSubmitEventHandler = function (coordinatorId, gameEventId){
     let errorDiv = $(`#${gameEventId} > div.partialErrorDivEdit`);
     let now = new Date();
-    now.setHours(now.getHours() + 1);
-    let startTimeMin = now.toLocaleTimeString([], {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
+    now.setHours(now.getHours()+ 1);
+    let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
     var title = $('#title').val(),
-      sportCategory = $('#sportCategory').val(),
-      description = $('#description').val(),
-      // area = $('#area').val(),
-      address = $('#address').val(),
-      // longitude = $('#longitude').val(),
-      // latitude = $('#latitude').val(),
-      date = $('#date').val(),
-      startTime = $('#startTime').val(),
-      endTime = $('#endTime').val(),
-      minParticipants = $('#minParticipants').val(),
-      maxParticipants = $('#maxParticipants').val();
-    $('#sportCategory').find('option:eq(0)').prop('selected', true);
-
+        sportCategory = $('#sportCategory').val(),
+        description = $('#description').val(),
+        // area = $('#area').val(),
+        address = $('#address').val(),
+        // longitude = $('#longitude').val(),
+        // latitude = $('#latitude').val(),
+        date = $('#date').val(),
+        startTime = $('#startTime').val(),
+        endTime = $('#endTime').val(),
+        minParticipants = $('#minParticipants').val(),
+        maxParticipants = $('#maxParticipants').val();
+        $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
-
     try {
-      title = checkString(title, 'title');
-      sportCategory = checkString(sportCategory, 'sportCategory');
-      description = checkString(description, 'description');
-      //  area = checkString(area, 'area');
-      address = checkString(address, 'address');
-
-      /* NEED to check validity for address, longitude, and latitude */
-
-      date = checkString(date, 'date');
-      date = dateIsValid(date, 'date');
-      startTime = checkTime(startTime, 'startTime');
-      endTime = checkTime(endTime, 'endTime');
-      if (startTime < startTimeMin) {
-        throw `Events can only be created for 1 hour after current time`;
-      }
-      if (endTime > "22:00")
-        throw `Events should end before 10 pm`;
-      let startTime_date = convertStringToDate(date, startTime);
-      let endTime_date = convertStringToDate(date, endTime);
-      startTime_date = checkDate(startTime, 'startTime');
-      endTime_date = checkDate(endTime, 'endTime');
-
-      minParticipants = checkNum(minParticipants, 'minParticipants');
-      maxParticipants = checkNum(maxParticipants, 'maxParticipants');
-      if (!areValidTimes(startTime_date, endTime_date)) {
-        throw "Error: endTime must be at least an hour after startTime";
-      }
-      if (!validMinParticipantLimit(sportCategory, minParticipants)) {
-        throw `Error: invalid minParticipants for ${sportCategory}`;
-      }
-      if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
-        throw `Error: invalid maxParticipants for ${sportCategory}`;
-      }
-      if (!validNumParticipants(minParticipants, maxParticipants)) {
-        throw "Error: minParticipants is greater than maxParticipants";
-      }
-
-      var requestConfig = {
-        method: 'POST',
-        url: `/userEvents/edit/${gameEventId}`,
-        contentType: 'application/json',
-        data: JSON.stringify({
-          coordinatorId: coordinatorId,
-          title: title,
-          sportCategory: sportCategory,
-          description: description,
-          //  area: area,
-          address: address,
-          // longitude: longitude,
-          // latitude: latitude,
-          date: date,
-          startTime: startTime,
-          endTime: endTime,
-          minParticipants: minParticipants,
-          maxParticipants: maxParticipants
-        })
-      }
-
-      $.ajax(requestConfig).then(function (response) {
-        if (response) {
-          if (response.success) {
-            errorDiv.empty();
-            errorDiv.hide();
-            // console.log("SUCCESS editing gameEvent in Database");
-            window.open("/userEvents", '_self');
-          } else if (!response.success) {
-            errorDiv.empty();
-            errorDiv.show()
-            //   console.log("Failed editing gameEvent in Database");
-            errorDiv.html(response.errorEdit);
-          }
+        title = checkString(title, 'title');
+        sportCategory = checkString(sportCategory, 'sportCategory');
+        description = checkString(description, 'description');
+        //  area = checkString(area, 'area');
+        address = checkString(address, 'address');
+  
+        /* NEED to check validity for address, longitude, and latitude */
+  
+        date = checkString(date, 'date');
+        date = dateIsValid(date, 'date');
+        startTime = checkTime(startTime, 'startTime');
+        endTime = checkTime(endTime, 'endTime');
+        if (startTime < startTimeMin){
+          throw `Events can only be created for 1 hour after current time`;
         }
-      });
-
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
-      errorDiv.show();
-      $('#title').val(title);
-      $('#sportCategory').val(sportCategory);
-      $('#description').html(description);
-      // $('#area').val(area);
-      $('#address').val(address);
-      // $('#longitude').val(longitude);
-      // $('#latitude').val(latitude);
-      $('#date').val(date);
-      $('#startTime').val(startTime);
-      $('#endTime').val(endTime);
-      $('#minParticipants').val(minParticipants);
-      $('#maxParticipants').val(maxParticipants);
-      $('#sportCategory').find('option:eq(0)').prop('selected', true);
-      //     console.log("Failed editing gameEvent in Database");
-      //    console.log(e);
-    }
+        if (endTime > "22:00")
+          throw `Events should end before 10 pm`;
+        let startTime_date = convertStringToDate(date, startTime);
+        let endTime_date = convertStringToDate(date, endTime);
+        startTime_date = checkDate(startTime, 'startTime');
+        endTime_date = checkDate(endTime, 'endTime');
+  
+        minParticipants = checkNum(minParticipants, 'minParticipants');
+        maxParticipants = checkNum(maxParticipants, 'maxParticipants');
+        if (!areValidTimes(startTime_date, endTime_date)) {
+          throw "Error: endTime must be at least an hour after startTime";
+        }
+        if (!validMinParticipantLimit(sportCategory, minParticipants)) {
+          throw `Error: invalid minParticipants for ${sportCategory}`;
+        }
+        if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
+          throw `Error: invalid maxParticipants for ${sportCategory}`;
+        }
+        if (!validNumParticipants(minParticipants, maxParticipants)) {
+          throw "Error: minParticipants is greater than maxParticipants";
+        }
+        
+        var requestConfig = {
+            method: 'POST',
+            url: `/userEvents/edit/${gameEventId}`, 
+            contentType: 'application/json',
+            data: JSON.stringify({
+                coordinatorId: coordinatorId,
+                title: title,
+                sportCategory: sportCategory,
+                description: description,
+                //  area: area,
+                address: address,
+                // longitude: longitude,
+                // latitude: latitude,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                minParticipants: minParticipants,
+                maxParticipants: maxParticipants
+            })  
+        }
+  
+        $.ajax(requestConfig).then(function(response) {
+            if(response){
+              if(response.success){
+                errorDiv.empty();
+                errorDiv.hide();
+               // console.log("SUCCESS editing gameEvent in Database");
+                window.open("/userEvents", '_self');
+              } else if(!response.success){
+                errorDiv.empty();
+                errorDiv.show()
+             //   console.log("Failed editing gameEvent in Database");
+                errorDiv.html(response.errorEdit);
+              }
+            }
+        });
+      } catch (e) {
+        errorDiv.empty();
+        errorDiv.html(e);
+        errorDiv.show();
+        $('#title').val(title);
+        $('#sportCategory').val(sportCategory);
+        $('#description').html(description);
+        // $('#area').val(area);
+        $('#address').val(address);
+        // $('#longitude').val(longitude);
+        // $('#latitude').val(latitude);
+        $('#date').val(date);
+        $('#startTime').val(startTime);
+        $('#endTime').val(endTime);
+        $('#minParticipants').val(minParticipants);
+        $('#maxParticipants').val(maxParticipants);
+        $('#sportCategory').find('option:eq(0)').prop('selected', true);
+   //     console.log("Failed editing gameEvent in Database");
+    //    console.log(e);
+      }
   }
-
   // executes when user hits the cancel button while editing
-  var editCancelEventHandler = function (recoverHTML, gameEventId) {
+  var editCancelEventHandler = function (recoverHTML, gameEventId){
     $(`#${gameEventId}`).replaceWith(recoverHTML);
   }
-
   //different results depending on pressing the "submit" or "cancel" button
-  function bindEventsToEditButton(editForm, recoverHTML, coordinatorId, gameEventId) {
-    editForm.find('.submitEditButton').on('click', function (event) {
-      event.preventDefault();
-      editSubmitEventHandler(coordinatorId, gameEventId);
-    });
-
-    editForm.find('.cancelEditButton').on('click', function (event) {
-      event.preventDefault();
-      editCancelEventHandler(recoverHTML, gameEventId);
-    });
-  };
-
-  //Edit button on-click events
-  $('.userEventsEditForm').on('click', function (event) {
-    event.preventDefault();
-    let gameEventId = $(this).find('input[class = "gameEventId"]').val();
-    let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
-    let userId = $('#userId').attr('class');
-
-    // let userId =  $(this).find('input[class = "userId"]').val();
-    let status = $(this).find('input[class = "status"]').val();
-
-    //   console.log(gameEventId);
-    allEvents.children().each(function () {
-
-      $(`#${this.id} > div.errorDivLeave`).hide();
-      $(`#${this.id} > div.errorDivEdit`).hide();
-      $(`#${this.id} > div.errorDivCancel`).hide();
-    })
-
-
-    let errorDiv = $(`#${gameEventId} > div.errorDivEdit`);
-    let prevHtml = $('<div>').append($(`#${gameEventId}`).clone()).html();
-
-    try {
-      if (!isCoordinator(userId, coordinatorId)) {
-        throw "Error: user is NOT the event coordinator!"
-      }
-      if (status !== 'upcoming') {
-        throw "User cannot edit an Old or Canceled gameEvent";
-      }
-      var requestConfig = {
-        method: 'POST',
-        url: `/userEvents/partialEditForm.html`,
-        contentType: 'application/json',
-        data: JSON.stringify({
-          gameEventId: gameEventId,
-          coordinatorId: coordinatorId
-        })
-      }
-
-      $.ajax(requestConfig).then(function (responseMessage) {
-        var editForm = $(responseMessage);
-        bindEventsToEditButton(editForm, prevHtml, coordinatorId, gameEventId);
-        $(`#${gameEventId}`).replaceWith(editForm);
+  function bindEventsToEditButton (editForm, recoverHTML, coordinatorId, gameEventId){
+      editForm.find('.submitEditButton').on('click', function(event){
+        event.preventDefault();
+        editSubmitEventHandler(coordinatorId, gameEventId);
       });
-    } catch (e) {
-      errorDiv.empty();
-      errorDiv.html(e);
-      errorDiv.show();
-    }
-
-
-
+     
+      editForm.find('.cancelEditButton').on('click',  function(event){
+        event.preventDefault();
+        editCancelEventHandler(recoverHTML, gameEventId);
+      });
+  };
+  
+  /*
+  //Edit button on-click events
+  $('.userEventsEditForm').on('click', function(event) {
+      event.preventDefault(); 
+      let gameEventId = $(this).find('input[class = "gameEventId"]').val();
+      let coordinatorId = $(this).find('input[class = "coordinatorId"]').val();
+      let userId = $('#userId').attr('class');
+   
+      // let userId =  $(this).find('input[class = "userId"]').val();
+      let status = $(this).find('input[class = "status"]').val();
+   //   console.log(gameEventId);
+      allEvents.children().each(function(){
+        
+        $(`#${this.id} > div.errorDivLeave`).hide();
+        $(`#${this.id} > div.errorDivEdit`).hide();
+        $(`#${this.id} > div.errorDivCancel`).hide();
+      })
+      
+      let errorDiv = $(`#${gameEventId} > div.errorDivEdit`);
+      let prevHtml =  $('<div>').append($(`#${gameEventId}`).clone()).html();
+      
+      try {
+          if(!isCoordinator(userId, coordinatorId)){
+              throw "Error: user is NOT the event coordinator!"
+          }
+          if(status !== 'upcoming'){
+            throw "User cannot edit an Old or Canceled gameEvent";
+          }
+          var requestConfig = {
+              method: 'get',
+              url: '/updateGameEvent', 
+              contentType: 'application/json',
+              data: JSON.stringify({
+                  gameEventId: gameEventId,
+                  coordinatorId: coordinatorId
+              })
+          }
+          $.ajax(requestConfig).then(function (responseMessage) {
+              var editForm = $(responseMessage);
+              bindEventsToEditButton(editForm, prevHtml, coordinatorId, gameEventId);
+              $(`#${gameEventId}`).replaceWith(editForm);
+          });
+      } catch (e) {
+          errorDiv.empty();
+          errorDiv.html(e);
+          errorDiv.show();
+      }
+      
+     
   });
-
+  */
 })(window.jQuery);
