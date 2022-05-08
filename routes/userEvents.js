@@ -97,6 +97,20 @@ router.post('/edit/:id', async(req,res) => {
             editGameEventData.latiutude, editGameEventData.longitude, editGameEventData.startTime, editGameEventData.endTime,
             editGameEventData.minimumParticipants, editGameEventData.maximumParticipants);
 // send email 
+
+let usersid= [];
+let event = await gameEvent.getGameEvent(gameEventId);
+event.participants.forEach( (user) => {
+  usersid.push(user.toString())
+});
+var title = event.title
+var emails = [];
+
+await usersid.forEach( async (users) => {
+     let x = await usersData.getUser(users);
+    // emails.push(x.email);
+     await contactUs.emailSetup2( title, "edit", x.email );
+});
         res.json({success: true});
     } catch (e) {
         res.json({errorEdit: e, success: false});
