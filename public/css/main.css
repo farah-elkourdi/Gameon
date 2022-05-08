@@ -66,6 +66,15 @@ a.adjust-contrast1 {
   border-color: #0072ee;
 }
 
+.bg-light {
+  background-color: #f8f9fa !important;
+  color: #727373 !important;
+}
+
+.bg-light .nav-link {
+  color: #727373 !important;
+}
+
 .btn.btn-secondary {
   background-color: #858c92;
   border-color: #858c92;
