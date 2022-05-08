@@ -10,7 +10,14 @@ const check = require('../task/validation');
 
 /* returns gameEvent by gameEvent Id */
 async function getGameEvent(id) {
-    id = check.checkId(id);
+    if(arguments.length != 1) throw "getGameEvent: pass 1 argument.";
+    if(!id) throw 'getGameEvent: supply id';
+    try{
+        id = check.checkId(id);
+    }
+    catch(e){
+        throw 'getGameEvent: ' + e.toString();
+    }
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventCollection.findOne({
         _id: ObjectId(id)
@@ -31,6 +38,15 @@ async function getGameEvent(id) {
 }
 
 async function getGameEventbyArea(area) {
+    if(arguments.length != 1) throw "getGameEventbyArea: pass 1 argument.";
+    if(!area) throw 'getGameEventbyArea: supply area';
+    try{
+        area = check.checkString(area, 'area');
+    }catch(e){
+        throw 'getGameEventbyArea: ' + e.toString();
+    }
+    if(!check.checkValidationDlArea(area)) throw 'getGameEventbyArea: invalid area';
+
     const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventCollection.aggregate([{
@@ -78,7 +94,7 @@ async function getGameEventbyArea(area) {
                         area: area
                     },
                     {
-                    status: "upcoming"
+                        status: /^upcoming$/i
                     },
                     {
                         startTime: {
@@ -96,6 +112,17 @@ async function getGameEventbyArea(area) {
 }
 
 async function getGameEventbySearchArea(searchText, area) {
+    if(arguments.length != 2) throw "getGameEventbySearchArea: pass 2 arguments.";
+    if(!searchText) throw 'getGameEventbySearchArea: supply searchText.';
+    if(!area) throw 'getGameEventbySearchArea: supply area'
+    try{
+        area = check.checkString(area, 'area');
+        searchText = check.checkString(searchText, 'searchText');
+    }catch(e){
+        throw 'getGameEventbySearchArea: ' + e.toString();
+    }
+    if(!check.checkValidationDlArea(area)) throw 'getGameEventbySearchArea: invalid area';
+
     const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
     const gameEvent = await gameEventCollection.aggregate([{
@@ -158,8 +185,8 @@ async function getGameEventbySearchArea(searchText, area) {
                         area: area
                     },
                     {
-                        status: "upcoming"
-                        },
+                        status: /^upcoming$/i
+                    },
                     {
                         startTime: {
                             $gte: now
@@ -175,13 +202,25 @@ async function getGameEventbySearchArea(searchText, area) {
 }
 
 async function getGameEventbyAreaLimit(area, limitCount) {
+    
+    if(arguments.length != 2) throw "getGameEventbyAreaLimit: pass 2 arguments.";
+    if(!area) throw 'getGameEventbyAreaLimit: supply area.';
+    if(!limitCount) throw 'getGameEventbyAreaLimit: supply limitCount.';
+    try{
+        area = check.checkString(area, 'area');
+        limitCount = check.checkString(limitCount, 'limitCount');
+    }catch(e){
+        throw 'getGameEventbyAreaLimit: ' + e.toString();
+    }
+
     const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
     const eventList = (await gameEventCollection.find({
         area: area,
         startTime: {
             $gte: now
-        }
+        },
+        status: /^upcoming$/i
     }).limit(limitCount).sort({
         startTime: 1
     })).toArray();
@@ -190,13 +229,14 @@ async function getGameEventbyAreaLimit(area, limitCount) {
 }
 
 async function getGameEventLandingPage() {
+    if(arguments.length != 0) throw 'getGameEventLandingPage: supply 0 arguments.';
     const now = new Date(Date.now());
     const gameEventCollection = await gameEvents();
     const eventList = (await gameEventCollection.find({
         startTime: {
             $gte: now
         },
-        status: "upcoming"
+        status: /^upcoming$/i
     }).limit(10).sort({
         startTime: 1
     })).toArray();
@@ -212,45 +252,61 @@ async function getGameEventLandingPage() {
 async function create(userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-
-    userId = check.checkId(userId);
+    if(arguments.length != 13) throw 'create: supply 13 arguments.';
+    if(!userId) throw 'create: supply userId';
+    if(!title) throw 'create: supply title'; 
+    if(!status) throw 'create: supply status';
+    if(!sportCategory) throw 'create: supply sportCategory';
+    if(!description) throw 'create: supply description';
+    if(!area) throw 'create: supply area';
+    if(!address) throw 'create: supply address';
+    if(!latitude) throw 'create: supply latitude';
+    if(!longitude) throw 'create: supply longitude';
+    if(!startTime) throw 'create: supply startTime';
+    if(!endTime) throw 'create: supply endTime';
+    if(!minimumParticipants) throw 'create: supply minimumParticipants';
+    if(!maximumParticipants) throw 'create: supply maximumParticipants';
+    try{
+        userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
     sportCategory = check.checkString(sportCategory, 'sportCategory');
     description = check.checkString(description, 'description');
     area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
-    // area = area.userArea;
-    /* NEED to check if valid address */
-
-    if (!check.checkCoordinates(longitude, latitude)) {
-        throw "Error: coordinates are NOT valid"
-    }
-
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
+    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
+    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
+    // area = area.userArea;
+    /* NEED to check if valid address */
+    }catch(e){
+        throw 'create: ' + e.toString();
+    }
+    
+    if (!check.checkCoordinates(longitude, latitude)) {
+        throw "Error: Coordinates are NOT valid"
+    }
 
     if (!check.areValidTimes(startTime, endTime)) {
-        throw "Error: endTime must be at least 1 hour after startTime"
+        throw "Error: EndTime must be at least 1 hour after startTime"
     }
 
-    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
     if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
-        throw "Error: minimum participation limit is not valid"
+        throw "Error: Minimum participation limit is not valid"
     }
-    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
     if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
-        throw "Error: maximum participation limit is not valid"
+        throw "Error: Maximum participation limit is not valid"
     }
     if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
-        throw "Error: minimum participants is greater than maximum participants"
+        throw "Error: Minimum participants is greater than maximum participants"
     }
 
     if (endTime > "22:00")
     throw `No event stays after 10 pm `
 
     if (minimumParticipants < 2 || maximumParticipants > 30 )
-    throw `min number of Participants should be 2 and maximum 30 `
+    throw `Min number of participants should be 2 and maximum 30 `
 
     //check if the organizer has a time conflict
     let conflict;
@@ -287,7 +343,7 @@ async function create(userId, title, status, sportCategory, description, area, a
 
     const insert = await gameEventCollection.insertOne(newGameEvent);
     if (!insert.acknowledged || !insert.insertedId) {
-        throw "Error: could not add gameEvent";
+        throw "Error: Could not add gameEvent";
     }
     newGameEvent._id = insert.insertedId;
     return newGameEvent;
@@ -296,7 +352,24 @@ async function create(userId, title, status, sportCategory, description, area, a
 async function update(gameEventId, userId, title, status, sportCategory, description, area, address,
     latitude, longitude, startTime, endTime, minimumParticipants,
     maximumParticipants) {
-    gameEventId = check.checkId(gameEventId);
+        if(arguments.length != 14) throw 'update: supply 14 arguments.';
+        if(!gameEventId) throw 'update: supply gameEventId';
+        if(!userId) throw 'update: supply userId';
+        if(!title) throw 'update: supply title'; 
+        if(!status) throw 'update: supply status';
+        if(!sportCategory) throw 'update: supply sportCategory';
+        if(!description) throw 'update: supply description';
+        if(!area) throw 'update: supply area';
+        if(!address) throw 'update: supply address';
+        if(!latitude) throw 'update: supply latitude';
+        if(!longitude) throw 'update: supply longitude';
+        if(!startTime) throw 'update: supply startTime';
+        if(!endTime) throw 'update: supply endTime';
+        if(!minimumParticipants) throw 'update: supply minimumParticipants';
+        if(!maximumParticipants) throw 'update: supply maximumParticipants';
+
+        try{
+        gameEventId = check.checkId(gameEventId);
     userId = check.checkId(userId);
     title = check.checkString(title, 'title');
     status = check.checkString(status, 'status');
@@ -304,37 +377,50 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
     description = check.checkString(description, 'description');
     area = check.checkString(area, 'area');
     address = check.checkString(address, 'address');
-    // area = area.userArea;
-    /* NEED to check if valid address */
-
-    if (!check.checkCoordinates(longitude, latitude)) {
-        throw "Error: coordinates are NOT valid"
-    }
-
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
+    // area = area.userArea;
+    /* NEED to check if valid address */
+    
+    /* get maximum participants from existing event, maximum participants cannot be lowered */
+    let existingEvent;
+    try{
+        existingEvent = await getGameEvent(gameEventId);
+    }
+    catch(e){
+        throw e.toString();
+    }
+    if(existingEvent.status != 'upcoming') throw 'Error: can only edit upcoming events';
+    if(existingEvent.maximumParticipants < maximumParticipants){
+        maximumParticipants = existingEvent.maximumParticipants;
+    }
+    
+    if (!check.checkCoordinates(longitude, latitude)) {
+        throw "Error: Coordinates are NOT valid"
+    }
+
 
     if (!check.areValidTimes(startTime, endTime)) {
-        throw "Error: endTime must be at least 1 hour after startTime"
+        throw "Error: EndTime must be at least 1 hour after startTime"
     }
 
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
     if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
-        throw "Error: minimum participation limit is not valid"
+        throw "Error: Minimum participation limit is not valid"
     }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
     if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
-        throw "Error: maximum participation limit is not valid"
+        throw "Error: Maximum participation limit is not valid"
     }
     if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
-        throw "Error: minimum participants is greater than maximum participants"
+        throw "Error: Minimum participants is greater than maximum participants"
     }
 
     if (endTime > "22:00")
     throw `No event stays after 10 pm `
 
     if (minimumParticipants < 2 || maximumParticipants > 30 )
-    throw `min number of Participants should be 2 and maximum 30 `
+    throw `Min number of Participants should be 2 and maximum 30 `
 
     //check if the organizer has a time conflict
     let conflict;
@@ -348,6 +434,11 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
             if(conflict.conflicted){
                 throw 'You are already registered for an event at this time.';
             }
+    }
+    catch(e){
+        throw e.toString();
+    }
+    
     let spots = maximumParticipants - minimumParticipants;
     // return spots;
     const gameEventCollection = await gameEvents();
@@ -384,6 +475,13 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
 }
 
 async function getEventOwnerFirstName(id) {
+    if(!id) throw 'getEventOwnerFirstName: pass id.';
+    try{
+        id = check.checkId(id);
+    }
+    catch(e){
+        throw 'getEventOwnerFirstName: ' + e.toString();
+    }
     const gameEventCollection = await gameEvents();
     const event = await gameEventCollection.findOne({
         _id: ObjectId(id)
@@ -400,6 +498,13 @@ async function getEventOwnerFirstName(id) {
 }
 
 async function getEventOwnerLastName(id) {
+    if(!id) throw 'getEventOwnerLastName: pass id.';
+    try{
+        id = check.checkId(id);
+    }
+    catch(e){
+        throw 'getEventOwnerLastName: ' + e.toString();
+    }
     const gameEventCollection = await gameEvents();
     const event = await gameEventCollection.findOne({
         _id: ObjectId(id)

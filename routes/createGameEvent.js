@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     now.setHours(now.getHours()+ 1);
     let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
     
-    let startTimeMinDate = new Date(now+3600);
+    let startTimeMinDate = new Date(now);
 
 
     try {
