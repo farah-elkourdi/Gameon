@@ -40,25 +40,25 @@ router.post('/', async (req, res) => {
         userId = check.checkId(userId);
         if(!userId) throw 'no user id';
         if(!createGameEventData) throw 'Missing request body';
-        createGameEventData.title = xss(createGameEventData.title);
+        createGameEventData.title = createGameEventData.title;
         if(!createGameEventData.title) throw 'Missing title';
         createGameEventData.title = check.checkString(createGameEventData.title, 'title');
         createGameEventData.status = "upcoming";
-        createGameEventData.sportCategory = xss(createGameEventData.sportCategory);
+        createGameEventData.sportCategory = createGameEventData.sportCategory;
         if(!createGameEventData.sportCategory) throw 'Missing sportCategory';
         createGameEventData.sportCategory = check.checkString(createGameEventData.sportCategory, 'sportCategory');
-        createGameEventData.description = xss(createGameEventData.description);
+        createGameEventData.description = createGameEventData.description;
         if(!createGameEventData.description) throw 'Missing description';
         createGameEventData.description = check.checkString(createGameEventData.description, 'description');
-        createGameEventData.address = xss(createGameEventData.address);
+        createGameEventData.address = createGameEventData.address;
         if(!createGameEventData.address) throw 'updateGameEvent: Missing address';
         createGameEventData.address = check.checkString(createGameEventData.address, 'address');  
 
        // createGameEventData.area = check.checkString(createGameEventData.area, 'area');
-       createGameEventData.latitude = xss(createGameEventData.latitude);
+       createGameEventData.latitude = createGameEventData.latitude;
        if(!createGameEventData.latitude) throw 'updateGameEvent: Missing latitude';
         createGameEventData.latitude = createGameEventData.latitude;
-        createGameEventData.longitude = xss(createGameEventData.longitude);
+        createGameEventData.longitude = createGameEventData.longitude;
         if(!createGameEventData.longitude) throw 'updateGameEvent: Missing longitude';
         createGameEventData.longitude = createGameEventData.longitude;
 
