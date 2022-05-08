@@ -73,7 +73,10 @@ router.post('/', async (req, res) => {
         createGameEventData.minimumParticipants = check.checkNum(createGameEventData.minParticipants, 'minimumParticipants');
         createGameEventData.maximumParticipants = check.checkNum(createGameEventData.maxParticipants, 'maximumParticipants');
         if (createGameEventData.minimumParticipants < 2 || createGameEventData.maximumParticipants > 30 ){
-            throw `min number of Participants should be 2 and maximum 30 `;
+            throw `Min number of Participants should be 2 and maximum 30 `;
+        }
+        if (createGameEventData.minimumParticipants === createGameEventData.maximumParticipants ){
+            throw `Min participants cannot be same as max participants `;
         }
 
 //         let now = moment().format('YYYY-MM-DD');

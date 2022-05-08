@@ -16,11 +16,9 @@
     var theMarker = {};
     //$('#street').on("keyup", function () {
     $('#street').on("keydown , keyup , change", function () {
-        $("#signupSubmit").prop("disabled", true);
         loadmap();
     });
     $("#area").change(function (e) {
-        $("#signupSubmit").prop("disabled", true);
         loadmap();
     });
 
@@ -39,8 +37,8 @@
         };
 
         $.ajax(requestConfig).then(function (responseMessage) {
-                $("#signupSubmit").prop("disabled", false);
                 if (responseMessage.message != "Error") {
+                    $("#signupSubmit").prop("disabled", false);
                     if (street.trim() == "") {
                         if (theMarker != undefined) {
                             map.removeLayer(theMarker);
@@ -56,6 +54,7 @@
                         $('#labelStreet').attr('lon', responseMessage.message.lon);
                     }
                 } else {
+                    $("#signupSubmit").prop("disabled", true);
                     if (theMarker != undefined) {
                         map.removeLayer(theMarker);
                     };

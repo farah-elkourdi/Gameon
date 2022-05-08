@@ -4,9 +4,10 @@ const data = require('../data');
 const check = require('../task/validation');
 const geocode = require('../public/js/geocode');
 const contactUs = require('../data/contactus');
+const { userEvents } = require('../data');
 //const data = require('../data');
 const gameEvent = data.gameEvent;
-
+const usersData = require('../data/users');
 // Global variable createGameEventData
 var editGameEventData;
 
@@ -20,6 +21,22 @@ router.get('/', async (req, res) => {
     try{
         userId = check.checkId(userId);
         let gameEvents = await data.userEvents.getAllGameEvents(userId);
+        if (gameEvents) {
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+            };
+            gameEvents.forEach(async event => {
+                event._id = event._id.toString();
+                let startTime = new Date(event.startTime);
+                let endTime = new Date(event.endTime);
+                event.startTime = startTime.toLocaleDateString("en-US", options);
+                event.endTime = endTime.toLocaleDateString("en-US", options);
+            });
+        }
         
         res.render('userEvents/userEvents', {gameEventsList: gameEvents, error_flag: false,
             userDetails: req.session.user, userId: userId});
@@ -127,17 +144,28 @@ router.get('/cancel/:id', async(req,res) =>{
         userId = check.checkId(userId);
         let retval = await data.userEvents.cancelEvent(userId, gameEventId);
         if(retval.canceled === true){
-            res.json({userId: userId, success: true});
             // send email
-        //     let usersemail= [];
-        //   let event = await gameEvent.getGameEvent(ID);
-        //   event.participants.forEach( (user) => {
-        //     usersid.push(user);
-      //  });
-    //        var title = event.title
-
-  //  await contactUs.emailSetup2( title, "Cancel" ,);
+            let usersid= [];
+          let event = await gameEvent.getGameEvent(gameEventId);
+          event.participants.forEach( (user) => {
+            usersid.push(user.toString())
             
+       });
+       var title = event.title
+var emails = [];
+       
+await usersid.forEach( async (users) => {
+            let x = await usersData.getUser(users);
+           // emails.push(x.email);
+            await contactUs.emailSetup2( title, "Cancel", x.email );
+       });
+           
+    //    await emails.forEach( async (users) => {
+    //        let x = 9 ;
+    // });
+   //await contactUs.emailSetup2( title, "Cancel" );
+            
+   res.json({userId: userId, success: true});
         } 
     } catch (e){
         return res.json({userId: userId, success: false, errorCancel: e});

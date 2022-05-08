@@ -11,6 +11,7 @@
         </div>
     </nav>
     <div class="row pt-3">
+        {{#if gameEvents}}
         <div class="col-md-7 event-list">
             <ul id="default-map" class="list-group list-group-flush border-bottom scrollarea">
                 {{#each gameEvents}}
@@ -79,6 +80,11 @@
         <div class="col-md-5">
             <div id="map"></div>
         </div>
+        {{else}}
+        <div class="col-md-12 event-list-noevent text-center pt-5 pb-5">
+            There are no upcoming events near you
+        </div>
+        {{/if}}
     </div>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
