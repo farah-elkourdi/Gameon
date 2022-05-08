@@ -28,6 +28,17 @@ router.get('/profile', async (req, res) => {
 
 router.get('/publicprofile', async (req, res) => {
   let topuser = false;
+  /* checking for existence of inputs */
+  if(!req.query){
+    return res.status(400).render('errors/error', {
+      error: 'Missing request query.'
+  });
+  }
+  if(!req.query.email){
+    return res.status(400).render('errors/error', {
+      error: 'No user email in query'
+  });
+  }
   const email = xss(req.query.email);
   if (!req.session.user) {
     res.redirect("/");
@@ -67,6 +78,16 @@ router.get('/signup', async (req, res) => {
 });
 
 router.post("/map", async (req, response) => {
+  if(!req.body.street){
+    return res.status(400).render('errors/error', {
+      error: 'Missing street in request body.'
+  });
+  }
+  if(!req.body.area){
+    return res.status(400).render('errors/error', {
+      error: 'Missing area in request body.'
+  });
+  }
   var street = xss(req.body.street);
   var area = xss(req.body.area);
   var lat;
@@ -114,6 +135,71 @@ router.post("/map", async (req, response) => {
 });
 
 router.post('/Checksignup', async (req, res) => {
+  var errors = [];
+  /* check for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.firstName){
+    errors.push('Missing first name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lastName){
+    errors.push('Missing last name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.email){
+    errors.push('Missing email.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.area){
+    errors.push('Missing area.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.street){
+    errors.push('Missing street.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lat){
+    errors.push('Missing latitude.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lon){
+    errors.push('Missing longitude.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
   const firstName = xss(req.body.firstName);
   const lastName = xss(req.body.lastName);
   const password = xss(req.body.password);
@@ -123,7 +209,6 @@ router.post('/Checksignup', async (req, res) => {
   const lat = xss(req.body.lat);
   const lon = xss(req.body.lon);
 
-  var errors = [];
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   if (!validation.validString(password)) errors.push('Invalid password.');
@@ -160,10 +245,32 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/Checksignin', async (req, res) => {
+  var errors = [];
+  /* checking for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.email){
+    errors.push('Missing email in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
   const email = xss(req.body.email);
   const password = xss(req.body.password);
-
-  var errors = [];
+  
   if (!validation.validString(password)) errors.push('Invalid password or email.');
   if (!validation.checkEmail(email)) errors.push('Invalid password or email.');
   if (errors.length == 0) {
@@ -216,6 +323,29 @@ router.get('/logout', async (req, res) => {
 
 
 router.post('/Checkprofile', async (req, res) => {
+  var errors = [];
+  /* checking for existence of inputs */
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.firstName){
+    errors.push('Missing first name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.lastName){
+    errors.push('Missing last name.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
   const firstName = xss(req.body.firstName);
   const lastName = xss(req.body.lastName);
   // const password = req.body.password;
@@ -225,7 +355,7 @@ router.post('/Checkprofile', async (req, res) => {
   // const lat =  req.body.lat;
   //const lon =  req.body.lon;
 
-  var errors = [];
+
   if (!validation.validString(firstName, "firstName")) errors.push('Invalid first name.');
   if (!validation.validString(lastName, "lastName")) errors.push('Invalid last name.');
   // if (!validation.validString(password)) errors.push('Invalid password.');
@@ -303,6 +433,20 @@ router.get('/changepass', async (req, res) => {
 
 router.post('/Checkpass', async (req, res) => {
   var errors = [];
+  if(!req.body){
+    errors.push('Missing request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
+  if(!req.body.password){
+    errors.push('Missing password in request body.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
   const password = xss(req.body.password);
   if (!validation.validString(password)) errors.push('Invalid password.');
   if (errors.length == 0) {
@@ -339,6 +483,13 @@ router.get('/forgetpass', async (req, res) => {
 
 router.post('/temppass', async (req, res) => {
   var errors = [];
+  if(!req.body.email){
+    errors.push('Missing email.');
+    return res.json({
+      success: true,
+      message: errors
+    });
+  }
   const email = xss(req.body.email);
   if (!validation.checkEmail(email)) errors.push('Invalid email.');
   if (errors.length == 0) {

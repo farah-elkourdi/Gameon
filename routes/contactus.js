@@ -25,6 +25,18 @@ router.post('/Checksignup', async(req, res) => {
   const email = xss(req.body.email);
 
   var errors = [];
+  if(!title){
+    errors.push('contactus/Checksignup POST: missing message title.');
+    return res.json({success: true, message: errors});
+  }
+  if(!description){
+    errors.push('contactus/Checksignup POST: missing description.');
+    return res.json({success: true, message: errors});
+  }
+  if(!email){
+    errors.push('contactus/Checksignup POST: missing email.');
+    return res.json({success: true, message: errors});
+  }
   if (!validation.validString(title, "title")) errors.push('Invalid title.');
   if (!validation.validString(description, "description")) errors.push('Invalid description.');
   if (!validation.checkEmail(email)) errors.push('Invalid email.');

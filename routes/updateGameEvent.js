@@ -4,7 +4,11 @@ const data = require('../data');
 const check = require('../task/validation');
 const gameEvent = require('../data/gameEvent');
 const moment = require('moment');
+const { deserialize } = require('bson');
+const { description } = require('../public/js/geocode');
 
+const usersData = require('../data/users');
+const contactUs = require('../data/contactus');
 // Global variable updateGameEventData
 var updateGameEventData;
 
@@ -12,9 +16,19 @@ router.get('/:id', async (req, res) => {
     if(!req.session.user){
         return res.redirect('/');
     }
-    let id;
+    if(!req.params){
+        return res.status(400).render('errors/error', {
+            error: 'updateGameEvent/:id GET: Missing request parameters'
+        }); 
+    }
+    if(!req.params.id){
+        return res.status(400).render('errors/error', {
+            error: 'updateGameEvent/:id GET: No id in parameters'
+        }); 
+    }
+    let id = xss(req.params.id);
     try{
-        id = check.checkId(req.params.id);
+        id = check.checkId(id);
     }
     catch(e){
         return res.status(400).render('errors/error', {
@@ -81,18 +95,32 @@ router.post('/', async (req, res) => {
     updateGameEventData = req.body;
     let userId = req.session.user.userID;
     try {
-        if(!userId) throw 'no user id';
+        if(!userId) throw 'updateGameEvent: no user id';
+        if(!updateGameEventData) throw 'updateGameEvent: Missing request body';
         userId = check.checkId(userId);
+        updateGameEventData.gameEventId = xss(updateGameEventData.gameEventId);
+        if(!updateGameEventData.gameEventId) throw 'updateGameEvent: Missing gameEventId';
         updateGameEventData.gameEventId = check.checkId(updateGameEventData.gameEventId, 'gameEventId');
+        updateGameEventData.title = xss(updateGameEventData.title);
+        if(!updateGameEventData.title) throw 'updateGameEvent: Missing title';
         updateGameEventData.title = check.checkString(updateGameEventData.title, 'title');
         updateGameEventData.status = "upcoming";
+        updateGameEventData.sportCategory = xss(updateGameEventData.sportCategory);
+        if(!updateGameEventData.sportCategory) throw 'updateGameEvent: Missing sportCategory';
         updateGameEventData.sportCategory = check.checkString(updateGameEventData.sportCategory, 'sportCategory');
+        updateGameEventData.description = xss(updateGameEventData.description);
+        if(!updateGameEventData.description) throw 'updateGameEvent: Missing description';
         updateGameEventData.description = check.checkString(updateGameEventData.description, 'description');
+        updateGameEventData.address = xss(updateGameEventData.address);
+        if(!updateGameEventData.address) throw 'updateGameEvent: Missing address';
         updateGameEventData.address = check.checkString(updateGameEventData.address, 'address');  
 
        // updateGameEventData.area = check.checkString(updateGameEventData.area, 'area');
-
+       updateGameEventData.latitude = xss(updateGameEventData.latitude);
+       if(!updateGameEventData.latitude) throw 'updateGameEvent: Missing latitude';
         updateGameEventData.latitude = updateGameEventData.latitude;
+        updateGameEventData.longitude = xss(updateGameEventData.longitude);
+        if(!updateGameEventData.longitude) throw 'updateGameEvent: Missing longitude';
         updateGameEventData.longitude = updateGameEventData.longitude;
 
 
@@ -126,6 +154,20 @@ router.post('/', async (req, res) => {
             throw 'You are already registered for an event at this time.';
         }
 
+        let usersid= [];
+let event = await gameEvent.getGameEvent(updateGameEventData.gameEventId);
+event.participants.forEach( (user) => {
+  usersid.push(user.toString())
+});
+var title = event.title
+var emails = [];
+
+await usersid.forEach( async (users) => {
+     let x = await usersData.getUser(users);
+    // emails.push(x.email);
+     await contactUs.emailSetup2( title, "edit", x.email );
+});
+
 
         await gameEvent.update(updateGameEventData.gameEventId, userId, updateGameEventData.title, updateGameEventData.status, 
             updateGameEventData.sportCategory, updateGameEventData.description, req.session.user.userArea,
@@ -133,7 +175,6 @@ router.post('/', async (req, res) => {
             updateGameEventData.startTime, updateGameEventData.endTime, updateGameEventData.minimumParticipants,
             updateGameEventData.maximumParticipants);
 
-        
         return res.json({success: true});
     } catch (e) {
         return res.json({success: false, message: e.toString()});
