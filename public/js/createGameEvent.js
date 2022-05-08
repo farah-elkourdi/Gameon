@@ -236,7 +236,7 @@
     
     now.setHours(now.getHours()+ 1);
     let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
-    // let startTimeMin = new Date(now + 3600);
+    let startTimeMinDate = new Date(now + 3600);
 
     // modify here 
     try {
@@ -252,7 +252,7 @@
       date = dateIsValid(date, 'date');
       startTime = checkTime(startTime, 'startTime');
       endTime = checkTime(endTime, 'endTime');
-      if (startTime < startTimeMin){
+      if (startTime < startTimeMinDate){
         throw `Events can only be created for 1 hour after current time`;
       }
       if (endTime > "22:00")

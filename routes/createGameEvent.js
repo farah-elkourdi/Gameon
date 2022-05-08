@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     now.setHours(now.getHours()+ 1);
     let startTimeMin = now.toLocaleTimeString([], { hour12:false, hour: '2-digit', minute: '2-digit' });
     
-    // let startTimeMin = new Date(now+3600);
+    let startTimeMinDate = new Date(now+3600);
 
 
     try {
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
         createGameEventData.date = check.checkString(createGameEventData.date, 'date');     
         createGameEventData.date = check.dateIsValid(createGameEventData.date, 'date');  
         
-        if (createGameEventData.startTime < startTimeMin){
+        if (createGameEventData.startTime < startTimeMinDate){
             throw `Events can only be created for 1 hour after current time`;
         }
         createGameEventData.startTime = check.checkTime(createGameEventData.startTime, 'startTime');
