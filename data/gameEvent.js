@@ -225,33 +225,33 @@ async function create(userId, title, status, sportCategory, description, area, a
     /* NEED to check if valid address */
 
     if (!check.checkCoordinates(longitude, latitude)) {
-        throw "Error: coordinates are NOT valid"
+        throw "Error: Coordinates are NOT valid"
     }
 
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
 
     if (!check.areValidTimes(startTime, endTime)) {
-        throw "Error: endTime must be at least 1 hour after startTime"
+        throw "Error: EndTime must be at least 1 hour after startTime"
     }
 
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
     if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
-        throw "Error: minimum participation limit is not valid"
+        throw "Error: Minimum participation limit is not valid"
     }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
     if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
-        throw "Error: maximum participation limit is not valid"
+        throw "Error: Maximum participation limit is not valid"
     }
     if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
-        throw "Error: minimum participants is greater than maximum participants"
+        throw "Error: Minimum participants is greater than maximum participants"
     }
 
     if (endTime > "22:00")
     throw `No event stays after 10 pm `
 
     if (minimumParticipants < 2 || maximumParticipants > 30 )
-    throw `min number of Participants should be 2 and maximum 30 `
+    throw `Min number of participants should be 2 and maximum 30 `
 
     //check if the organizer has a time conflict
     let conflict;
@@ -288,7 +288,7 @@ async function create(userId, title, status, sportCategory, description, area, a
 
     const insert = await gameEventCollection.insertOne(newGameEvent);
     if (!insert.acknowledged || !insert.insertedId) {
-        throw "Error: could not add gameEvent";
+        throw "Error: Could not add gameEvent";
     }
     newGameEvent._id = insert.insertedId;
     return newGameEvent;
@@ -309,33 +309,33 @@ async function update(gameEventId, userId, title, status, sportCategory, descrip
     /* NEED to check if valid address */
 
     if (!check.checkCoordinates(longitude, latitude)) {
-        throw "Error: coordinates are NOT valid"
+        throw "Error: Coordinates are NOT valid"
     }
 
     startTime = check.checkDate(startTime, 'startTime');
     endTime = check.checkDate(endTime, 'endTime');
 
     if (!check.areValidTimes(startTime, endTime)) {
-        throw "Error: endTime must be at least 1 hour after startTime"
+        throw "Error: EndTime must be at least 1 hour after startTime"
     }
 
     minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
     if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
-        throw "Error: minimum participation limit is not valid"
+        throw "Error: Minimum participation limit is not valid"
     }
     maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
     if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
-        throw "Error: maximum participation limit is not valid"
+        throw "Error: Maximum participation limit is not valid"
     }
     if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
-        throw "Error: minimum participants is greater than maximum participants"
+        throw "Error: Minimum participants is greater than maximum participants"
     }
 
     if (endTime > "22:00")
     throw `No event stays after 10 pm `
 
     if (minimumParticipants < 2 || maximumParticipants > 30 )
-    throw `min number of Participants should be 2 and maximum 30 `
+    throw `Min number of Participants should be 2 and maximum 30 `
 
     //check if the organizer has a time conflict
     let conflict;
