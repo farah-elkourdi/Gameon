@@ -1,0 +1,84 @@
+<div class="welcome">
+    <h1 hidden>Home</h1>
+    <div class="jumbotron jumbotron-fluid pt-0 landing-bg-image">
+        <div class="container text-center">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="landing-image-text-padding">
+                    <span class="mb-4 d-block h5">Play your favorite team sport by finding a team</span>
+                    <span class="mb-3 d-block h1">Game on</span>
+                    <span class="mb-3 d-block h1">Find.Connect.Play</span>
+                    <span class="mb-4 d-block h5">Find people around you and easily coordinate game-day information.
+                        The user can create or join a game event. The team is completed, the event time
+                        comes then the Game on!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container text-center">
+            <h2>Top organizers</h2>
+                <div class="row pt-3" id="orgainzer-rating">
+                    {{#each ratings}}
+                    <div class="card m-2" style="width: 13rem;">
+                        <div class="card-body">
+                            <span class="card-title text-capitalize h5">{{this.name}}</span>
+                            <div class="feedback pt-3">
+                                <div class="ratings" id="{{this._id}}">
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="1" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="2" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="3" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="4" class="fa fa-star"></i>
+                                    <i data-rating="{{this.avgRating}}" data-rat_map="5" class="fa fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+        </div>
+    </div>
+    <div class="jumbotron jumbotron-fluid section-divider">
+        <div class="container">
+            <h1>Event List</h1>
+            <p>We have variety of sport events created by various organizers which can be found below</p>
+            {{#if userDetails}}
+            <a class="btn btn-primary" href="/eventList" role="button">View all events</a>
+            {{else}}
+            <p>Login to view all events</p>
+            <a class="btn btn-primary" href="/user/login" role="button">Login / Signup</a>
+            {{/if}}
+        </div>
+    </div>
+    <div class="event-maps container">
+        <div class="row">
+            <div class="col-md-5">
+                <ul id="default-map" class="list-group list-group-flush border-bottom scrollarea">
+                    {{#each gameEvents}}
+                    <li class="list-group-item" aria-current="true">
+                        <input name="latitude" hidden value="{{latitude}}">
+                        <input name="longitude" hidden value="{{longitude}}">
+                        <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">{{title}}</strong>
+                            <small>{{startTime}}</small>
+                        </div>
+                        <div class="col-10 mb-1 small">
+                            {{description}}
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="col-md-7">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+            crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
+        <script type="module" src="/public/js/landingPageMaps.js"></script>
+    </div>
+</div>

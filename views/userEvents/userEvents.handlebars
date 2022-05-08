@@ -1,0 +1,117 @@
+<div class="container">
+    <p id="userId" class={{userId}} hidden></p>
+    <div class="row pt-3 pl-3">
+        <h1>Your Events</h1>
+    </div>
+    <ul id="allEvents" class="list-group list-group-flush border-bottom scrollarea">
+        {{#each gameEventsList}}
+        <li id={{this._id}} class="list-group-item" aria-current="true">
+            <div class="errorDivLeave">{{errorLeave}}</div>
+            <div class="errorDivEdit">{{errorEdit}}</div>
+            <div class="errorDivCancel">{{errorCancel}}</div>
+            <div class="row col-md-12 pt-2">
+                <div class="col-md-6">
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Title:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.title}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Status:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.status}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Sport:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.sportCategory}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Description:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.description}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Address:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.address}}, {{this.area}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Start Time:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.startTime}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">End Time:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.endTime}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Minimum Number of Participants:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.minimumParticipants}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Maximum Number of Participants:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.maximumParticipants}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-5 pl-0">Current Number of Participants:</div>
+                            <div class="col-md-7 ml-2 text-capitalize">{{this.currentNumberOfParticipants}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="mb-1">
+                        <div class=" col-md-12">
+                            <form class='userEventsLeaveForm'>
+                                <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                                <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+
+                                <input type="hidden" class="status" name="status" value="{{this.status}}">
+                                <button type="submit" class="btn btn-primary">Leave Event</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class=" col-md-12">
+                            <form class='userEventsCancelForm'>
+                                <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                                <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+
+                                <input type="hidden" class="status" name="status" value="{{this.status}}">
+                                <button type="submit" class="btn btn-primary">Cancel Event</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class=" col-md-12">
+                            <form class='userEventsEditForm'>
+                                <input type="hidden" class="gameEventId" name="gameEventId" value="{{this._id}}">
+                                <input type="hidden" class="coordinatorId" name="coordinatorId" value="{{this.userId}}">
+
+                                <input type="hidden" class="status" name="status" value="{{this.status}}">
+                                <button type="submit" class="btn btn-primary">Update Event</button>
+                            </form>
+                        </div>
+                    </div>
+                    {{!-- <div class="alert alert-danger mt-2 form-group col-md-12 row" id="errorDiv_{{this._id}}"></div> --}}
+
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</div>
+<script src="/public/js/userEvents.js"></script>

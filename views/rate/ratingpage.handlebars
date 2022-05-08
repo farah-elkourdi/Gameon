@@ -1,0 +1,47 @@
+<div class="container pt-2 pb-5">
+    <h1> Your Events </h1>
+    <div class="">
+        <div id="allEvents" class="scrollable_list">
+            {{#each gameEventsList}}
+            <div>
+                <dl>
+                    <dt>Title: </dt>
+                    <dd>{{this.title}}</dd>
+                    <dt>Status: </dt>
+                    <dd class="status">{{this.status}}</dd>
+                    <dt>Sport: </dt>
+                    <dd>{{this.sportCategory}}</dd>
+                    <dt>Description: </dt>
+                    <dd>{{this.description}}</dd>
+                    <dt>Area: </dt>
+                    <dd>{{this.area}}</dd>
+                    <dt>Address: </dt>
+                    <dd>{{this.address}}</dd>
+                    <dt>Start Time:</dt>
+                    <dd>{{this.startTime}}</dd>
+                    <dt>End Time:</dt>
+                    <dd>{{this.endTime}}</dd>
+                    <dt>Minimum Number of Participants</dt>
+                    <dd>{{this.minimumParticipants}}</dd>
+                    <dt>Maximum Number of Participants</dt>
+                    <dd>{{this.maximumParticipants}}</dd>
+                    <dt>Current Number of Participants</dt>
+                    <dd>{{this.currentNumberOfParticipants}}</dd>
+                </dl>
+            </div>
+            <button id="clickhere" data-id="{{this._id}}" data-user="{{this.userId}}">Rate</button>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#clickhere').click(function () {
+        var id = $(this).attr('data-id');
+        var email = $(this).attr('data-user');
+        // alert(email)
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/rate?gameId=" + id + "&user=" + email, '_self');
+    });
+</script>

@@ -1,0 +1,63 @@
+<div class="container pt-2 pb-5">
+    <h1>
+        Profile page
+    </h1>
+    {{#if topuser }}
+    <img src="/public/img/badge.png" height="50" width="50" alt="topuser">
+    {{/if}}
+
+    <p hidden id="lon">{{lon}}</p>
+    <p hidden id="lat">{{lat}}</p>
+
+    {{!-- <article id="address" lon="{{lon}}" lat="{{lat}}"> --}}
+    <div id="address">
+        <dl>
+            <dt>First name:</dt>
+            <dd class="text-capitalize">{{firstName}}</dd>
+            <dt>Last name:</dt>
+            <dd class="text-capitalize">{{lastName}}</dd>
+            <dt>
+                Email:
+            </dt>
+            <dd class="">{{email}}</dd>
+            <dt>Street</dt>
+            <dd class="text-capitalize">{{street}}</dd>
+            <dt>Area:</dt>
+            <dd class="text-capitalize">{{area}}</dd>
+            <dt>Average rating:</dt>
+            <dd class="text-capitalize">{{avgRating}}</dd>
+        </dl>
+    </div>
+    <div id="map"></div>
+</div>
+
+<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+
+
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            var lat = $('#lat').text()
+            var lon = $('#lon').text()
+            //var lat = $('#address').attr('lat');
+            // var lon = $('#address').attr('lon');
+            var element = document.getElementById('map');
+            var map = L.map(element);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            var target = L.latLng('40.744123327283965', '-74.03238396518681');
+            map.setView(target, 12);
+
+            var new_target = L.latLng(lat, lon);
+            map.setView(new_target, 12);
+            L.marker(new_target).addTo(map);
+
+        });
+
+    })(window.jQuery);
+</script>
