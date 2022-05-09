@@ -1,0 +1,206 @@
+<div class="container">
+    <div class="event-maps eventInformation panel">
+        <div class="row pl-3">
+            <a href="/eventList" class="btn btn-primary">Back to event list</a>
+        </div>
+        <div class="row pt-3 pl-3">
+            <h1>{{title}}</h1>
+        </div>
+        <div class="row pt-3 pl-3 col-md-12">
+            <div class="col-md-6 event_info">
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Organizer:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.organizerName}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Event status:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.status}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Start Time:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.startTime}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">End Time:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.endTime}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Sport:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.sportCategory}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Area:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.area}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Address:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.address}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Minimum Participants:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.minimumParticipants}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Maximum Participants:</div>
+                        <div class="col-md-7 ml-2 text-capitalize">{{event.maximumParticipants}}</div>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <div class="d-inline-flex col-md-12 pl-0">
+                        <div class="col-md-3 pl-0">Players joined:</div>
+                        <div class="col-md-4 ml-2 text-capitalize">{{event.currentNumberOfParticipants}}</div>
+                        <div class="col-md-5"><a role="button" class="btn btn-outline-success" data-toggle="modal"
+                                data-target="#participantModal">View All Participants</a></div>
+                    </div>
+                </div>
+                <div class="mb-1 pt-2">
+                    <div class="d-inline-flex row col-md-12 pl-0">
+                        <input type="hidden" id="gameEventId" name="gameEventId" value="{{event._id}}">
+                        {{#if joined}}
+                        <button class="btn btn-secondary" type="submit" id="leaveButton">Leave Event</button>
+                        {{else}}
+                        <button class="btn btn-success" type="submit" id="joinButton">Join Event</button>
+                        {{/if}}
+                    </div>
+                    <div id="errorDiv" class="alert alert-danger mt-2 form-group col-md-12 row"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <div class="panel text-center pt-4 pb-4">
+        {{event.description}}
+    </div>
+
+    {{#if joined}}
+    <div class="content-item panel pt-4 pb-4" id="comments">
+        <div class="row">
+            <div class="col-md-8">
+                <form class="pl-3" method="POST" id="comment-form">
+                    <h2 class="float-left">New Comment</h2>
+                        <button type="submit" class="btn btn-primary mt-4 float-right" id="submitButton"
+                            name="submitButton">Submit</button>
+                        <fieldset>
+                            <div class="row pt-2">
+                                <div class="col-sm-3 col-lg-2 hidden-xs">
+                                    <div class="comment-profileImage" id="userProfileImage"></div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                                    <label for="comment">Enter your comment...</label>
+                                    <textarea class="form-control" name="comment" id="comment"
+                                        placeholder="Your message" required=""></textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                </form>
+                <div class="alert alert-danger mt-2 form-group" id="error"></div>
+            </div>
+        </div>
+        <h3 class="pl-3">Comments</h3>
+        <div class="pl-3" id="showComments">
+            <!-- comments list goes here -->
+        </div>
+    </div>
+    {{/if}}
+
+    {{!-- Participant list --}}
+    <div class="modal fade" id="participantModal" tabindex="-1" role="dialog" aria-labelledby="participantModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="participantModalLabel">Participants</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush border-bottom scrollarea" id="event_participants">
+                        {{#each event.participants}}
+                        <li class="list-group-item" aria-current="true">
+                            <div class="mb-1">
+                                <div class="d-inline-flex col-md-12 pl-0">
+                                    <div class="col-md-1 pl-0">
+                                        <div class="profileImage" id="profileImage_{{@index}}"></div>
+                                    </div>
+                                    <div id="profileImageName_{{@index}}" class="col-md-7 ml-2 text-capitalize pt-2 profileImageName">
+                                        <a data-email="{{this.email}}" class="clickhere">
+                                            {{this.name}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
+<script src="/public/js/viewGameEvent.js"></script>
+<script>
+    $(document).ready(function () {
+
+        var element = document.getElementById('map');
+        var map = L.map(element);
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        var target = L.latLng('40.744123327283965', '-74.03238396518681');
+        map.setView(target, 12);
+
+        let latitude = '{{event.latitude}}';
+        let longtitude = '{{event.longitude}}';
+
+        var new_target = L.latLng(latitude, longtitude);
+        map.setView(new_target, 12);
+        L.marker(new_target).addTo(map);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var firstName = '{{userDetails.userFirstName}}';
+        var lastName = '{{userDetails.userLastName}}';
+        var intials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+        var profileImage = $('#userProfileImage').text(intials);
+    });
+</script>
+
+<script>
+    $('a.clickhere').click(function () {
+        var email = $(this).attr('data-email');
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/user/publicprofile?email=" + email, '_blank');
+    });
+</script>

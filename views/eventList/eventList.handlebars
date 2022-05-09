@@ -1,0 +1,106 @@
+<div id="eventList_page" class="event-maps container">
+    <h1>Upcoming events</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 my-lg-0" id='eventList_form' action="/eventList/search" method="POST">
+                <input id="eventListText" onkeyup="searchEvent()" class="form-control mr-sm-2" type="search"
+                    placeholder="Search Event" aria-label="Search" name="searchText" value="{{searchText}}">
+                <button id="eventListSearch" class="btn btn-primary my-2 my-sm-0" type="submit" disabled>Search</button>
+                <a id="clearSearch" href="/eventList" class="btn btn-secondary ml-3 my-2 my-sm-0"><i class="fas fa-times pr-2"></i>Clear Search</a>
+            </form>
+        </div>
+    </nav>
+    <div class="row pt-3">
+        {{#if gameEvents}}
+        <div class="col-md-7 event-list">
+            <ul id="default-map" class="list-group list-group-flush border-bottom scrollarea">
+                {{#each gameEvents}}
+                <li class="list-group-item" aria-current="true">
+                    <input name="latitude" hidden value="{{latitude}}">
+                    <input name="longitude" hidden value="{{longitude}}">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <div class="mb-1 font-weight-bold">{{title}}</div>
+                        <div class="small">{{startTime}}</div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Organizer:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{name}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Sport:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{sportCategory}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Area:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{area}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Address:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{address}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Minimum Participants:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{minimumParticipants}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Maximum Participants:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{maximumParticipants}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Players joined:</div>
+                            <div class="col-md-10 ml-2 text-capitalize">{{currentNumberOfParticipants}}</div>
+                        </div>
+                    </div>
+                    <div class="mb-1 small">
+                        <div class="d-inline-flex col-md-12 pl-0">
+                            <div class="col-md-2 pl-0">Description:</div>
+                            <div class="col-md-8 ml-2">{{description}}</div>
+                            <a role="button" href="/viewGameEvent/{{_id}}" class="btn btn-primary col-md-2">Read
+                                more</a>
+                        </div>
+                    </div>
+
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-md-5">
+            <div id="map"></div>
+        </div>
+        {{else}}
+        <div class="col-md-12 event-list-noevent text-center pt-5 pb-5">
+            There are no upcoming events near you
+        </div>
+        {{/if}}
+    </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+        crossorigin=""></script>
+    <script type="module" src="/public/js/eventList.js"></script>
+    <script>
+        function searchEvent() {
+            if (document.getElementById("eventListText").value === "") {
+                document.getElementById('eventListSearch').disabled = true;
+            } else {
+                document.getElementById('eventListSearch').disabled = false;
+            }
+        }
+    </script>
+</div>

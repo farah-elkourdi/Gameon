@@ -1,0 +1,61 @@
+<div class="container pt-2 pb-5">
+  <h1>Rate page</h1>
+  <p>Please rate the game organizer {{name}} for the game {{title}}:</p>
+  <input type="radio" id="1" name="rate" value="1">
+  <label for="1">1</label><br>
+  <input type="radio" id="2" name="rate" value="2">
+  <label for="2">2</label><br>
+  <input type="radio" id="3" name="rate" value="3">
+  <label for="3">3</label><br>
+  <input type="radio" id="4" name="rate" value="4">
+  <label for="4">4</label><br>
+  <input type="radio" id="5" name="rate" value="5">
+  <label for="5">5</label><br><br>
+  <button type="submit" id="rateSubmit" data-gameId="{{gameId}}" data-thisuserid="{{thisuserid}}">Submit</button>
+  <div id="errorDiv" class="error">{{error}}</div>
+</div>
+
+<script>
+  $('#rateSubmit').click(function () {
+    event.preventDefault();
+    var errorDiv = $('#errorDiv');
+    //  var email = $(this).attr('email');
+    var data_thisuserid = $(this).attr('data-thisuserid');
+    var gameId = $(this).attr('data-gameId');
+    const val = $('input[name=rate]:checked').val();
+    if (!gameId || !val) {
+      errorDiv.empty();
+      errorDiv.show()
+      errorDiv.html("Please choose a rate.");
+    } else {
+      //  alert(val);
+      var requestConfig = {
+        method: 'POST',
+        url: '/rate/rateAction',
+        contentType: 'application/json',
+        data: JSON.stringify({
+
+          gameId: gameId,
+          rate: val,
+          userid: data_thisuserid
+        }),
+
+
+        success: function (response) {
+          if (response.success == false) {
+            errorDiv.empty();
+            errorDiv.show()
+            errorDiv.html(response.message);
+          } else {
+            errorDiv.empty();
+            errorDiv.hide();
+            //  console.log("SUCCESS ADDING TO Database");
+            window.open("/", '_self');
+          }
+        }
+      }
+    }
+    $.ajax(requestConfig);
+    // window.open("rate/rateAction?email=" + email + "&gameId=" + gameId + "&rate=" + val, '_self');
+  });
+</script>

@@ -1,0 +1,56 @@
+<div class="container pt-2 pb-5">
+    <h1>
+        Change password
+    </h1>
+    <form class="pt-4" method="POST" id="profile-form">
+        <label id="labelPassword" for="password"> Password: </label>
+        <input id="password" type="password" placeholder="Enter password" name="password" />
+        <button class="btnsave" id="saveSubmit">Save</button>
+    </form>
+
+    <ul id="error">
+    </ul>
+</div>
+
+
+
+<script>
+    (function ($) {
+        $('#password').text("");
+        $('#saveSubmit').click(function (event) {
+            event.preventDefault();
+
+            let passwordInput = $('#password').val();
+
+            $('#error').empty();
+            $('#error').hide();
+            var requestConfig = {
+                method: 'POST',
+                url: '/user/Checkpass',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    password: passwordInput
+                }),
+                cache: false
+            }
+            $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage) {
+                    //alert(responseMessage.message.length)
+                    if (responseMessage.message.length != 0) {
+                        $('#error').empty();
+                        $('#error').show();
+                        let myUl = document.getElementById("error")
+                        $.each(responseMessage.message, function (index, element) {
+                            let li = document.createElement('li');
+                            li.innerHTML = `<li>${element}</li>`;
+                            myUl.appendChild(li);
+                        });
+                    } else {
+                        alert("your password has been changed !")
+                        window.open("/", '_self');
+                    }
+                }
+            });
+        });
+    })(jQuery);
+</script>

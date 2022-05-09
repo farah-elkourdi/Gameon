@@ -1,0 +1,54 @@
+<div class="container">
+    <h1> Update Event </h1>
+
+    <form class="form-horizontal" action='/updateGameEvent' method='POST' id='updateGameEvent-form'>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="title">Title:</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="title" placeholder="Enter title" name="title"
+                    value="{{input.title}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="sportCategory">Sport:</label>
+            <div class="col-sm-5">
+                <select class="form-control" id="sportCategory" name="sportCategory">
+                    <option value="none" selected disabled hidden>Choose a sport</option>
+                    <option value="soccer">Soccer</option>
+                    <option value="football">Football</option>
+                    <option value="golf">Golf</option>
+                    <option value="baseball">Baseball</option>
+                    <option value="basketball">Basketball</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="swimming">Swimming</option>
+                    <option value="archery">Archery</option>
+                    <option value="dodgeball">Dodgeball</option>
+                    <option value="frisbee">Frisbee</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="description">Description:</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" id="description" placeholder="Enter description" name="description"
+                    value="{{input.description}}" required></textarea>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Update Event</button>
+            </div>
+        </div>
+    </form>
+    <p id="gameEventId" hidden>{{gameEventId}}</p>
+</div>
+<div class="error" id="errorDivUpdateGameEvent">{{error}}</div>
+
+<script src="/public/js/updateGameEvent.js"></script>
+<script>
+    $(document).ready(function () {
+        let sportCategory = '{{input.sportCategory}}';
+    $('#sportCategory').val(sportCategory);
+
+    });
+</script>

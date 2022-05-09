@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gameon</title>
+    <link rel="icon" href="/public/img/logo.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+
+        </script>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+        integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/public/css/main.css">
+</head>
+
+
+<body>
+    <div class="pg-color max-height">
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a href="/" class="navbar-brand">
+                    <img src="/public/img/logo.png" height="30" width="30" alt="Gameon"
+                        class="d-inline-block align-top">
+                    Gameon
+                </a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        {{#if userDetails}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/eventList">Event List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/createGameEvent">Create Event</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/userevents">User Events</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rate/ratingpage">Rate</a>
+                        </li>
+                        {{!-- <li class="nav-item">
+                            <a class="nav-link" href="/user/profile">Profile</a>
+                        </li> --}}
+
+                        {{/if}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/contactus">Contact us</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+                        {{#if userDetails}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="profile_welcome">Hi, </span>
+                                <div id="profileImage"></div>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/user/userprofile">Profile</a>
+                                <a class="dropdown-item" href="/user/profile">Edit profile</a>
+                                <a class="dropdown-item" href="/user/changepass">Change password</a>
+                                <a class="dropdown-item" href="/user/logout">Logout</a>
+                            </div>
+                        </li>
+
+                        {{else}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user/login">Login</a>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <main>
+            {{{body}}}
+        </main>
+    </div>
+
+    <div class="loading-image" id="loading-image" hidden>
+        <div class="loadingio-spinner-spinner-mcwunn449vm">
+            <div class="ldio-o4w64grlpj7">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var firstName = '{{userDetails.userFirstName}}';
+            var lastName = '{{userDetails.userLastName}}';
+            var intials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+            var profileImage = $('#profileImage').text(intials);
+        });
+    </script>
+    <script>
+        $(document).ajaxStart(function () {
+            var loadingImg = document.getElementById('loading-image');
+            loadingImg.hidden = false;
+        });
+        $(document).ajaxComplete(function () {
+            var loadingImg = document.getElementById('loading-image');
+            loadingImg.hidden = true;
+        });
+    </script>
+    <script src="https://rawgit.com/leizongmin/js-xss/master/dist/xss.js"></script>
+</body>
+
+</html>

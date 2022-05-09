@@ -1,0 +1,194 @@
+<div class="container pt-1 pb-4">
+    <h1> Create Event </h1>
+
+    <form class="form-horizontal pt-2 pb-3" action='/createGameEvent' method='POST' id='createGameEvent-form'>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="title">Title:</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="title" placeholder="Enter title" name="title"
+                    value="{{input.title}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="sportCategory">Sport:</label>
+            <div class="col-sm-5">
+                <select class="form-control" id="sportCategory" name="sportCategory">
+                    <option value="none" selected disabled hidden>Choose a sport</option>
+                    <option value="soccer">Soccer</option>
+                    <option value="football">Football</option>
+                    <option value="golf">Golf</option>
+                    <option value="baseball">Baseball</option>
+                    <option value="basketball">Basketball</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="swimming">Swimming</option>
+                    <option value="archery">Archery</option>
+                    <option value="dodgeball">Dodgeball</option>
+                    <option value="frisbee">Frisbee</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="description">Description:</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" id="description" placeholder="Enter description" name="description"
+                    required></textarea>
+            </div>
+        </div>
+        <div class="form-group d-flex" id="area" data-area="{{area}}">
+            <label class="control-label col-sm-2" for="address">Address:</label>
+            <div class="col-sm-3 pr-0">
+                <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
+                    value="{{input.address}}" required>
+            </div>
+            <div class="col-sm-2 pt-1">
+                <p class="text-capitalize">, {{area}}</p>
+                {{!-- <select class="form-control" name="area" id="area">
+                    <option value="none" selected disabled hidden>Choose your area</option>
+                    <option value="hoboken">Hoboken</option>
+                    <option value="jersey city">Jersey City</option>
+                    <option value="kearny">Kearny</option>
+                    <option value="union city">Union City</option>
+                </select> --}}
+            </div>
+        </div>
+        <div class="event-maps row">
+            <div class="col-md-2">
+                <label hidden for="latitude">latitude</label>
+                <input hidden type="text" id="latitude" name="latitude" value="{{latitude}}">
+                <label hidden for="longitude">longitude</label>
+                <input hidden type="text" id="longitude" name="longitude" value="{{longitude}}">
+            </div>
+            <div class="col-md-7">
+                <div id="map"></div>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="date">Date of the Event:</label>
+            <div class="col-sm-3">
+                <input type="date" class="form-control" id="date" name="date" min="{{minStartDate}}"
+                    value="{{input.date}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="startTime">Event Start Time:</label>
+            <div class="col-sm-3">
+                <input type="time" class="form-control" id="startTime" name="startTime" value="{{input.startTime}}"
+                    required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="endTime">Event End Time:</label>
+            <div class="col-sm-3">
+                <input type="time" class="form-control" id="endTime" name="endTime" value="{{input.endTime}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="minParticipants">Minimum number of Participants:</label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="minParticipants" name="minParticipants" min="2"
+                    placeholder='Minimum' value="{{input.minimumParticipants}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2" for="maxParticipants">Maximum number of Participants:</label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="maxParticipants" name="maxParticipants" min="3"
+                    placeholder='Maximum' value="{{input.maximumParticipants}}" required>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" id="createEvent" class="btn btn-primary">Create Event</button>
+            </div>
+        </div>
+    </form>
+    <div class="alert alert-danger mt-2 form-group" id="errorDivCreateGameEvent">
+        {{error}}
+    </div>
+</div>
+
+{{!-- Script section --}}
+<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<script>
+    $(document).ready(function () {
+        var element = document.getElementById('map');
+        var map = L.map(element);
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        var target = L.latLng('40.7447411', '-74.0464602');
+        map.setView(target, 15);
+
+        $('#minParticipants').on("blur", function () {
+            var minParticipants = +$('#minParticipants').val();
+            if (minParticipants < 2) {
+                $('#minParticipants').val(2);
+            }
+        });
+        $('#maxParticipants').on("blur", function () {
+            var maxParticipants = +$('#maxParticipants').val();
+            if (maxParticipants < 3) {
+                $('#maxParticipants').val(3);
+            }
+        });
+
+        var theMarker = {};
+        //$('#street').on("keyup", function () {
+        $('#address').on("keydown , keyup , change", function () {
+            loadmap();
+        });
+        $("#area").change(function (e) {
+            loadmap();
+        });
+
+        function loadmap() {
+            var street = $('#address').val();
+            var area = $('#area').attr('data-area');
+            var requestConfig = {
+                method: 'POST',
+                url: '/user/map',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    street: street,
+                    area: area
+                }),
+                cache: false
+            };
+
+            $.ajax(requestConfig).then(function (responseMessage) {
+                    if (responseMessage.message != "Error") {
+                        $("#createEvent").prop("disabled", false);
+                        if (street.trim() == "") {
+                            if (theMarker != undefined) {
+                                map.removeLayer(theMarker);
+                            };
+                        } else {
+                            if (theMarker != undefined) {
+                                map.removeLayer(theMarker);
+                            };
+                            var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
+                            map.setView(target, 14);
+                            theMarker = L.marker(target).addTo(map);
+                            $('#labelStreet').attr('lat', responseMessage.message.lat);
+                            $('#labelStreet').attr('lon', responseMessage.message.lon);
+                            document.getElementById("latitude").value = responseMessage.message.lat;
+                            document.getElementById("longitude").value = responseMessage.message.lon;
+                        }
+                    } else {
+                        $("#createEvent").prop("disabled", true);
+                        if (theMarker != undefined) {
+                            map.removeLayer(theMarker);
+                        };
+                    }
+
+                })
+                .catch(function (response) {
+                    if (theMarker != undefined) {
+                        map.removeLayer(theMarker);
+                    };
+                });
+        }
+    });
+</script>
+<script src="/public/js/createGameEvent.js"></script>

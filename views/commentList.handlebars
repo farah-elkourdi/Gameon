@@ -1,0 +1,38 @@
+<div class="commentList">
+    {{#each comments}}
+    <div class="media">
+        <div class="row pl-3">
+            <div class="float-left">
+                <div class="comment-profileImage" name="userCommentProfileImage">{{this.initials}}</div>
+            </div>
+            <div class="media-body pl-4">
+
+                <h4 class="media-heading text-capitalize">
+                    <a email="{{this.email}}" class="clickhere">
+                        {{this.name}}
+                    </a>
+                </h4>
+
+                <p>{{this.comment}}</p>
+                <ul class="list-unstyled list-inline media-detail float-left">
+                    <li><i class="fa fa-calendar"></i>{{this.timestamp}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+<script>
+    $('a.clickhere').click(function () {
+        var email = $(this).attr('email');
+        // map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+        window.open("/user/publicprofile?email=" + email, '_blank');
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#comment').val('');
+    });
+</script>

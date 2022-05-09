@@ -1,0 +1,88 @@
+<div class="container m-0 max-width">
+    <div class="row pt-5 pb-5">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 bg-white pt-3 forgot-password">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="text-center">
+                        <span class="h3 d-block"><i class="fa fa-lock fa-4x"></i></span>
+                        <span class="text-center h2 d-block">Forgot Password?</span>
+                        <p>You can reset your password here.</p>
+                        <div class="panel-body">
+                            <form class="form" method="POST" id="profile-form">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        </div>
+                                        <label id="labelemail" for="email"></label>
+                                        <input id="email" name="email" placeholder="Enter email" class="form-control"
+                                            type="email" value="{{email}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btnsave btn btn-lg btn-primary btn-block" id="saveSubmit">Reset
+                                        Password</button>
+                                </div>
+                                <div class="alert alert-danger mt-2 form-group" id="errordiv">
+                                    <ul id="error" class="m-0 text-left">
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $('#email').text("");
+            $('#error').empty();
+            $("div#errordiv").hide();
+            $('#error').hide();
+            $('#saveSubmit').click(function (event) {
+                event.preventDefault();
+
+                let emailInput = filterXSS($('#email').val());
+
+                $('#error').empty();
+                $("div#errordiv").hide();
+                $('#error').hide();
+                var requestConfig = {
+                    method: 'POST',
+                    url: '/user/temppass',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        email: emailInput
+                    }),
+                    cache: false
+                }
+                $.ajax(requestConfig).then(function (responseMessage) {
+                    if (responseMessage) {
+                        if (responseMessage.message.length != 0) {
+                            $('#error').empty();
+                            $("div#errordiv").show();
+                            $('#error').show();
+                            let myUl = document.getElementById("error")
+                            $.each(responseMessage.message, function (index, element) {
+                                let li = document.createElement('li');
+                                li.innerHTML = `<li>${element}</li>`;
+                                myUl.appendChild(li);
+                            });
+                        } else {
+                            alert(
+                                "A password has been sent to your email ! please check spam folder if you did not recieve an email."
+                            )
+                            window.open("/", '_self');
+                        }
+                    }
+                });
+            });
+        });
+    })(jQuery);
+</script>
