@@ -349,131 +349,111 @@ async function create(userId, title, status, sportCategory, description, area, a
     return newGameEvent;
 }
 /* update game event */
-async function update(gameEventId, userId, title, status, sportCategory, description, area, address,
-    latitude, longitude, startTime, endTime, minimumParticipants,
-    maximumParticipants) {
-        if(arguments.length != 14) throw 'update: supply 14 arguments.';
-        if(!gameEventId) throw 'update: supply gameEventId';
-        if(!userId) throw 'update: supply userId';
-        if(!title) throw 'update: supply title'; 
-        if(!status) throw 'update: supply status';
-        if(!sportCategory) throw 'update: supply sportCategory';
-        if(!description) throw 'update: supply description';
-        if(!area) throw 'update: supply area';
-        if(!address) throw 'update: supply address';
-        if(!latitude) throw 'update: supply latitude';
-        if(!longitude) throw 'update: supply longitude';
-        if(!startTime) throw 'update: supply startTime';
-        if(!endTime) throw 'update: supply endTime';
-        if(!minimumParticipants) throw 'update: supply minimumParticipants';
-        if(!maximumParticipants) throw 'update: supply maximumParticipants';
-
-        try{
+async function update(gameEventId, userId, title, status, sportCategory, description) {
+    try {
         gameEventId = check.checkId(gameEventId);
-    userId = check.checkId(userId);
-    title = check.checkString(title, 'title');
-    status = check.checkString(status, 'status');
-    sportCategory = check.checkString(sportCategory, 'sportCategory');
-    description = check.checkString(description, 'description');
-    area = check.checkString(area, 'area');
-    address = check.checkString(address, 'address');
-    startTime = check.checkDate(startTime, 'startTime');
-    endTime = check.checkDate(endTime, 'endTime');
-    // area = area.userArea;
-    /* NEED to check if valid address */
-    
-    /* get maximum participants from existing event, maximum participants cannot be lowered */
-    let existingEvent;
-    try{
-        existingEvent = await getGameEvent(gameEventId);
-    }
-    catch(e){
-        throw e.toString();
-    }
-    if(existingEvent.status != 'upcoming') throw 'Error: can only edit upcoming events';
-    if(existingEvent.maximumParticipants < maximumParticipants){
-        maximumParticipants = existingEvent.maximumParticipants;
-    }
-    
-    if (!check.checkCoordinates(longitude, latitude)) {
-        throw "Error: Coordinates are NOT valid"
-    }
+        userId = check.checkId(userId);
+        title = check.checkString(title, 'title');
+        status = check.checkString(status, 'status');
+        sportCategory = check.checkString(sportCategory, 'sportCategory');
+        description = check.checkString(description, 'description');
+        // area = check.checkString(area, 'area');
+        // address = check.checkString(address, 'address');
+        // area = area.userArea;
+        /* NEED to check if valid address */
 
-
-    if (!check.areValidTimes(startTime, endTime)) {
-        throw "Error: EndTime must be at least 1 hour after startTime"
-    }
-
-    minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
-    if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
-        throw "Error: Minimum participation limit is not valid"
-    }
-    maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
-    if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
-        throw "Error: Maximum participation limit is not valid"
-    }
-    if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
-        throw "Error: Minimum participants is greater than maximum participants"
-    }
-
-    if (endTime > "22:00")
-    throw `No event stays after 10 pm `
-
-    if (minimumParticipants < 2 || maximumParticipants > 30 )
-    throw `Min number of Participants should be 2 and maximum 30 `
-
-    //check if the organizer has a time conflict
-    let conflict;
-            try{
-                conflict = await userData.checkUserConflict(userId, startTime, endTime);
-            }
-            catch(e){
-                throw e.toString();
-            }
-
-            if(conflict.conflicted){
-                throw 'You are already registered for an event at this time.';
-            }
-    }
-    catch(e){
-        throw e.toString();
-    }
-    
-    let spots = maximumParticipants - minimumParticipants;
-    // return spots;
-    const gameEventCollection = await gameEvents();
-    
-    /* update document for update */
-    let eventUpdate = {
-        "$set":
-        {
-        "userId": userId,
-        "title": title,
-        "status": status,
-        "sportCategory": sportCategory,
-        "description": description,
-        "area": area,
-        "address": address,
-        "latitude": latitude,
-        "longitude": longitude,
-        "startTime": startTime,
-        "endTime": endTime,
-        "minimumParticipants": minimumParticipants,
-        "maximumParticipants": maximumParticipants
+        /* get maximum participants from existing event, maximum participants cannot be lowered */
+        let existingEvent;
+        try {
+            existingEvent = await getGameEvent(gameEventId);
+        } catch (e) {
+            throw e.toString();
         }
-    };
-    
-    /*filter for update */
-    const filter = {"_id" : ObjectId(gameEventId)};
-    /* update gameEvent */
-    const update = await gameEventCollection.updateOne(filter, eventUpdate);
-    
-    if(update.matchedCount !== 1 && update.modifiedCount !== 1){
-        throw "There was a problem updating the GameEvent.";
+        if (existingEvent.status != 'upcoming') throw 'Error: can only edit upcoming events';
+    } catch (e) {
+        throw e.toString();
     }
-    return {updated: true};
-}
+        //     throw e.toString();
+        // }
+        // if(existingEvent.maximumParticipants < maximumParticipants){
+        //     maximumParticipants = existingEvent.maximumParticipants;
+        // }
 
+        // if (!check.checkCoordinates(longitude, latitude)) {
+        //     throw "Error: Coordinates are NOT valid"
+        // }
+
+        // startTime = check.checkDate(startTime, 'startTime');
+        // endTime = check.checkDate(endTime, 'endTime');
+
+        // if (!check.areValidTimes(startTime, endTime)) {
+        //     throw "Error: EndTime must be at least 1 hour after startTime"
+        // }
+
+        // minimumParticipants = check.checkNum(minimumParticipants, 'minimumParticipants');
+        // if (!check.validMinParticipantLimit(sportCategory, minimumParticipants)) {
+        //     throw "Error: Minimum participation limit is not valid"
+        // }
+        // maximumParticipants = check.checkNum(maximumParticipants, 'maximumParticipants');
+        // if (!check.validMaxParticipantLimit(sportCategory, maximumParticipants)) {
+        //     throw "Error: Maximum participation limit is not valid"
+        // }
+        // if (!check.validNumParticipants(minimumParticipants, maximumParticipants)) {
+        //     throw "Error: Minimum participants is greater than maximum participants"
+        // }
+
+        // if (endTime > "22:00")
+        // throw `No event stays after 10 pm `
+
+        // if (minimumParticipants < 2 || maximumParticipants > 30 )
+        // throw `Min number of Participants should be 2 and maximum 30 `
+
+        // //check if the organizer has a time conflict
+        // let conflict;
+        //         try{
+        //             conflict = await userData.checkUserConflict(userId, startTime, endTime);
+        //         }
+        //         catch(e){
+        //             throw e.toString();
+        //         }
+
+        //         if(conflict.conflicted){
+        //             throw 'You are already registered for an event at this time.';
+        //         }
+        // }
+        // catch(e){
+        //     throw e.toString();
+        // }
+
+        // let spots = maximumParticipants - minimumParticipants;
+        // return spots;
+        const gameEventCollection = await gameEvents();
+
+        /* update document for update */
+        let eventUpdate = {
+            "$set": {
+                "userId": userId,
+                "title": title,
+                "status": status,
+                "sportCategory": sportCategory,
+                "description": description
+            }
+        };
+
+        /*filter for update */
+        const filter = {
+            "_id": ObjectId(gameEventId)
+        };
+        /* update gameEvent */
+        const update = await gameEventCollection.updateOne(filter, eventUpdate);
+
+        if (update.matchedCount !== 1 && update.modifiedCount !== 1) {
+            throw "There was a problem updating the GameEvent.";
+        }
+        return {
+            updated: true
+        };
+    }
 async function getEventOwnerFirstName(id) {
     if(!id) throw 'getEventOwnerFirstName: pass id.';
     try{
