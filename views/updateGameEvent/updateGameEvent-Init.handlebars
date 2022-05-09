@@ -31,69 +31,7 @@
             <label class="control-label col-sm-2" for="description">Description:</label>
             <div class="col-sm-5">
                 <textarea class="form-control" id="description" placeholder="Enter description" name="description"
-                     required>{{event.description}}</textarea>
-            </div>
-        </div>
-        <div class="form-group d-flex" id="area" area="{{area}}">
-            <label class="control-label col-sm-2" for="address">Address:</label>
-            <div class="col-sm-2">
-                <p>{{area}}</p>
-                {{!-- <select class="form-control" name="area" id="area">
-                    <option value="none" selected disabled hidden>Choose your area</option>
-                    <option value="hoboken">Hoboken</option>
-                    <option value="jersey city">Jersey City</option>
-                    <option value="kearny">Kearny</option>
-                    <option value="union city">Union City</option>
-                </select> --}}
-            </div>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="address" placeholder="Enter street" name="address"
-                    value="{{event.address}}" required>
-            </div>
-        </div>
-        <div class="event-maps row">
-            <div class="col-md-2">
-                <label hidden for="latitude">latitude</label>
-                <input hidden type="text" id="latitude" name="latitude" value="{{event.latitude}}">
-                <label hidden for="longitude">longitude</label>
-                <input hidden type="text" id="longitude" name="longitude" value="{{event.longitude}}">
-            </div>
-            <div class="col-md-7">
-                <div id="map"></div>
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-2" for="date">Date of the Event:</label>
-            <div class="col-sm-3">
-                <input type="date" class="form-control" id="date" name="date" min="{{minStartDate}}"
-                    value="" required>
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-2" for="startTime">Event Start Time:</label>
-            <div class="col-sm-3">
-                <input type="time" class="form-control" id="startTime" name="startTime" value=""
-                    required>
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-2" for="endTime">Event End Time:</label>
-            <div class="col-sm-3">
-                <input type="time" class="form-control" id="endTime" name="endTime" value="" required>
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-2" for="minParticipants">Minimum number of Participants:</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" id="minParticipants" name="minParticipants"
-                    placeholder='Minimum' value="{{event.minimumParticipants}}" required>
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-2" for="maxParticipants">Maximum number of Participants:</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"
-                    placeholder='Maximum' value="{{event.maximumParticipants}}" required>
+                    required>{{event.description}}</textarea>
             </div>
         </div>
         <div class="form-group d-flex">
@@ -106,73 +44,11 @@
 </div>
 <div class="error" id="errorDivUpdateGameEvent">{{error}}</div>
 {{!-- Script section --}}
-<link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-<script>
-    var element = document.getElementById('map');
-    var map = L.map(element);
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    var target = L.latLng('40.7447411', '-74.0464602');
-    map.setView(target, 15);
-</script>
-
-<script>
-    var theMarker = {};
-    //$('#street').on("keyup", function () {
-    $('#address').on("keydown , keyup , change", function () {
-        loadmap();
-    });
-    $("#area").change(function (e) {
-        loadmap();
-    });
-
-    function loadmap() {
-        var street = $('#address').val();
-        // var area = $('#area').val();
-        var area = $('#area').attr('area');
-        var requestConfig = {
-            method: 'POST',
-            url: '/user/map',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                street: street,
-                area: area
-            }),
-            cache: false
-        };
-
-        $.ajax(requestConfig).then(function (responseMessage) {
-            if (responseMessage.message != "Error") {
-                if (street.trim() == "") {
-                    if (theMarker != undefined) {
-                        map.removeLayer(theMarker);
-                    };
-                } else {
-                    if (theMarker != undefined) {
-                        map.removeLayer(theMarker);
-                    };
-                    var target = L.latLng(responseMessage.message.lat, responseMessage.message.lon);
-                    map.setView(target, 14);
-                    theMarker = L.marker(target).addTo(map);
-                    $('#labelStreet').attr('lat', responseMessage.message.lat);
-                    $('#labelStreet').attr('lon', responseMessage.message.lon);
-                    document.getElementById("latitude").value = responseMessage.message.lat;
-                    document.getElementById("longitude").value = responseMessage.message.lon;
-                }
-            } else {
-                if (theMarker != undefined) {
-                    map.removeLayer(theMarker);
-                };
-            }
-
-        })
-            .catch(function (response) {
-                if (theMarker != undefined) {
-                    map.removeLayer(theMarker);
-                };
-            });
-    }
-</script>
 <script src="/public/js/updateGameEvent.js"></script>
+<script>
+    $(document).ready(function () {
+        let sportCategory = '{{event.sportCategory}}';
+    $('#sportCategory').val(sportCategory);
+
+    });
+</script>

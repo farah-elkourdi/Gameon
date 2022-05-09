@@ -220,55 +220,55 @@
     let title = filterXSS($('#title').val()),
       gameEventId = filterXSS($('#gameEventId').text()),
       sportCategory = filterXSS($('#sportCategory').val()),
-      description = filterXSS($('#description').val()),
-     // area = $('#area').val(),
-      address = filterXSS($('#address').val()),
-      longitude = filterXSS($('#longitude').val()),
-      latitude = filterXSS($('#latitude').val()),
-      date = filterXSS($('#date').val()),
-      startTime = filterXSS($('#startTime').val()),
-      endTime = filterXSS($('#endTime').val()),
-      minParticipants = filterXSS($('#minParticipants').val()),
-      maxParticipants = filterXSS($('#maxParticipants').val());
-      $('#sportCategory').find('option:eq(0)').prop('selected', true);
+      description = filterXSS($('#description').val());
+    // area = $('#area').val(),
+    // address = filterXSS($('#address').val()),
+    // longitude = filterXSS($('#longitude').val()),
+    // latitude = filterXSS($('#latitude').val()),
+    // date = filterXSS($('#date').val()),
+    // startTime = filterXSS($('#startTime').val()),
+    // endTime = filterXSS($('#endTime').val()),
+    // minParticipants = filterXSS($('#minParticipants').val()),
+    // maxParticipants = filterXSS($('#maxParticipants').val());
+    $('#sportCategory').find('option:eq(0)').prop('selected', true);
     errorDiv.hide();
-// modify here 
+    // modify here 
     try {
       title = checkString(title, 'title');
       sportCategory = checkString(sportCategory, 'sportCategory');
       description = checkString(description, 'description');
-    //  area = checkString(area, 'area');
-      address = checkString(address, 'address');
+      //  area = checkString(area, 'area');
+      // address = checkString(address, 'address');
 
       /* NEED to check validity for address, longitude, and latitude */
 
-      date = checkString(date, 'date');
-      date = dateIsValid(date, 'date');
-      startTime = checkTime(startTime, 'startTime');
-      endTime = checkTime(endTime, 'endTime');
-      let startTime_date = convertStringToDate(date, startTime);
-      let endTime_date = convertStringToDate(date, endTime);
-      startTime_date = checkDate(startTime, 'startTime');
-      endTime_date = checkDate(endTime, 'endTime');
+      //   date = checkString(date, 'date');
+      //   date = dateIsValid(date, 'date');
+      //   startTime = checkTime(startTime, 'startTime');
+      //   endTime = checkTime(endTime, 'endTime');
+      //   let startTime_date = convertStringToDate(date, startTime);
+      //   let endTime_date = convertStringToDate(date, endTime);
+      //   startTime_date = checkDate(startTime, 'startTime');
+      //   endTime_date = checkDate(endTime, 'endTime');
 
-      minParticipants = checkNum(minParticipants, 'minParticipants');
-      maxParticipants = checkNum(maxParticipants, 'maxParticipants');
-      if (!areValidTimes(startTime_date, endTime_date)) {
-        throw "Error: endTime must be at last an hour after startTime";
-      }
-      if (!validMinParticipantLimit(sportCategory, minParticipants)) {
-        throw `Error: invalid minParticipants for ${sportCategory}`;
-      }
-      if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
-        throw `Error: invalid maxParticipants for ${sportCategory}`;
-      }
-      if (!validNumParticipants(minParticipants, maxParticipants)) {
-        throw "Error: minParticipants is greater than maxParticipants";
-      }
-     // alert(endTime);
-      if (endTime > "22:00")
-      throw `Events should end before 10 pm`
-    }catch(e){
+      //   minParticipants = checkNum(minParticipants, 'minParticipants');
+      //   maxParticipants = checkNum(maxParticipants, 'maxParticipants');
+      //   if (!areValidTimes(startTime_date, endTime_date)) {
+      //     throw "Error: endTime must be at last an hour after startTime";
+      //   }
+      //   if (!validMinParticipantLimit(sportCategory, minParticipants)) {
+      //     throw `Error: invalid minParticipants for ${sportCategory}`;
+      //   }
+      //   if (!validMaxParticipantLimit(sportCategory, maxParticipants)) {
+      //     throw `Error: invalid maxParticipants for ${sportCategory}`;
+      //   }
+      //   if (!validNumParticipants(minParticipants, maxParticipants)) {
+      //     throw "Error: minParticipants is greater than maxParticipants";
+      //   }
+      //  // alert(endTime);
+      //   if (endTime > "22:00")
+      //   throw `Events should end before 10 pm`
+    } catch (e) {
       errorDiv.empty();
       errorDiv.html(e.toString());
       errorDiv.show();
@@ -276,68 +276,67 @@
       $('#gameEventId').val(gameEventId);
       $('#sportCategory').val(sportCategory);
       $('#description').val(description);
-     // $('#area').val(area);
-    //  $('#address').val(address);
-      $('#longitude').val(longitude);
-      $('#latitude').val(latitude);
-      $('#date').val(date);
-      $('#startTime').val(startTime);
-      $('#endTime').val(endTime);
-      $('#minParticipants').val(minParticipants);
-      $('#maxParticipants').val(maxParticipants);
-      $('#sportCategory').find('option:eq(0)').prop('selected', true);
+      // $('#area').val(area);
+      //  $('#address').val(address);
+      // $('#longitude').val(longitude);
+      // $('#latitude').val(latitude);
+      // $('#date').val(date);
+      // $('#startTime').val(startTime);
+      // $('#endTime').val(endTime);
+      // $('#minParticipants').val(minParticipants);
+      // $('#maxParticipants').val(maxParticipants);
+      // $('#sportCategory').find('option:eq(0)').prop('selected', true);
     }
-      var requestConfig = {
-        method: 'POST',
-        url: '/updateGameEvent',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          title: title,
-          gameEventId: gameEventId,
-          sportCategory: sportCategory,
-          description: description,
+    var requestConfig = {
+      method: 'POST',
+      url: '/updateGameEvent',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        title: title,
+        gameEventId: gameEventId,
+        sportCategory: sportCategory,
+        description: description,
         //  area: area,
-          address: address,
-          longitude: longitude,
-          latitude: latitude,
-          date: date,
-          startTime: startTime,
-          endTime: endTime,
-          minParticipants: minParticipants,
-          maxParticipants: maxParticipants
-        }),
-        withCredentials: true
-      };
+        // address: address,
+        // longitude: longitude,
+        // latitude: latitude,
+        // date: date,
+        // startTime: startTime,
+        // endTime: endTime,
+        // minParticipants: minParticipants,
+        // maxParticipants: maxParticipants
+      }),
+      withCredentials: true
+    };
 
-      $.ajax(requestConfig).then(async function (response){
-        if(response){
-          if(!response.success){
-            errorDiv.empty();
-      errorDiv.html(response.message);
-      errorDiv.show();
-      $('#title').val(title);
-      $('#gameEventId').val(gameEventId);
-      $('#sportCategory').val(sportCategory);
-      $('#description').val(description);
-     // $('#area').val(area);
-    //  $('#address').val(address);
-      $('#longitude').val(longitude);
-      $('#latitude').val(latitude);
-      $('#date').val(date);
-      $('#startTime').val(startTime);
-      $('#endTime').val(endTime);
-      $('#minParticipants').val(minParticipants);
-      $('#maxParticipants').val(maxParticipants);
-      $('#sportCategory').find('option:eq(0)').prop('selected', true);
-      //console.log("Failed ADDING TO Database");
-      //console.log(e);
-      }
-      else{
-        location.href = '/userEvents';
-      }
+    $.ajax(requestConfig).then(async function (response) {
+      if (response) {
+        if (!response.success) {
+          errorDiv.empty();
+          errorDiv.html(response.message);
+          errorDiv.show();
+          $('#title').val(title);
+          $('#gameEventId').val(gameEventId);
+          $('#sportCategory').val(sportCategory);
+          $('#description').val(description);
+          // $('#area').val(area);
+          //  $('#address').val(address);
+          // $('#longitude').val(longitude);
+          // $('#latitude').val(latitude);
+          // $('#date').val(date);
+          // $('#startTime').val(startTime);
+          // $('#endTime').val(endTime);
+          // $('#minParticipants').val(minParticipants);
+          // $('#maxParticipants').val(maxParticipants);
+          // $('#sportCategory').find('option:eq(0)').prop('selected', true);
+          //console.log("Failed ADDING TO Database");
+          //console.log(e);
+        } else {
+          location.href = '/userEvents';
         }
-      })
-    
+      }
+    })
+
   });
 
   // function checkCurrentTime(startTime, endTime) {
