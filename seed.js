@@ -15,9 +15,7 @@ async function main(){
     
     let u2 =  undefined;
     let u3 =  undefined;
-    let user4 = undefined;
 
-       
     let frisbeeEvent = undefined;
     let basketballEvent = undefined;
 
@@ -30,7 +28,7 @@ async function main(){
     let rating3 = undefined;
 
     
-    
+    //Adding users
     let u1 = await userData.createUserSeed(
             "John",
             "Doe",
@@ -41,9 +39,7 @@ async function main(){
             "40.7365224",
             "-74.0311785"
         );
-        //console.log(u1);
-        // let u1_userid = u1._id.toHexString();
-        // //console.log(u1._id);
+        console.log(u1);
     
         u2 = await userData.createUserSeed(
             "Harsh",
@@ -55,10 +51,8 @@ async function main(){
             "40.7457215",
             "-74.0482442"
         );
-        //console.log(u2);
-        // let u2_userid = u2._id.toHexString();
-    
-
+        // console.log(u2);
+        
         u3 = await userData.createUserSeed(
             "avinash",
             "kumar",
@@ -69,10 +63,10 @@ async function main(){
             "40.7482695",
             "-74.0509703"
         );
-        //console.log(u3);
-        // let u3_userid = u3._id.toHexString();
-    
-        // let u1_userid = u1._id.toHexString();
+        // console.log(u3);
+        
+
+        //Creating events
         let soccerEvent =  await eventData.create(
             u1._id.toString(),
             "Soccer 5v5 event",
@@ -88,9 +82,7 @@ async function main(){
             10,
             14
         );
-        // //console.log(soccerEvent);
-    
-
+        // console.log(soccerEvent);
     
         basketballEvent = await eventData.create(
             u2._id.toString(),
@@ -107,9 +99,8 @@ async function main(){
             8,
             12
         );
-        //console.log(basketballEvent);
+        // console.log(basketballEvent);
     
-
         frisbeeEvent = await eventData.create(
             u3._id.toString(),
             "Frisbee event",
@@ -125,10 +116,10 @@ async function main(){
             4,
             8
         );
-        //console.log(frisbeeEvent);
+        // console.log(frisbeeEvent);
     
 
-    
+        //Adding comments
         comment1 = await commentData.postComment(
             u1._id.toString(),
             soccerEvent._id.toString(),
@@ -136,7 +127,7 @@ async function main(){
             "2022-05-08T17:30:25.363+00:00",
             "johndoe@gmail.com"
         );
-        //console.log(comment1);
+        // console.log(comment1);
     
         comment2 = await commentData.postComment(
             u2._id.toString(),
@@ -145,10 +136,8 @@ async function main(){
             "2022-05-08T17:40:25.363+00:00",
             "harshs@gmail.com"
         );
-        //console.log(comment2);
+        // console.log(comment2);
     
-
-   
         comment3 = await commentData.postComment(
             u3._id.toString(),
             frisbeeEvent._id.toString(),
@@ -156,10 +145,10 @@ async function main(){
             "2022-05-08T18:30:25.363+00:00",
             "avinashk@gmail.com"
         );
-        //console.log(comment3);
+        // console.log(comment3);
     
 
-
+        //Adding rating
         rating1 = await rateData.rating(
             "avinashk@gmail.com",
             basketballEvent._id.toString(),
@@ -167,10 +156,8 @@ async function main(){
             5,
             basketballEvent.userId
         );
-        //console.log(rating1);
+        // console.log(rating1);
     
-
-
         rating2 = await rateData.rating(
             "harshs@gmail.com",
             frisbeeEvent._id.toString(),
@@ -178,10 +165,10 @@ async function main(){
             4,
             frisbeeEvent.userId
         );
-        //console.log(rating1);
+        // console.log(rating1);
     
 
-    // await db.serverConfig.close();
+        await db.serverConfig.close();
 }
 
 
