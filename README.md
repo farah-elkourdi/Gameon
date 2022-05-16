@@ -1,6 +1,8 @@
 ## Game on :
 
 ## ℹ️ About:
+**This is CS 546 Final project for Group 2 ( GameOn)**
+
 You want to play your favorite team sport but you do not have enough people or no one to play with. “Game on” will help you in finding local friends to play with and enjoy your favorite team sport. 
 
 
