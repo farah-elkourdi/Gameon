@@ -66,6 +66,11 @@ a.adjust-contrast1 {
   border-color: #0072ee;
 }
 
+.btn.btn-success {
+  background-color: #008a00;
+  border-color: #008a00;
+}
+
 .bg-light {
   background-color: #f8f9fa !important;
   color: #727373 !important;
